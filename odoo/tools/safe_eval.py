@@ -71,6 +71,8 @@ _CONST_OPCODES = set(opmap[x] for x in [
     # until Python 3.5, literal maps are compiled to creating an empty map
     # (pre-sized) then filling it key by key
     'STORE_MAP',
+    # 3.9
+    'SET_UPDATE',
 ] if x in opmap)
 
 # operations on literal values
@@ -90,8 +92,8 @@ _EXPR_OPCODES = _CONST_OPCODES.union(set(opmap[x] for x in [
     'LIST_APPEND', 'MAP_ADD', 'SET_ADD',
     'COMPARE_OP',
     # specialised comparisons
-    'CONTAINS_OP',
-    'DICT_MERGE',
+    'IS_OP', 'CONTAINS_OP',
+    'DICT_MERGE', 'DICT_UPDATE',
 ] if x in opmap))
 
 _SAFE_OPCODES = _EXPR_OPCODES.union(set(opmap[x] for x in [
