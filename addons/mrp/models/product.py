@@ -147,13 +147,17 @@ class ProductProduct(models.Model):
                 qty_per_kit = bom_line.product_uom_id._compute_quantity(uom_qty_per_kit, bom_line.product_id.uom_id, round=False, raise_if_failure=False)
                 if not qty_per_kit:
                     continue
-                component_res = qties.get(component.id, {
-                    "virtual_available": component.virtual_available,
-                    "qty_available": component.qty_available,
-                    "incoming_qty": component.incoming_qty,
-                    "outgoing_qty": component.outgoing_qty,
-                    "free_qty": component.free_qty,
-                })
+                component_res = (
+                    qties.get(component.id)
+                    if component.id in qties
+                    else {
+                        "virtual_available": component.virtual_available,
+                        "qty_available": component.qty_available,
+                        "incoming_qty": component.incoming_qty,
+                        "outgoing_qty": component.outgoing_qty,
+                        "free_qty": component.free_qty,
+                    }
+                )
                 ratios_virtual_available.append(component_res["virtual_available"] / qty_per_kit)
                 ratios_qty_available.append(component_res["qty_available"] / qty_per_kit)
                 ratios_incoming_qty.append(component_res["incoming_qty"] / qty_per_kit)
