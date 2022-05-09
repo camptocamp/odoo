@@ -3573,6 +3573,15 @@ Fields:
         self.check_access_rule('write')
         env = self.env
 
+        # XXX instrumentation code to understand why Public user writes on partner
+        if self._name == "res.partner" and self.env.uid == 4:
+            logger = logging.getLogger('odoo.model.public_user')
+            logger.warning("Public user writing on res.partners sudo mode: %s. partner_ids: %s values %s ", self.env.su, self.ids, vals)
+            import traceback, io
+            iobug = io.StringIO()
+            traceback.print_stack(file=iobug)
+            logger.warning("full stack:\n%s",iobug.getvalue())
+
         bad_names = {'id', 'parent_path'}
         if self._log_access:
             # the superuser can set log_access fields while loading registry
