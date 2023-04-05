@@ -58,8 +58,7 @@ class IrMailServer(models.Model):
             self.microsoft_outlook_access_token_expiration = False
 
     def connect(self, host=None, port=None, user=None, password=None,
-                encryption=None,
-                smtp_debug=False, mail_server_id=None):
+                encryption=None, smtp_debug=False, mail_server_id=None):
         # Do not actually connect while running in test mode
         if getattr(threading.currentThread(), 'testing', False):
             return None
