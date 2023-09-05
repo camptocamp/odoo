@@ -152,12 +152,12 @@ SELECT DISTINCT ON(pid, cid) * FROM (
         LEFT JOIN res_users users ON users.partner_id = partner.id AND users.active
         LEFT JOIN res_groups_users_rel groups_rel ON groups_rel.uid = users.id
         LEFT JOIN res_groups groups ON groups.id = groups_rel.gid
-        WHERE EXISTS (
+        JOIN LATERAL (
             SELECT partner_id FROM sub_followers
             WHERE sub_followers.channel_id IS NULL
                 AND sub_followers.partner_id = partner.id
                 AND (coalesce(sub_followers.internal, false) <> TRUE OR coalesce(partner.partner_share, false) <> TRUE)
-        )
+        ) foo on true
         GROUP BY partner.id, users.notification_type
     %s UNION
     SELECT NULL::int AS pid, channel.id AS cid,
