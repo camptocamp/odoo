@@ -133,7 +133,7 @@ class ResPartnerBank(models.Model):
         if comment:
             communication = (comment[:137] + '...') if len(comment) > 140 else comment
         qr_code_string = 'BCD\n001\n1\nSCT\n%s\n%s\n%s\nEUR%s\n\n\n%s' % (self.bank_bic, self.company_id.name, self.acc_number, amount, communication)
-        qr_code_url = '/report/barcode/?type=%s&value=%s&width=%s&height=%s&humanreadable=1' % ('QR', werkzeug.url_quote_plus(qr_code_string), 128, 128)
+        qr_code_url = '/report/barcode/?type=%s&value=%s&width=%s&height=%s&humanreadable=1' % ('QR', werkzeug.urls.url_quote_plus(qr_code_string), 128, 128)
         return qr_code_url
 
     @api.multi
