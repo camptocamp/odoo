@@ -1041,6 +1041,54 @@ class ComputeMember(models.Model):
             member.container_id = container.search([('name', '=', member.name)], limit=1)
 
 
+class User(models.Model):
+    _name = _description = 'test_new_api.user'
+    _allow_sudo_commands = False
+
+    name = fields.Char()
+    group_ids = fields.Many2many('test_new_api.group')
+
+
+class Group(models.Model):
+    _name = _description = 'test_new_api.group'
+    _allow_sudo_commands = False
+
+    name = fields.Char()
+    user_ids = fields.Many2many('test_new_api.user')
+
+
+class ComputeEditable(models.Model):
+    _name = _description = 'test_new_api.compute_editable'
+
+    line_ids = fields.One2many('test_new_api.compute_editable.line', 'parent_id')
+
+    @api.onchange('line_ids')
+    def _onchange_line_ids(self):
+        for line in self.line_ids:
+            # even if 'same' is not in the view, it should be the same as 'value'
+            line.count += line.same
+
+
+class ComputeEditableLine(models.Model):
+    _name = _description = 'test_new_api.compute_editable.line'
+
+    parent_id = fields.Many2one('test_new_api.compute_editable')
+    value = fields.Integer()
+    same = fields.Integer(compute='_compute_same', store=True)
+    edit = fields.Integer(compute='_compute_edit', store=True, readonly=False)
+    count = fields.Integer()
+
+    @api.depends('value')
+    def _compute_same(self):
+        for line in self:
+            line.same = line.value
+
+    @api.depends('value')
+    def _compute_edit(self):
+        for line in self:
+            line.edit = line.value
+
+
 class TriggerLeft(models.Model):
     _name = 'test_new_api.trigger.left'
     _description = 'model with a related many2one'
