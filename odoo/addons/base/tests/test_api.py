@@ -204,6 +204,15 @@ class TestAPI(common.TransactionCase):
         with self.assertRaises(AccessError):
             demo_partners[0].company_id.name
 
+    def test_56_environment_uid_origin(self):
+        """Check the expected behavior of `env.uid_origin`"""
+        user_demo = self.env.ref('base.user_demo')
+        user_admin = self.env.ref('base.user_admin')
+        self.assertEqual(self.env.uid_origin, None)
+        self.assertEqual(self.env['base'].with_user(user_demo).env.uid_origin, user_demo.id)
+        self.assertEqual(self.env['base'].with_user(user_demo).with_user(user_admin).env.uid_origin, user_demo.id)
+        self.assertEqual(self.env['base'].with_user(user_admin).with_user(user_demo).env.uid_origin, user_admin.id)
+
     @mute_logger('odoo.models')
     def test_60_cache(self):
         """ Check the record cache behavior """
