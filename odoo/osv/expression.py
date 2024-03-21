@@ -1070,6 +1070,11 @@ class expression(object):
                 raise ValueError("Invalid field %r in domain term %r" % (left, leaf))
             format = '%s' if need_wildcard else model._fields[left].column_format
             unaccent = self._unaccent if sql_operator.endswith('like') else lambda x: x
+            # Do not use unaccent on the technical field 'parent_path'
+            # Also, using unaccent with LIKE operator won't use any index.
+            # NOTE: no need to be ported to 16.0+, Odoo refactored this part
+            if left == "parent_path":
+                unaccent = lambda x: x
             column = '%s.%s' % (table_alias, _quote(left))
             query = '(%s %s %s)' % (unaccent(column + cast), sql_operator, unaccent(format))
 
