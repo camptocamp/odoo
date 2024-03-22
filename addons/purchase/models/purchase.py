@@ -637,21 +637,22 @@ class PurchaseOrder(models.Model):
 
         # This query is brittle since it depends on the label values of a selection field
         # not changing, but we don't have a direct time tracker of when a state changes
-        query = """SELECT COUNT(1)
-                   FROM mail_tracking_value v
-                   LEFT JOIN mail_message m ON (v.mail_message_id = m.id)
-                   JOIN purchase_order po ON (po.id = m.res_id)
-                   WHERE m.create_date >= %s
-                     AND m.model = 'purchase.order'
-                     AND m.message_type = 'notification'
-                     AND v.old_value_char IN %s
-                     AND v.new_value_char IN %s
-                     AND po.company_id = %s;
-                """
+        # C2C NOTE: disable 'all_sent_rfqs' indicator as it is far from being efficient
+        # query = """SELECT COUNT(1)
+        #            FROM mail_tracking_value v
+        #            LEFT JOIN mail_message m ON (v.mail_message_id = m.id)
+        #            JOIN purchase_order po ON (po.id = m.res_id)
+        #            WHERE m.create_date >= %s
+        #              AND m.model = 'purchase.order'
+        #              AND m.message_type = 'notification'
+        #              AND v.old_value_char IN %s
+        #              AND v.new_value_char IN %s
+        #              AND po.company_id = %s;
+        #         """
 
-        self.env.cr.execute(query, (one_week_ago, tuple(list_old_value_char), tuple(list_new_value_char), self.env.company.id))
-        res = self.env.cr.fetchone()
-        result['all_sent_rfqs'] = res[0] or 0
+        # self.env.cr.execute(query, (one_week_ago, tuple(list_old_value_char), tuple(list_new_value_char), self.env.company.id))
+        # res = self.env.cr.fetchone()
+        # result['all_sent_rfqs'] = res[0] or 0
 
         # easy counts
         po = self.env['purchase.order']
