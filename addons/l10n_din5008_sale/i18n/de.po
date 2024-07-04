@@ -122,7 +122,7 @@ msgstr "Auftragsbestätigung"
 #: code:addons/l10n_din5008_sale/models/sale.py:0
 #, python-format
 msgid "Salesperson"
-msgstr "Vertriebsmitarbeiter"
+msgstr "Kundenberater"
 
 #. module: l10n_din5008_sale
 #. odoo-python

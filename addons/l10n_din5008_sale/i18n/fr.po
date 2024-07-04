@@ -122,7 +122,7 @@ msgstr "Bon de commande"
 #: code:addons/l10n_din5008_sale/models/sale.py:0
 #, python-format
 msgid "Salesperson"
-msgstr "Vendeur"
+msgstr "Conseiller clientèle"
 
 #. module: l10n_din5008_sale
 #. odoo-python
