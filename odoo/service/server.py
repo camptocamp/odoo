@@ -948,6 +948,10 @@ class PreforkServer(CommonServer):
         if graceful:
             _logger.info("Stopping gracefully")
             super().stop()
+            # when stopping gracefully, get a stack trace of all workers
+            for pid in self.workers:
+                self.worker_kill(pid, signal.SIGQUIT)
+            time.sleep(0.5)
             limit = time.time() + self.timeout
             for pid in self.workers:
                 self.worker_kill(pid, signal.SIGINT)
