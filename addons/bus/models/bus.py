@@ -155,7 +155,7 @@ class ImDispatch(threading.Thread):
 
     def loop(self):
         """ Dispatch postgres notifications to the relevant websockets """
-        _logger.info("Bus.loop listen imbus on db postgres")
+        _logger.debug("Bus.loop listen imbus on db postgres")
         with odoo.sql_db.db_connect('postgres').cursor() as cr, \
              selectors.DefaultSelector() as sel:
             cr.execute("listen imbus")
@@ -170,10 +170,14 @@ class ImDispatch(threading.Thread):
                         channels.extend(json.loads(conn.notifies.pop().payload))
                     # relay notifications to websockets that have
                     # subscribed to the corresponding channels.
+                    _logger.debug("currently managing %d channels", len(channels))
                     websockets = set()
                     for channel in channels:
-                        websockets.update(self._channels_to_ws.get(hashable(channel), []))
+                        websockets.update(
+                            self._channels_to_ws.get(hashable(channel), [])
+                        )
                     for websocket in websockets:
+                        _logger.debug("notify on %s", websocket)
                         websocket.trigger_notification_dispatching()
 
     def run(self):
