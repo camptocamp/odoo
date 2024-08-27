@@ -687,7 +687,7 @@ class Registry(Mapping):
         ``tools.ormcache`` or ``tools.ormcache_multi`` for all the models.
         """
         for model in self.models.values():
-            model.clear_caches()
+            model.clear_caches(logstack=False)
 
     def is_an_ordinary_table(self, model):
         """ Return whether the given model has an ordinary table. """
@@ -784,7 +784,7 @@ class Registry(Mapping):
     def signal_changes(self):
         """ Notifies other processes if registry or cache has been invalidated. """
         if self.registry_invalidated and not self.in_test_mode():
-            _logger.info("Registry changed, signaling through the database")
+            _logger.warning("Registry changed, signaling through the database")
             with closing(self.cursor()) as cr:
                 cr.execute("select nextval('base_registry_signaling')")
                 self.registry_sequence = cr.fetchone()[0]
@@ -792,7 +792,7 @@ class Registry(Mapping):
         # no need to notify cache invalidation in case of registry invalidation,
         # because reloading the registry implies starting with an empty cache
         elif self.cache_invalidated and not self.in_test_mode():
-            _logger.info("At least one model cache has been invalidated, signaling through the database.")
+            _logger.warning("At least one model cache has been invalidated, signaling through the database.")
             with closing(self.cursor()) as cr:
                 cr.execute("select nextval('base_cache_signaling')")
                 self.cache_sequence = cr.fetchone()[0]
