@@ -1976,12 +1976,19 @@ class BaseModel(metaclass=MetaModel):
         return defaults
 
     @classmethod
-    def clear_caches(cls):
+    def clear_caches(cls, logstack=True):
         """ Clear the caches
 
         This clears the caches associated to methods decorated with
         ``tools.ormcache`` or ``tools.ormcache_multi``.
         """
+        if logstack:
+            from io import StringIO
+            import traceback
+            fobj = StringIO()
+            traceback.print_stack(file=fobj)
+            logger = logging.getLogger('odoo.models.clear_caches')
+            logger.warning('%s.clear_caches()\n%s', cls._name, fobj.getvalue())
         cls.pool._clear_cache()
 
     @api.model

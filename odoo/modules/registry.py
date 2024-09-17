@@ -563,7 +563,7 @@ class Registry(Mapping):
         ``tools.ormcache`` or ``tools.ormcache_multi`` for all the models.
         """
         for model in self.models.values():
-            model.clear_caches()
+            model.clear_caches(logstack=False)
 
     def is_an_ordinary_table(self, model):
         """ Return whether the given model has an ordinary table. """
