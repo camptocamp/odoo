@@ -265,7 +265,10 @@ class WebsiteEventController(http.Controller):
         registrations = {}
         global_values = {}
         for key, value in form_details.items():
-            counter, attr_name = key.split('-', 1)
+            try:
+                counter, attr_name = key.split('-', 1)
+            except ValueError:
+                continue
             field_name = attr_name.split('-')[0]
             if field_name not in registration_fields:
                 continue
@@ -308,6 +311,8 @@ class WebsiteEventController(http.Controller):
 
     @http.route(['''/event/<model("event.event"):event>/registration/confirm'''], type='http', auth="public", methods=['POST'], website=True)
     def registration_confirm(self, event, **post):
+        if not request.env['ir.http']._verify_request_recaptcha_token('website_event_registration'):
+            raise UserError(_('Suspicious activity detected by Google reCaptcha.'))
         registrations = self._process_attendees_form(event, post)
         attendees_sudo = self._create_attendees_from_registration_post(event, registrations)
 
