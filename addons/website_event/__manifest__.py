@@ -10,6 +10,7 @@
     'website': 'https://www.odoo.com/app/events',
     'depends': [
         'event',
+        'google_recaptcha',
         'website',
         'website_partner',
         'website_mail',

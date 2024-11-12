@@ -4,11 +4,28 @@ var ajax = require('web.ajax');
 var core = require('web.core');
 var Widget = require('web.Widget');
 var publicWidget = require('web.public.widget');
+var {ReCaptcha} = require('google_recaptcha.ReCaptchaV3');
 
 var _t = core._t;
 
 // Catch registration form event, because of JS for attendee details
 var EventRegistrationForm = Widget.extend({
+
+    /**
+     * @constructor
+     */
+    init: function () {
+        this._super(...arguments);
+        this._recaptcha = new ReCaptcha();
+    },
+
+    /**
+     * @override
+     */
+    willStart: async function () {
+        this._recaptcha.loadLibs();
+        return this._super(...arguments);
+    },
 
     /**
      * @override
@@ -34,12 +51,24 @@ var EventRegistrationForm = Widget.extend({
      * @private
      * @param {Event} ev
      */
-    on_click: function (ev) {
+    on_click: async function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
+        const tokenObj = await this._recaptcha.getToken('website_event_registration');
+        if (tokenObj.error) {
+            this.displayNotification({
+                type: 'danger',
+                title: _t('Error'),
+                message: tokenObj.error,
+                sticky: true,
+            });
+            return false;
+        }
         var $form = $(ev.currentTarget).closest('form');
         var $button = $(ev.currentTarget).closest('[type="submit"]');
-        var post = {};
+        var post = {
+            recaptcha_token_response: tokenObj.token,
+        };
         $('#registration_form table').siblings('.alert').remove();
         $('#registration_form select').each(function () {
             post[$(this).attr('name')] = $(this).val();
@@ -53,7 +82,18 @@ var EventRegistrationForm = Widget.extend({
         } else {
             $button.attr('disabled', true);
             var action = $form.data('action') || $form.attr('action');
+            var self = this;
             return ajax.jsonRpc(action, 'call', post).then(function (modal) {
+                if (modal.error) {
+                    self.displayNotification({
+                        type: 'danger',
+                        title: _t('Error'),
+                        message: modal.error,
+                        sticky: true,
+                    });
+                    $button.prop('disabled', false);
+                    return false;
+                }
                 var $modal = $(modal);
                 $modal.find('.modal-body > div').removeClass('container'); // retrocompatibility - REMOVE ME in master / saas-19
                 $modal.appendTo(document.body);

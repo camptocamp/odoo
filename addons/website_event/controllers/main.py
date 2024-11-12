@@ -219,6 +219,10 @@ class WebsiteEventController(http.Controller):
 
     @http.route(['/event/<model("event.event"):event>/registration/new'], type='json', auth="public", methods=['POST'], website=True)
     def registration_new(self, event, **post):
+        if not request.env['ir.http']._verify_request_recaptcha_token('website_event_registration'):
+            return {
+                'error': _('Suspicious activity detected by Google reCaptcha.'),
+            }
         tickets = self._process_tickets_form(event, post)
         availability_check = True
         if event.seats_limited:
