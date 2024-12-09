@@ -204,7 +204,7 @@ odoo_mailgate: "|/path/to/odoo-mailgate.py --host=localhost -u %(uid)d -p PASSWO
                         try:
                             imap_server.close()
                             imap_server.logout()
-                        except OSError:
+                        except (OSError, IMAP4.abort):
                             _logger.warning('Failed to properly finish imap connection: %s.', server.name, exc_info=True)
             elif server.server_type == 'pop':
                 try:
