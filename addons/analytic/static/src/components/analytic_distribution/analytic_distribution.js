@@ -1,5 +1,6 @@
 /** @odoo-module **/
 
+import { makeContext } from "@web/core/context";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { evaluateExpr } from "@web/core/py_js/py";
@@ -45,7 +46,12 @@ export class AnalyticDistribution extends Component {
         business_domain_compute: { type: String, optional: true },
         force_applicability: { type: String, optional: true },
         allow_save: { type: Boolean, optional: true },
+        context: { type: String, optional: true },
     }
+
+    static defaultProps = {
+        context: {},
+    };
 
     setup(){
         this.orm = useService("orm");
@@ -283,6 +289,7 @@ export class AnalyticDistribution extends Component {
                 },
                 // company domain might be required here
                 domain: [["root_plan_id", "=", account.planId]],
+                context: JSON.stringify(this.context),
             };
             values[fieldName] = account?.accountId
                 ? [account.accountId, account.accountDisplayName]
@@ -349,6 +356,7 @@ export class AnalyticDistribution extends Component {
         if (record.data.company_id) {
             args['company_id'] = record.data.company_id[0];
         }
+        args['context'] = this.context;
         return args;
     }
 
@@ -361,10 +369,12 @@ export class AnalyticDistribution extends Component {
         const args = {
             domain: domain,
             fields: ["id", "display_name", "root_plan_id", "color"],
-            context: [],
+            context: this.context,
         }
         // batched call
-        const records = await this.batchedOrm.read("account.analytic.account", domain[0][2], args.fields, {});
+        const records = await this.batchedOrm.read("account.analytic.account", domain[0][2], args.fields, {
+            context: args.context,
+        });
         return Object.assign({}, ...records.map((r) => {
             const {id, ...rest} = r;
             return {[id]: rest};
@@ -395,6 +405,14 @@ export class AnalyticDistribution extends Component {
     }
 
     // Getters
+    get context() {
+        const { context, record } = this.props;
+        const evalContext = record?.getEvalContext
+            ? record.getEvalContext(false)
+            : record?.evalContext;
+        return makeContext([context], evalContext)
+    }
+
     get valueColumnEnabled() {
         return Boolean(this.props.amount_field && this.props.record.data[this.props.amount_field]);
     }
@@ -680,7 +698,7 @@ export const analyticDistribution = {
             availableTypes: ["many2one"],
         }
     ],
-    extractProps: ({ attrs, options }) => ({
+    extractProps: ({ attrs, context, options }) => ({
         business_domain: options.business_domain,
         account_field: options.account_field,
         product_field: options.product_field,
@@ -688,6 +706,7 @@ export const analyticDistribution = {
         business_domain_compute: attrs.business_domain_compute,
         force_applicability: options.force_applicability,
         allow_save: !options.disable_save,
+        context: context,
     }),
 };
 
