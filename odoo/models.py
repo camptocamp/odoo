@@ -1688,7 +1688,7 @@ class BaseModel(metaclass=MetaModel):
         This clears the caches associated to methods decorated with
         ``tools.ormcache`` or ``tools.ormcache_multi``.
         """
-        if logstack:
+        if logstack and not config.get("CI"):
             from io import StringIO
             import traceback
             fobj = StringIO()
