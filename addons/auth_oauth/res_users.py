@@ -73,6 +73,7 @@ class res_users(osv.Model):
         try:
             oauth_uid = validation['user_id']
             user_ids = self.search(cr, uid, [("oauth_uid", "=", oauth_uid), ('oauth_provider_id', '=', provider)])
+            _logger.info('uid: %s provider:%s users:%s validation: %s', oauth_uid, provider, user_ids, validation)
             if not user_ids:
                 raise openerp.exceptions.AccessDenied()
             assert len(user_ids) == 1
