@@ -58,8 +58,8 @@ class ProductProduct(models.Model):
             else:
                 location = order.picking_type_id.default_location_dest_id
             product_qty = uom._compute_quantity(product_qty_sum, product.uom_id, round=False)
-            qty_by_product_location[(product.id, location.id)] += product_qty
-            qty_by_product_wh[(product.id, location.warehouse_id.id)] += product_qty
+            qty_by_product_location[product.id, location.id] += product_qty
+            qty_by_product_wh[product.id, location.warehouse_id.id] += product_qty
         return qty_by_product_location, qty_by_product_wh
 
     def _get_lines_domain(self, location_ids=False, warehouse_ids=False):
@@ -69,26 +69,32 @@ class ProductProduct(models.Model):
             ('product_id', 'in', self.ids)
         ]
         if location_ids:
-            domains.append(expression.AND([rfq_domain, [
+            domains.append([
                 '|',
-                '|',
-                    ('order_id.picking_type_id.default_location_dest_id', 'in', location_ids),
                     '&',
-                        ('move_ids', '=', False),
-                        ('location_final_id', 'child_of', location_ids),
+                    ('orderpoint_id', '=', False),
+                    '|',
+                        '&',
+                            ('location_final_id', '=', False),
+                            ('order_id.picking_type_id.default_location_dest_id', 'in', location_ids),
+                        '&',
+                            ('move_ids', '=', False),
+                            ('location_final_id', 'child_of', location_ids),
                     '&',
                         ('move_dest_ids', '=', False),
                         ('orderpoint_id.location_id', 'in', location_ids)
-            ]]))
+            ])
         if warehouse_ids:
-            domains.append(expression.AND([rfq_domain, [
+            domains.append([
                 '|',
-                    ('order_id.picking_type_id.warehouse_id', 'in', warehouse_ids),
+                    '&',
+                        ('orderpoint_id', '=', False),
+                        ('order_id.picking_type_id.warehouse_id', 'in', warehouse_ids),
                     '&',
                         ('move_dest_ids', '=', False),
                         ('orderpoint_id.warehouse_id', 'in', warehouse_ids)
-            ]]))
-        return expression.OR(domains) if domains else []
+            ])
+        return expression.AND([rfq_domain, expression.OR(domains) if domains else []])
 
 
 class SupplierInfo(models.Model):
