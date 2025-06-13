@@ -419,18 +419,22 @@ class WebRequest(object):
 
     def validate_csrf(self, csrf):
         if not csrf:
+            _logger.warning('No CSRF token found.')
             return False
 
         try:
             hm, _, max_ts = str(csrf).rpartition('o')
         except UnicodeEncodeError:
+            _logger.error('CSRF token with invalid format')
             return False
 
         if max_ts:
             try:
                 if int(max_ts) < int(time.time()):
+                    _logger.error('CSRF token is in the past (%s)', max_ts)
                     return False
             except ValueError:
+                _logger.error("CSRF Token timestamp cannot be parsed (%s)", max_ts)
                 return False
 
         token = self.session.sid
@@ -439,7 +443,10 @@ class WebRequest(object):
         secret = self.env['ir.config_parameter'].sudo().get_param('database.secret')
         assert secret, "CSRF protection requires a configured database secret"
         hm_expected = hmac.new(secret.encode('ascii'), msg.encode('utf-8'), hashlib.sha1).hexdigest()
-        return consteq(hm, hm_expected)
+        result = consteq(hm, hm_expected)
+        if not result:
+            _logger.error("CSRF token valus does not compare to expected value")
+        return result
 
 def route(route=None, **kw):
     """Decorator marking the decorated method as being a handler for
