@@ -4,17 +4,17 @@
 # 
 # Translators:
 # Chloe Wang, 2025
-# Wil Odoo, 2025
 # 何彬 <vnsoft.he@gmail.com>, 2025
 # Jeffery CHEN <jeffery9@gmail.com>, 2025
+# Wil Odoo, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 20:47+0000\n"
+"POT-Creation-Date: 2025-05-30 18:36+0000\n"
 "PO-Revision-Date: 2024-09-25 09:42+0000\n"
-"Last-Translator: Jeffery CHEN <jeffery9@gmail.com>, 2025\n"
+"Last-Translator: Wil Odoo, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/odoo/teams/41243/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3003,6 +3003,11 @@ msgid "File is too big. File size cannot exceed 25MB"
 msgstr "文件太大。文件大小不能超过 25 MB"
 
 #. module: website_slides
+#: model:ir.model,name:website_slides.model_ir_binary
+msgid "File streaming helper model for controllers"
+msgstr "控制器文件流帮助器模型"
+
+#. module: website_slides
 #: model_terms:ir.ui.view,arch_db:website_slides.course_slides_cards
 msgid "Filter &amp; order"
 msgstr "Filter &amp; order"
@@ -4992,6 +4997,12 @@ msgstr "评论日期"
 #: model_terms:ir.ui.view,arch_db:website_slides.view_slide_channel_form
 msgid "Reviews"
 msgstr "评论"
+
+#. module: website_slides
+#. odoo-javascript
+#: code:addons/website_slides/static/src/chatter/frontend/portal_chatter_patch.js:0
+msgid "Reviews (%s)"
+msgstr "评价（%s）"
 
 #. module: website_slides
 #: model:ir.model.fields,field_description:website_slides.field_slide_slide__quiz_fourth_attempt_reward

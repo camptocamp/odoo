@@ -25,7 +25,6 @@
 # RGB Consulting <odoo@rgbconsulting.com>, 2024
 # Jonatan Gk, 2024
 # Manel Fernandez Ramirez <manelfera@outlook.com>, 2024
-# Josep Anton Belchi, 2024
 # Martin Trigaux, 2024
 # Quim - coopdevs <quim.rebull@coopdevs.org>, 2024
 # Marc Tormo i Bochaca <mtbochaca@gmail.com>, 2024
@@ -34,13 +33,15 @@
 # Óscar Fonseca <tecnico@pyming.com>, 2025
 # Arnau Ros, 2025
 # Santiago Payà <santiagopim@gmail.com>, 2025
+# Wil Odoo, 2025
+# Josep Anton Belchi, 2025
 # Noemi Pla, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 20:47+0000\n"
+"POT-Creation-Date: 2025-05-30 18:36+0000\n"
 "PO-Revision-Date: 2024-09-25 09:42+0000\n"
 "Last-Translator: Noemi Pla, 2025\n"
 "Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
@@ -3041,6 +3042,11 @@ msgid "File is too big. File size cannot exceed 25MB"
 msgstr "L'arxiu és massa gran. L'arxiu no pot excedir els 25MB"
 
 #. module: website_slides
+#: model:ir.model,name:website_slides.model_ir_binary
+msgid "File streaming helper model for controllers"
+msgstr "Model d'ajuda de transmissió de fitxers per a controladors"
+
+#. module: website_slides
 #: model_terms:ir.ui.view,arch_db:website_slides.course_slides_cards
 msgid "Filter &amp; order"
 msgstr "Filtre i ordre"
@@ -5030,7 +5036,7 @@ msgstr "Ja s'ha contactat amb el responsable."
 #: model:ir.model.fields,help:website_slides.field_slide_channel_partner__channel_website_id
 #: model:ir.model.fields,help:website_slides.field_slide_slide__website_id
 msgid "Restrict to a specific website."
-msgstr ""
+msgstr "Restringir a un lloc web específic."
 
 #. module: website_slides
 #. odoo-javascript
@@ -5070,6 +5076,12 @@ msgstr "Data de la revisió"
 #: model_terms:ir.ui.view,arch_db:website_slides.view_slide_channel_form
 msgid "Reviews"
 msgstr "Ressenyes"
+
+#. module: website_slides
+#. odoo-javascript
+#: code:addons/website_slides/static/src/chatter/frontend/portal_chatter_patch.js:0
+msgid "Reviews (%s)"
+msgstr "Revisions (%s)"
 
 #. module: website_slides
 #: model:ir.model.fields,field_description:website_slides.field_slide_slide__quiz_fourth_attempt_reward

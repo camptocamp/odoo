@@ -160,7 +160,6 @@ class PosSession(models.Model):
         data[0]['_partner_commercial_fields'] = self.env['res.partner']._commercial_fields()
         data[0]['_server_version'] = exp_version()
         data[0]['_base_url'] = self.get_base_url()
-        data[0]['_has_cash_move_perm'] = self.env.user.has_group('account.group_account_invoice')
         data[0]['_has_available_products'] = self._pos_has_valid_product()
         data[0]['_pos_special_products_ids'] = self.env['pos.config']._get_special_products().ids
         return {
@@ -205,7 +204,6 @@ class PosSession(models.Model):
         }
 
     def get_pos_ui_product_pricelist_item_by_product(self, product_tmpl_ids, product_ids, config_id):
-        pricelist_fields = self.env['product.pricelist']._load_pos_data_fields(config_id)
         pricelist_item_fields = self.env['product.pricelist.item']._load_pos_data_fields(config_id)
 
         pricelist_item_domain = [
@@ -218,12 +216,8 @@ class PosSession(models.Model):
         ]
 
         pricelist_item = self.env['product.pricelist.item'].search(pricelist_item_domain)
-        pricelist = pricelist_item.pricelist_id
 
-        return {
-            'product.pricelist.item': pricelist_item.read(pricelist_item_fields, load=False),
-            'product.pricelist': pricelist.read(pricelist_fields, load=False)
-        }
+        return {'product.pricelist.item': pricelist_item.read(pricelist_item_fields, load=False)}
 
     @api.depends('currency_id', 'company_id.currency_id')
     def _compute_is_in_company_currency(self):
@@ -1082,7 +1076,7 @@ class PosSession(models.Model):
             vals.append(self._get_combine_receivable_vals(payment_method, amounts['amount'], amounts['amount_converted']))
         for payment, amounts in split_receivables_pay_later.items():
             vals.append(self._get_split_receivable_vals(payment, amounts['amount'], amounts['amount_converted']))
-        MoveLine.create(vals)
+        data['pay_later_move_lines'] = MoveLine.create(vals)
         return data
 
     def _create_combine_account_payment(self, payment_method, amounts, diff_amount):
@@ -1110,6 +1104,7 @@ class PosSession(models.Model):
             account_payment.write({
                 'outstanding_account_id': account_payment.destination_account_id,
                 'destination_account_id': account_payment.outstanding_account_id,
+                'payment_type': 'outbound',
             })
 
         account_payment.action_post()
@@ -1292,7 +1287,6 @@ class PosSession(models.Model):
         stock_output_lines = data.get('stock_output_lines')
         payment_method_to_receivable_lines = data.get('payment_method_to_receivable_lines')
         payment_to_receivable_lines = data.get('payment_to_receivable_lines')
-
 
         all_lines = (
               split_cash_statement_lines
@@ -1763,7 +1757,7 @@ class PosSession(models.Model):
             for session in sessions
         ]
 
-        self.env['account.bank.statement.line'].create(vals_list)
+        self.env['account.bank.statement.line'].sudo().create(vals_list)
 
     def _get_attributes_by_ptal_id(self):
         # performance trick: prefetch fields with search_fetch() and fetch()

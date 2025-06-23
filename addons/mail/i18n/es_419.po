@@ -3,8 +3,8 @@
 # 	* mail
 # 
 # Translators:
-# Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2025
 # Wil Odoo, 2025
+# Patricia Gutiérrez Capetillo <pagc@odoo.com>, 2025
 # Fernanda Alvarez, 2025
 # 
 msgid ""
@@ -3552,7 +3552,7 @@ msgstr "Seudónimo de correo electrónico"
 #. module: mail
 #: model:ir.model,name:mail.model_mail_alias
 msgid "Email Aliases"
-msgstr "Seudónimos de correos"
+msgstr "Seudónimos de correo"
 
 #. module: mail
 #: model:ir.model,name:mail.model_mail_alias_mixin
@@ -5428,7 +5428,7 @@ msgstr "Guardar archivos adjuntos"
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_activity_type__keep_done
 msgid "Keep Done"
-msgstr "Mantener como Hecho"
+msgstr "Mantener actividades hechas"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_compose_message__auto_delete_keep_log
@@ -11450,7 +11450,7 @@ msgstr "Le asignaron %s"
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.message_user_assigned
 msgid "You have been assigned to the"
-msgstr "Le asignaron al"
+msgstr "Le asignaron:"
 
 #. module: mail
 #. odoo-javascript

@@ -345,7 +345,7 @@ class Users(models.Model):
             'image_1024', 'image_512', 'image_256', 'image_128', 'lang', 'tz',
             'tz_offset', 'groups_id', 'partner_id', 'write_date', 'action_id',
             'avatar_1920', 'avatar_1024', 'avatar_512', 'avatar_256', 'avatar_128',
-            'share', 'device_ids',
+            'share', 'device_ids', 'display_name',
         ]
 
     @property
@@ -1605,12 +1605,15 @@ class UsersImplied(models.Model):
         if not values.get('groups_id'):
             return super(UsersImplied, self).write(values)
         users_before = self.filtered(lambda u: u._is_internal())
-        res = super(UsersImplied, self).write(values)
+        res = super(UsersImplied, self.with_context(no_add_implied_groups=True)).write(values)
         demoted_users = users_before.filtered(lambda u: not u._is_internal())
         if demoted_users:
             # demoted users are restricted to the assigned groups only
             vals = {'groups_id': [Command.clear()] + values['groups_id']}
             super(UsersImplied, demoted_users).write(vals)
+        if self.env.context.get('no_add_implied_groups'):
+            # in a recursive write, defer adding implied groups to the base call
+            return res
         # add implied groups for all users (in batches)
         users_batch = defaultdict(self.browse)
         for user in self:
@@ -1774,7 +1777,7 @@ class GroupsView(models.Model):
                     xml4.append(E.group(*right_group))
 
             xml4.append({'class': "o_label_nowrap"})
-            user_type_invisible = f'{user_type_field_name} != {group_employee.id}' if user_type_field_name else None
+            user_type_invisible = f'{user_type_field_name} != {group_employee.id}' if user_type_field_name else ''
 
             for xml_cat in sorted(xml_by_category.keys(), key=lambda it: it[0]):
                 master_category_name = xml_cat[1]
@@ -2145,6 +2148,17 @@ class UsersView(models.Model):
                 for key, values in super(UsersView, self.sudo()).fields_get(missing, attributes).items()
             })
         return res
+
+    def _get_view_postprocessed(self, view, arch, **options):
+        arch, models = super()._get_view_postprocessed(view, arch, **options)
+        if view == self.env.ref('base.view_users_form_simple_modif'):
+            tree = etree.fromstring(arch)
+            for node_field in tree.xpath('//field[@__groups_key__]'):
+                if node_field.get('name') in self.SELF_READABLE_FIELDS:
+                    node_field.attrib.pop('__groups_key__')
+            arch = etree.tostring(tree)
+        return arch, models
+
 
 class CheckIdentity(models.TransientModel):
     """ Wizard used to re-check the user's credentials (password) and eventually

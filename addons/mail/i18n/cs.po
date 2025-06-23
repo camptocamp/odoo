@@ -12,6 +12,7 @@
 # Wil Odoo, 2025
 # Stanislav Kurinec, 2025
 # Vojtěch Olšan, 2025
+# Denis Gobin, 2025
 # Marta Wacławek, 2025
 # 
 msgid ""
@@ -8863,7 +8864,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/mail/static/src/chatter/web/mail_composer_send_dropdown.xml:0
 msgid "Send Later"
-msgstr ""
+msgstr "Odeslat později"
 
 #. module: mail
 #. odoo-python
@@ -9675,7 +9676,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/mail/static/src/core/common/thread.xml:0
 msgid "The conversation is empty."
-msgstr ""
+msgstr "Konverzace je prázdná."
 
 #. module: mail
 #: model:ir.model.fields,help:mail.field_mail_template__can_write
@@ -11210,7 +11211,7 @@ msgstr "Nemáte povolení nahrát tady přílohu."
 #. odoo-python
 #: code:addons/mail/controllers/attachment.py:0
 msgid "You are not allowed to upload attachments on this channel."
-msgstr ""
+msgstr "Nemáte povolení nahrávat přílohy na tento kanál."
 
 #. module: mail
 #. odoo-javascript

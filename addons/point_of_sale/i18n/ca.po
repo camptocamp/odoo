@@ -324,6 +324,16 @@ msgid ""
 "</div>\n"
 "            "
 msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <h4>\n"
+"        Estimat <t t-out=\"object.partner_id.name or 'Valuable Customer'\">Azure Interior</t>:\n"
+"    </h4>\n"
+"    <p style=\"font-size: 13px;\">\n"
+"Tenim una oferta exclusiva i per temps limitat només per a vostè: gaudeixi d'un descompte del 20 % en la seva pròxima compra.\n"
+"Estem a la seva disposició.\n"
+"    </p>\n"
+"</div>\n"
+"            "
 
 #. module: point_of_sale
 #: model_terms:ir.ui.view,arch_db:point_of_sale.view_partner_pos_kanban
@@ -493,7 +503,7 @@ msgid ""
 "A sequence number that is incremented each time a user resumes the pos "
 "session"
 msgstr ""
-"Un nombre seqüencial que s'incrementa cada cop que un usuari resumeix la "
+"Un número seqüencial que s'incrementa cada cop que un usuari resumeix la "
 "sessió de tpv "
 
 #. module: point_of_sale
@@ -523,7 +533,7 @@ msgstr ""
 #. module: point_of_sale
 #: model:ir.model.fields,help:point_of_sale.field_pos_order__sequence_number
 msgid "A session-unique sequence number for the order"
-msgstr "Un nombre de seqüència de sessió únic per a l'ordre"
+msgstr "Un número de seqüència de sessió únic per a l'ordre"
 
 #. module: point_of_sale
 #: model:ir.model.fields,help:point_of_sale.field_pos_config__receipt_footer
@@ -4006,7 +4016,7 @@ msgstr ""
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_session__login_number
 msgid "Login Sequence Number"
-msgstr "Entrada de nombre de seqüència"
+msgstr "Entrada de número de seqüència"
 
 #. module: point_of_sale
 #. odoo-javascript
@@ -5024,7 +5034,7 @@ msgstr "Categoria pare"
 #. module: point_of_sale
 #: model:pos.category,name:point_of_sale.pos_category_pastries
 msgid "Pastries"
-msgstr ""
+msgstr "Rebosteria"
 
 #. module: point_of_sale
 #. odoo-javascript
@@ -6841,7 +6851,7 @@ msgstr "Seqüència"
 #. module: point_of_sale
 #: model:ir.model.fields,field_description:point_of_sale.field_pos_order__sequence_number
 msgid "Sequence Number"
-msgstr "Nombre de seqüència"
+msgstr "Número de seqüència"
 
 #. module: point_of_sale
 #. odoo-javascript

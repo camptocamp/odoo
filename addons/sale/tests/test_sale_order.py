@@ -341,21 +341,49 @@ class TestSaleOrder(SaleCommon):
 
     def test_sol_names(self):
         """Check that the SOL description gets used for the display name."""
+        no_variant_attr = self.env['product.attribute'].create({
+            'name': "Attribute",
+            'create_variant': 'no_variant',
+            'value_ids': [
+                Command.create({'name': "Value 1", 'sequence': 1}),
+                Command.create({'name': "Value 2", 'sequence': 2}),
+            ],
+        })
+        no_variant_product_tmpl = self.env['product.template'].create({
+            'name': "No Variant",
+            'attribute_line_ids': [Command.create({
+                'attribute_id': no_variant_attr.id,
+                'value_ids': no_variant_attr.value_ids.ids,
+            })],
+        })
+        no_variant_product = no_variant_product_tmpl.product_variant_id
+        ptals = no_variant_product_tmpl.valid_product_template_attribute_line_ids
+        ptav1 = next(iter(ptals.product_template_value_ids))
+        product_with_desc = self.env['product.product'].create({
+            'name': "Product with description",
+            'description_sale': "Additional\ninfo.",
+        })
+
         self.sale_order.order_line = [
             Command.create({'is_downpayment': True}),
             Command.create({'display_type': 'line_note', 'name': "Foo\nBar\nBaz"}),
+            Command.create({
+                'product_id': no_variant_product.id,
+                'product_no_variant_attribute_value_ids': ptav1.ids,
+            }),
+            Command.create({'product_id': product_with_desc.id}),
         ]
-        sol1, sol2, sol3, sol4 = self.sale_order.order_line
+        sol1, sol2, sol3, sol4, sol5, sol6 = self.sale_order.order_line
         sol1.name += "\nOK THANK YOU\nGOOD BYE"
 
         self.assertEqual(
             sol1.display_name,
             f"{self.sale_order.name} - OK THANK YOU ({self.partner.name})",
-            "Product line with description should display the first line of description",
+            "Product line with a custom description should display the first line of description",
         )
         self.assertEqual(
             sol2.display_name,
-            f"{self.sale_order.name} - {sol2.product_id.name} ({self.partner.name})",
+            f"{self.sale_order.name} - {sol2.product_id.display_name} ({self.partner.name})",
             "Product line without description should display the product name",
         )
         self.assertEqual(
@@ -367,6 +395,17 @@ class TestSaleOrder(SaleCommon):
             sol4.display_name,
             f"{self.sale_order.name} - Foo ({self.partner.name})",
             "Multi-line note should display the first line only",
+        )
+        self.assertIn(f"{no_variant_attr.name}: {ptav1.name}", sol5.name.split('\n'))
+        self.assertEqual(
+            sol5.display_name,
+            f"{self.sale_order.name} - {no_variant_product.name} ({self.partner.name})",
+            "Lines with attribute-based descriptions should display the product name",
+        )
+        self.assertEqual(
+            sol6.display_name,
+            f"{self.sale_order.name} - {product_with_desc.display_name} ({self.partner.name})",
+            "Product lines with standard sales description should display the product name",
         )
 
     def test_state_changes(self):
@@ -504,6 +543,27 @@ class TestSaleOrder(SaleCommon):
         sale_order.partner_id = self.partner2
 
         self.assertIn(self.partner2, sale_order.message_partner_ids)
+
+    def test_scheduled_mark_so_as_sent(self):
+        """Check that a order gets marked as sent after a scheduled message was sent."""
+        order = self.sale_order
+        composer = self.env['mail.compose.message'].with_context(
+            active_id=order.id,
+            active_ids=order.ids,
+            active_model=order._name,
+            mark_so_as_sent=True,
+        ).new({'body': '<h1>Your Sales Order</h1>'})
+        composer.action_schedule_message(
+            scheduled_date=fields.Datetime.now() + timedelta(hours=1),
+        )
+
+        scheduled_message = self.env['mail.scheduled.message'].search([
+            ('model', '=', order._name),
+            ('res_id', '=', order.id),
+        ], limit=1)
+        self.assertEqual(order.state, 'draft')
+        scheduled_message.post_message()
+        self.assertEqual(order.state, 'sent')
 
     def test_so_discount_is_not_reset(self):
         """ Discounts should not be recomputed on order confirmation """

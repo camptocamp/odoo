@@ -809,6 +809,10 @@ class TestUi(TestPointOfSaleHttpCommon):
         self.main_pos_config.with_user(self.pos_user).open_ui()
         self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'OrderPaidInCash', login="pos_user")
 
+    def test_customer_note_is_present_after_refresh(self):
+        self.main_pos_config.with_user(self.pos_user).open_ui()
+        self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'CustomerNoteIsPresentAfterRefresh', login="pos_user")
+
     def test_fiscal_position_no_tax(self):
         #create a tax of 15% with price included
         tax = self.env['account.tax'].create({
@@ -1030,18 +1034,6 @@ class TestUi(TestPointOfSaleHttpCommon):
 
         self.main_pos_config.with_user(self.pos_user).open_ui()
         self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'ShowTaxExcludedTour', login="pos_user")
-
-    def test_chrome_without_cash_move_permission(self):
-        self.env.user.write({'groups_id': [
-            Command.set(
-                [
-                    self.env.ref('base.group_user').id,
-                    self.env.ref('point_of_sale.group_pos_user').id,
-                ]
-            )
-        ]})
-        self.main_pos_config.open_ui()
-        self.start_pos_tour('chrome_without_cash_move_permission', login="accountman")
 
     def test_09_pos_barcodes_scan_product_pacaging(self):
         product = self.env['product.product'].create({

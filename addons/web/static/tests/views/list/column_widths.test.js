@@ -153,7 +153,7 @@ test(`width computation: no record, lot of fields`, async () => {
                 <field name="currency_id"/>
             </list>`,
     });
-    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 89, 102, 81, 139, 114, 100]);
+    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 89, 102, 83, 144, 114, 100]);
 });
 
 test(`width computation: no record, few fields`, async () => {
@@ -220,7 +220,7 @@ test(`width computation: with records, lot of fields`, async () => {
                 <field name="currency_id"/>
             </list>`,
     });
-    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 89, 102, 81, 139, 114, 100]);
+    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 89, 102, 83, 144, 114, 100]);
 });
 
 test(`width computation: with records, lot of fields, grouped`, async () => {
@@ -243,7 +243,7 @@ test(`width computation: with records, lot of fields, grouped`, async () => {
         groupBy: ["int_field"],
     });
     expect(`.o_resize`).toHaveCount(9);
-    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 89, 102, 81, 139, 114, 45]);
+    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 89, 102, 83, 144, 114, 45]);
 });
 
 test(`width computation: with records, few fields`, async () => {
@@ -272,7 +272,7 @@ test(`width computation: with records, no relative fields`, async () => {
                 <field name="date"/>
             </list>`,
     });
-    expect(getColumnWidths()).toEqual([40, 203, 174, 196, 186]);
+    expect(getColumnWidths()).toEqual([40, 203, 174, 196, 188]);
 });
 
 test(`width computation: with records, very long text field`, async () => {
@@ -318,7 +318,7 @@ test(`width computation: with records, lot of fields, long texts`, async () => {
                 <field name="currency_id"/>
             </list>`,
     });
-    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 102, 81, 89, 139, 114, 100]);
+    expect(getColumnWidths()).toEqual([40, 29, 89, 80, 102, 83, 89, 144, 114, 100]);
 });
 
 test(`width computation: editable list, overflowing table`, async () => {
@@ -481,7 +481,40 @@ test(`width computation: date and datetime with fancy formats`, async () => {
         "Wed, 25 January 2017",
         "Mon, 12 December 2016 11:55:05 AM",
     ]);
-    expect(getColumnWidths()).toEqual([40, 325, 170, 265]);
+    expect(getColumnWidths()).toEqual([40, 307, 177, 276]);
+});
+
+test(`width computation: date and datetime with fancy formats (2)`, async () => {
+    // Those formats contains static parts ("a" not prefixed by "%") which will be escaped when
+    // converted into the luxon format (wrapped into single quotes). The regex that detects patterns
+    // like "MMM" (abrev. month, in letters) must properly ignore those escaped parts. This test
+    // ensures it.
+    defineParams({
+        lang_parameters: {
+            date_format: "%Ya%ba%d",
+            time_format: "%H%M%Sa%p",
+        },
+    });
+    resetDateFieldWidths();
+    after(resetDateFieldWidths);
+
+    await mountView({
+        type: "list",
+        resModel: "foo",
+        arch: `
+            <list>
+                <field name="foo"/>
+                <field name="date"/>
+                <field name="datetime"/>
+            </list>`,
+    });
+
+    expect(queryAllTexts(".o_data_row:eq(0) .o_data_cell")).toEqual([
+        "yop",
+        "2017aJana25",
+        "2016aDeca12 115505aAM",
+    ]);
+    expect(getColumnWidths()).toEqual([40, 459, 103, 198]);
 });
 
 test(`width computation: width attribute in arch and overflowing table`, async () => {
@@ -504,7 +537,7 @@ test(`width computation: width attribute in arch and overflowing table`, async (
             </list>
         `,
     });
-    expect(getColumnWidths()).toEqual([40, 139, 210, 411]);
+    expect(getColumnWidths()).toEqual([40, 144, 210, 406]);
 });
 
 test(`width computation: no record, nameless and stringless buttons`, async () => {
@@ -676,7 +709,7 @@ test(`width computation: x2many, editable list, with invisible modifier on x2man
     expect(columnWidths[1]).toBeGreaterThan(500);
 });
 
-test.todo(`width computation: widths are re-computed on window resize`, async () => {
+test(`width computation: widths are re-computed on window resize`, async () => {
     Foo._records[0].text =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
         "Sed blandit, justo nec tincidunt feugiat, mi justo suscipit libero, sit amet tempus " +
@@ -686,21 +719,42 @@ test.todo(`width computation: widths are re-computed on window resize`, async ()
         resModel: "foo",
         type: "list",
         arch: `
-            <list editable="bottom">
-                <field name="datetime"/>
+            <list>
+                <field name="int_field"/>
                 <field name="text"/>
             </list>
         `,
     });
-    const initialTextWidth = queryRect(`th[data-name="text"]`).width;
-    const selectorWidth = queryRect(`th.o_list_record_selector:eq(0)`).width;
 
-    await resize({ width: queryRect(getFixture()).width / 2 });
-    await animationFrame();
-    const postResizeTextWidth = queryRect(`th[data-name="text"]`).width;
-    const postResizeSelectorWidth = queryRect(`th.o_list_record_selector:eq(0)`).width;
-    expect(postResizeTextWidth).toBeLessThan(initialTextWidth);
-    expect(selectorWidth).toBe(postResizeSelectorWidth);
+    expect(getColumnWidths()).toEqual([40, 80, 680]);
+
+    resize({ width: queryRect(getFixture()).width * 1.2 });
+    await runAllTimers();
+    expect(getColumnWidths()).toEqual([40, 80, 840]);
+});
+
+test(`width computation: widths are re-computed on parent resize`, async () => {
+    Foo._records[0].text =
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+        "Sed blandit, justo nec tincidunt feugiat, mi justo suscipit libero, sit amet tempus " +
+        "ipsum purus bibendum est.";
+
+    await mountView({
+        resModel: "foo",
+        type: "list",
+        arch: `
+            <list>
+                <field name="int_field"/>
+                <field name="text"/>
+            </list>
+        `,
+    });
+
+    expect(getColumnWidths()).toEqual([40, 80, 680]);
+
+    queryOne(".o_list_renderer").style.width = "600px";
+    await runAllTimers();
+    expect(getColumnWidths()).toEqual([40, 80, 480]);
 });
 
 test(`width computation: button columns don't have a max width`, async () => {
@@ -1165,20 +1219,20 @@ test(`freeze widths: toggle optional fields`, async () => {
         `,
     });
 
-    expect(getColumnWidths()).toEqual([40, 81, 507, 139, 32]);
+    expect(getColumnWidths()).toEqual([40, 83, 500, 144, 32]);
 
     await contains(".o_optional_columns_dropdown_toggle").click();
     await contains(".dropdown-item input:eq(0)").click();
-    expect(getColumnWidths()).toEqual([40, 81, 405, 102, 140, 32]);
+    expect(getColumnWidths()).toEqual([40, 83, 397, 102, 145, 32]);
 
     await contains(".dropdown-item input:eq(1)").click();
-    expect(getColumnWidths()).toEqual([40, 81, 544, 102, 32]);
+    expect(getColumnWidths()).toEqual([40, 83, 542, 102, 32]);
 
     await contains(".dropdown-item input:eq(2)").click();
-    expect(getColumnWidths()).toEqual([40, 81, 89, 102, 455, 32]);
+    expect(getColumnWidths()).toEqual([40, 83, 89, 102, 453, 32]);
 
     await contains(".dropdown-item input:eq(1)").click();
-    expect(getColumnWidths()).toEqual([40, 81, 89, 103, 140, 315, 32]);
+    expect(getColumnWidths()).toEqual([40, 83, 89, 103, 145, 308, 32]);
 });
 
 test(`freeze widths: x2many, add first record`, async () => {
@@ -1275,16 +1329,16 @@ test(`freeze widths: x2many, toggle optional field`, async () => {
             </form>`,
     });
 
-    expect(getColumnWidths()).toEqual([92, 644, 32]);
+    expect(getColumnWidths()).toEqual([94, 642, 32]);
 
     // create a record to store the current widths, but discard it directly to keep
     // the list empty (otherwise, the browser automatically computes the optimal widths)
     await contains(".o_field_x2many_list_row_add a").click();
-    expect(getColumnWidths()).toEqual([92, 644, 32]);
+    expect(getColumnWidths()).toEqual([94, 642, 32]);
 
     await contains(".o_optional_columns_dropdown_toggle").click();
     await contains(".dropdown-item input").click();
-    expect(getColumnWidths()).toEqual([92, 563, 80, 32]);
+    expect(getColumnWidths()).toEqual([94, 561, 80, 32]);
 });
 
 // manually resize columns
