@@ -31,6 +31,7 @@
 # Hed Shefer <hed@laylinetech.com>, 2025
 # Martin Trigaux, 2025
 # Ha Ketem <haketem@gmail.com>, 2025
+# Eyal arkush, 2025
 # or balmas, 2025
 # 
 msgid ""
@@ -798,7 +799,7 @@ msgstr ""
 #. module: mail
 #: model:ir.model,name:mail.model_mail_activity_plan
 msgid "Activity Plan"
-msgstr ""
+msgstr "תוכנית פעילות"
 
 #. module: mail
 #: model:ir.actions.act_window,name:mail.mail_activity_plan_action
@@ -864,7 +865,7 @@ msgstr ""
 #. module: mail
 #: model:ir.model,name:mail.model_mail_activity_schedule
 msgid "Activity schedule plan Wizard"
-msgstr ""
+msgstr "אשף תכנון פעילויות "
 
 #. module: mail
 #. odoo-javascript
@@ -3300,7 +3301,7 @@ msgstr "תאריך יעד "
 #. odoo-javascript
 #: code:addons/mail/static/src/core/web/activity.xml:0
 msgid "Due in"
-msgstr ""
+msgstr "מתוזמן ל"
 
 #. module: mail
 #. odoo-javascript
@@ -9591,7 +9592,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/mail/models/fetchmail.py:0
 msgid "The server \"%s\" cannot be used because it is archived."
-msgstr ""
+msgstr "השרת \"%s\" לא ניתן לשימוש היות והוא בארכיון."
 
 #. module: mail
 #. odoo-javascript
@@ -11466,7 +11467,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/mail/static/src/discuss/gif_picker/common/gif_picker.xml:0
 msgid "list"
-msgstr ""
+msgstr "רשימה"
 
 #. module: mail
 #. odoo-javascript

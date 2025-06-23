@@ -24,20 +24,19 @@
 # Hed Shefer <hed@laylinetech.com>, 2024
 # Uri Segman, 2024
 # Camille Dantinne <cmd@odoo.com>, 2024
-# Mendi Soudry, 2024
 # Yoram Lavi, 2024
 # Jonathan Spier, 2025
 # Lilach Gilliam <lilach.gilliam@gmail.com>, 2025
 # tomerlayline, 2025
-# ZVI BLONDER <ZVIBLONDER@gmail.com>, 2025
 # דודי מלכה <Dudimalka6@gmail.com>, 2025
+# ZVI BLONDER <ZVIBLONDER@gmail.com>, 2025
 # or balmas, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-07 20:37+0000\n"
+"POT-Creation-Date: 2025-06-13 18:37+0000\n"
 "PO-Revision-Date: 2024-09-25 09:41+0000\n"
 "Last-Translator: or balmas, 2025\n"
 "Language-Team: Hebrew (https://app.transifex.com/odoo/teams/41243/he/)\n"
@@ -669,6 +668,11 @@ msgstr "<span> אזהרה: יתכן והזמנה זו היא שכפול של </s
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
+msgid "<strong class=\"d-block mt-3\">Shipping Address</strong>"
+msgstr "<strong class=\"d-block mt-3\">כתובת אספקה</strong>"
+
+#. module: sale
+#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_portal_content
 msgid "<strong class=\"mr16\">Subtotal</strong>"
 msgstr "<strong class=\"mr16\">סכום ביניים</strong>"
@@ -687,11 +691,6 @@ msgstr "<strong>הערת סוג תנועה:</strong>"
 #: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
 msgid "<strong>Salesperson</strong>"
 msgstr "<strong>איש מכירות</strong>"
-
-#. module: sale
-#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
-msgid "<strong>Shipping Address</strong>"
-msgstr "<strong>כתובת למשלוח</strong>"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
@@ -1161,6 +1160,10 @@ msgid ""
 "purchase amount, period). Rewards can be discounts (% or amount) or free "
 "products."
 msgstr ""
+"הגדל את המכירות שלך באמצעות מגוון תוכניות: קופונים, מבצעים, כרטיסי מתנה "
+"ותוכנית נאמנות. ניתן להגדיר תנאים ספציפיים (מוצרים, לקוחות, סכום רכישה "
+"מינימלי, תקופת זמן). התגמולים יכולים להיות הנחות (באחוזים או סכום קבוע) או "
+"מוצרים חינמיים."
 
 #. module: sale
 #. odoo-javascript
@@ -2053,6 +2056,11 @@ msgstr "חתימה אלקטרונית"
 #: model:ir.model.fields,field_description:sale.field_sale_payment_provider_onboarding_wizard__paypal_email_account
 msgid "Email"
 msgstr "דוא\"ל"
+
+#. module: sale
+#: model:ir.model,name:sale.model_mail_compose_message
+msgid "Email composition wizard"
+msgstr "אשף יצירת דוא\"ל"
 
 #. module: sale
 #: model:ir.model.fields,help:sale.field_res_config_settings__invoice_mail_template_id
@@ -4174,6 +4182,11 @@ msgid "Salespersons"
 msgstr "אנשי מכירות"
 
 #. module: sale
+#: model:ir.model,name:sale.model_mail_scheduled_message
+msgid "Scheduled Message"
+msgstr ""
+
+#. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_sales_order_filter
 #: model_terms:ir.ui.view,arch_db:sale.view_sales_order_line_filter
 msgid "Search Sales Order"
@@ -5027,6 +5040,11 @@ msgid "Transactions"
 msgstr "עסקאות"
 
 #. module: sale
+#: model:ir.model.fields,field_description:sale.field_sale_order_line__translated_product_name
+msgid "Translated Product Name"
+msgstr ""
+
+#. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order__type_name
 msgid "Type Name"
 msgstr "סוג שם"
@@ -5208,12 +5226,6 @@ msgstr "וריאנט מתצוגת רשת"
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_portal_template
 msgid "View Details"
 msgstr "צפה בפרטים"
-
-#. module: sale
-#. odoo-python
-#: code:addons/sale/models/sale_order.py:0
-msgid "View Order"
-msgstr "צפיה בהזמנה"
 
 #. module: sale
 #. odoo-python

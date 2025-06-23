@@ -1835,7 +1835,7 @@ class BaseModel(metaclass=MetaModel):
                 continue
             try:
                 domains.append([(field_name, operator, field.convert_to_write(value, self))])
-            except ValueError:
+            except (ValueError, TypeError):
                 pass  # ignore that case if the value doesn't match the field type
 
         return aggregator(domains)
@@ -5399,7 +5399,7 @@ class BaseModel(metaclass=MetaModel):
             if fname not in self or self._fields[fname].type != 'properties':
                 continue
             field_converter = self._fields[fname].convert_to_cache
-            to_write[fname] = dict(self[fname], **field_converter(values.pop(fname), self))
+            to_write[fname] = dict(self[fname] or {}, **field_converter(values.pop(fname), self))
 
         self.write(values)
         if to_write:

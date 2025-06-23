@@ -639,7 +639,7 @@ msgstr "カラーブロック"
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_masonry_block_reversed_template
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_masonry_block_texts_image_texts_template
 msgid "A great title"
-msgstr "素晴らしいタイトル"
+msgstr "魅力的なタイトル"
 
 #. module: mass_mailing
 #: model:ir.model.constraint,message:mass_mailing.constraint_mailing_subscription_unique_contact_list
@@ -655,12 +655,12 @@ msgstr "以下のサンプル:"
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_showcase
 msgid "A short description of this great feature."
-msgstr "この優れた特徴の簡単な説明。"
+msgstr "この優れた機能の簡単な説明です。"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_features
 msgid "A small explanation of this great feature, in clear words."
-msgstr "この素晴らしい特徴を簡単な言葉で説明しましょう。"
+msgstr "この優れた機能について、わかりやすく簡潔に説明します。"
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_text_image
@@ -2002,7 +2002,7 @@ msgstr "メールマーケティング"
 #: code:addons/mass_mailing/models/ir_mail_server.py:0
 msgid ""
 "Email Marketing uses it as its default mail server to send mass mailings"
-msgstr "Eメールマーケティングでは、デフォルトのメールサーバとして使用し、一括メールを送信します。"
+msgstr "メールマーケティングでは、デフォルトのメールサーバとして使用し、一括メールを送信します。"
 
 #. module: mass_mailing
 #: model:ir.model,name:mass_mailing.model_mail_thread
@@ -2449,7 +2449,7 @@ msgstr "チェックした場合は、一部のメッセージに配信エラー
 msgid ""
 "If set, a mass mailing will be created so that you can track its results in "
 "the Email Marketing app."
-msgstr "設定すると、Eメールマーケティングアプリでその結果を追跡できるように、一括メールが作成されます。"
+msgstr "設定すると、メールマーケティングアプリでその結果を追跡できるように、一括メールが作成されます。"
 
 #. module: mass_mailing
 #: model:ir.model.fields,help:mass_mailing.field_mailing_contact__is_blacklisted
@@ -2694,7 +2694,7 @@ msgstr "左テキスト"
 #. odoo-javascript
 #: code:addons/mass_mailing/static/src/js/tours/mass_mailing_tour.js:0
 msgid "Let's try the Email Marketing app."
-msgstr "Eメールマーケティングアプリを試してみましょう"
+msgstr "メールマーケティングアプリを試してみましょう"
 
 #. module: mass_mailing
 #: model:ir.model,name:mass_mailing.model_link_tracker

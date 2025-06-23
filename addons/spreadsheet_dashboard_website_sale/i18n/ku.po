@@ -117,7 +117,7 @@ msgstr "بەرهەمەکان"
 #: code:addons/spreadsheet_dashboard_website_sale/data/files/ecommerce_dashboard.json:0
 #: code:addons/spreadsheet_dashboard_website_sale/data/files/ecommerce_sample_dashboard.json:0
 msgid "Revenue"
-msgstr ""
+msgstr "داهات"
 
 #. module: spreadsheet_dashboard_website_sale
 #. odoo-javascript
@@ -151,7 +151,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/spreadsheet_dashboard_website_sale/data/files/ecommerce_dashboard.json:0
 msgid "Website"
-msgstr ""
+msgstr "ماڵپەڕ"
 
 #. module: spreadsheet_dashboard_website_sale
 #: model:spreadsheet.dashboard,name:spreadsheet_dashboard_website_sale.spreadsheet_dashboard_ecommerce

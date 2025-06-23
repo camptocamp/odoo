@@ -3,16 +3,16 @@
 # 	* website_slides
 # 
 # Translators:
-# Larissa Manderfeld, 2025
 # Wil Odoo, 2025
+# Larissa Manderfeld, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 20:47+0000\n"
+"POT-Creation-Date: 2025-05-30 18:36+0000\n"
 "PO-Revision-Date: 2024-09-25 09:42+0000\n"
-"Last-Translator: Wil Odoo, 2025\n"
+"Last-Translator: Larissa Manderfeld, 2025\n"
 "Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3062,6 +3062,11 @@ msgstr ""
 " a 25 MB"
 
 #. module: website_slides
+#: model:ir.model,name:website_slides.model_ir_binary
+msgid "File streaming helper model for controllers"
+msgstr "Modelo de ayuda para la transmisión de archivos para controladores"
+
+#. module: website_slides
 #: model_terms:ir.ui.view,arch_db:website_slides.course_slides_cards
 msgid "Filter &amp; order"
 msgstr "Filtrar y ordenar"
@@ -5109,6 +5114,12 @@ msgid "Reviews"
 msgstr "Reseñas"
 
 #. module: website_slides
+#. odoo-javascript
+#: code:addons/website_slides/static/src/chatter/frontend/portal_chatter_patch.js:0
+msgid "Reviews (%s)"
+msgstr "Reseñas (%s)"
+
+#. module: website_slides
 #: model:ir.model.fields,field_description:website_slides.field_slide_slide__quiz_fourth_attempt_reward
 msgid "Reward: every attempt after the third try"
 msgstr "Recompensa: cada intento después del tercero"
@@ -7061,7 +7072,7 @@ msgstr "para públicos."
 #. odoo-javascript
 #: code:addons/website_slides/static/src/js/public/components/slide_share_dialog/email_sharing_input.xml:0
 msgid "friend1@email.com, friend2@email.com"
-msgstr "amigo1@email.com, amigo2@email.com"
+msgstr "amigo1@correo.com, amigo2@correo.com"
 
 #. module: website_slides
 #. odoo-javascript
@@ -7216,7 +7227,7 @@ msgstr "xp"
 #. module: website_slides
 #: model_terms:ir.ui.view,arch_db:website_slides.slide_social_email
 msgid "your-friend@domain.com, your-friend2@domain.com"
-msgstr "your-friend@domain.com, your-friend2@domain.com"
+msgstr "su-amigo@dominio.com, su-amigo2@dominio.com"
 
 #. module: website_slides
 #: model:mail.template,subject:website_slides.mail_template_channel_shared

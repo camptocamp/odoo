@@ -31,13 +31,13 @@ msgstr "%(display_name)s (%(load_capacity)s)"
 #. odoo-python
 #: code:addons/stock_fleet/models/fleet_vehicle_model.py:0
 msgid "%(volume_capacity)s %(volume_uom)s"
-msgstr ""
+msgstr "%(volume_capacity)s %(volume_uom)s"
 
 #. module: stock_fleet
 #. odoo-python
 #: code:addons/stock_fleet/models/fleet_vehicle_model.py:0
 msgid "%(weight_capacity)s %(weight_uom)s"
-msgstr ""
+msgstr "%(weight_capacity)s %(weight_uom)s"
 
 #. module: stock_fleet
 #: model_terms:ir.ui.view,arch_db:stock_fleet.report_picking_batch_inherit
@@ -58,7 +58,7 @@ msgstr ""
 #: model:ir.model,name:stock_fleet.model_stock_picking_batch
 #: model_terms:ir.ui.view,arch_db:stock_fleet.stock_picking_batch_pivot
 msgid "Batch Transfer"
-msgstr ""
+msgstr "Paketni prenos"
 
 #. module: stock_fleet
 #: model_terms:ir.ui.view,arch_db:stock_fleet.stock_picking_type_kanban_inherit_stock_fleet
@@ -119,7 +119,7 @@ msgstr ""
 #. module: stock_fleet
 #: model:ir.model.fields,field_description:stock_fleet.field_fleet_vehicle_model_category__volume_capacity
 msgid "Max Volume"
-msgstr ""
+msgstr "Največja glasnost"
 
 #. module: stock_fleet
 #: model:ir.model.fields,field_description:stock_fleet.field_stock_picking_batch__vehicle_volume_capacity

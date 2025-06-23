@@ -142,7 +142,7 @@ msgstr ""
 #. module: website_sale_slides
 #: model_terms:ir.ui.view,arch_db:website_sale_slides.course_buy_course_button
 msgid "Log in"
-msgstr ""
+msgstr "چوونەژوورەوە"
 
 #. module: website_sale_slides
 #: model_terms:ir.actions.act_window,help:website_sale_slides.sale_report_action_slides
@@ -194,7 +194,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website_sale_slides.slide_channel_view_form
 #: model_terms:ir.ui.view,arch_db:website_sale_slides.slide_channel_view_kanban
 msgid "Sales"
-msgstr ""
+msgstr "فرۆشتنەکان"
 
 #. module: website_sale_slides
 #: model:ir.model,name:website_sale_slides.model_sale_order
@@ -216,7 +216,7 @@ msgstr ""
 #. module: website_sale_slides
 #: model_terms:ir.ui.view,arch_db:website_sale_slides.course_buy_course_button
 msgid "Sign up"
-msgstr ""
+msgstr "ناوت تۆمار بکە"
 
 #. module: website_sale_slides
 #: model_terms:ir.ui.view,arch_db:website_sale_slides.course_purchased_confirmation_message
