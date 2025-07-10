@@ -905,8 +905,10 @@ class WebsiteSale(payment_portal.PaymentPortal):
             return values
 
         values['cart_quantity'] = order.cart_quantity
+
+        # Values for express checkout
         values['minor_amount'] = payment_utils.to_minor_currency_units(
-            order.amount_total, order.currency_id
+            order._get_amount_total_excluding_delivery(), order.currency_id
         )
         values['amount'] = order.amount_total
 
@@ -1429,7 +1431,7 @@ class WebsiteSale(payment_portal.PaymentPortal):
             name_change = (
                 'name' in address_values
                 and partner_sudo.name
-                and address_values['name'] != partner_sudo.name
+                and address_values['name'] != partner_sudo.name.strip()
             )
             email_change = (
                 'email' in address_values
@@ -1825,8 +1827,9 @@ class WebsiteSale(payment_portal.PaymentPortal):
         )
         payment_form_values.update({
             'payment_access_token': payment_form_values.pop('access_token'),  # Rename the key.
+            # Do not include delivery related lines
             'minor_amount': payment_utils.to_minor_currency_units(
-                order.amount_total, order.currency_id
+                order._get_amount_total_excluding_delivery(), order.currency_id
             ),
             'merchant_name': request.website.name,
             'transaction_route': f'/shop/payment/transaction/{order.id}',
@@ -1834,8 +1837,9 @@ class WebsiteSale(payment_portal.PaymentPortal):
             'landing_route': '/shop/payment/validate',
             'payment_method_unknown_id': request.env.ref('payment.payment_method_unknown').id,
             'shipping_info_required': order._has_deliverable_products(),
+            # Todo: remove in master
             'delivery_amount': payment_utils.to_minor_currency_units(
-                order.order_line.filtered(lambda l: l.is_delivery).price_total, order.currency_id
+                order.amount_total - order._compute_amount_total_without_delivery(), order.currency_id
             ),
             'shipping_address_update_route': self._express_checkout_delivery_route,
         })
@@ -1845,6 +1849,7 @@ class WebsiteSale(payment_portal.PaymentPortal):
 
     def _get_shop_payment_values(self, order, **kwargs):
         checkout_page_values = {
+            'sale_order': order,
             'website_sale_order': order,
             'errors': self._get_shop_payment_errors(order),
             'partner': order.partner_invoice_id,

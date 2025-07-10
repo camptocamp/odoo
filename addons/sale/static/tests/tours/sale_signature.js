@@ -1,5 +1,6 @@
 /** @odoo-module **/
 
+import { waitUntil } from "@odoo/hoot-dom";
 import { registry } from "@web/core/registry";
 import { redirect } from "@web/core/utils/urls";
 
@@ -11,6 +12,7 @@ registry.category("web_tour.tours").add('sale_signature', {
         content: "open the test SO",
         trigger: 'a:contains(/^test SO$/)',
         run: "click",
+        expectUnloadPage: true,
     },
     {
         content: "click sign",
@@ -23,6 +25,18 @@ registry.category("web_tour.tours").add('sale_signature', {
     },
     {
         trigger: ".modal .o_web_sign_name_and_signature input:value(Joel Willis)"
+    },
+    {
+        trigger: ".modal canvas.o_web_sign_signature",
+        async run(helpers) {
+            await waitUntil(() => {
+                const canvas = helpers.anchor;
+                const context = canvas.getContext("2d");
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = new Uint32Array(imageData.data.buffer);
+                return pixels.some((pixel) => pixel !== 0);
+            });
+        },
     },
     {
         content: "click select style",
@@ -38,6 +52,7 @@ registry.category("web_tour.tours").add('sale_signature', {
         content: "click submit",
         trigger: '.modal .o_portal_sign_submit:enabled',
         run: "click",
+        expectUnloadPage: true,
     },
     {
         content: "check it's confirmed",
@@ -48,6 +63,7 @@ registry.category("web_tour.tours").add('sale_signature', {
         run: function () {
             redirect("/odoo");
         },  // Avoid race condition at the end of the tour by returning to the home page.
+        expectUnloadPage: true,
     },
     {
         trigger: 'nav',

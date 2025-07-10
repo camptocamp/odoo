@@ -5435,3 +5435,75 @@ class TestAccountMoveReconcile(AccountTestInvoicingCommon):
             self.assertEqual(payment2.state, 'in_process')
             payment1.move_id.line_ids.filtered(lambda l: l.account_id.account_type not in ('asset_receivable', 'liability_payable')).remove_move_reconcile()
             self.assertEqual(payment1.state, 'in_process')
+
+    def test_modify_all_reconciled_lines(self):
+        """Allow changing some fields on all the lines of a reconciliation batch at the same time."""
+        moves = self.env['account.move'].create([{
+            'move_type': 'entry',
+            'line_ids': [
+                Command.create({
+                    'debit': 0.0,
+                    'credit': 1000.0,
+                    'account_id': self.company_data['default_account_revenue'].id,
+                }),
+                Command.create({
+                    'debit': 1000.0,
+                    'credit': 0.0,
+                    'account_id': self.company_data['default_account_receivable'].id,
+                }),
+            ]
+        }, {
+            'move_type': 'entry',
+            'line_ids': [
+                Command.create({
+                    'debit': 0.0,
+                    'credit': 1000.0,
+                    'account_id': self.company_data['default_account_receivable'].id,
+                }),
+                Command.create({
+                    'debit': 1000.0,
+                    'credit': 0.0,
+                    'account_id': self.company_data['default_account_revenue'].id,
+                }),
+            ]
+        }])
+        moves.action_post()
+        receivable_lines = moves.line_ids.filtered(lambda l: l.account_id == self.company_data['default_account_receivable'])
+
+        receivable_lines.reconcile()
+
+        # Can change the account
+        receivable_lines.account_id = self.company_data['default_account_payable']
+        self.assertEqual(receivable_lines.mapped('reconciled'), [True, True])
+
+        # But can't change if not all the lines are changed at the same time
+        with self.assertRaisesRegex(UserError, "You can just change some non legal fields"):
+            receivable_lines[0].account_id = self.company_data['default_account_receivable']
+
+        # Can change the partner
+        receivable_lines.partner_id = self.partner_a
+        self.assertEqual(receivable_lines.mapped('reconciled'), [True, True])
+
+        # Cannot change other fields
+        with self.assertRaisesRegex(UserError, "You can just change some non legal fields"):
+            receivable_lines.currency_id = self.other_currency
+
+    def test_reconciliation_currency_exchange_matching_number(self):
+        """
+        Test that reconciliation assigns the same matching number to
+        invoice, payment, and currency exchange lines when those lines
+        are directly reconciled (in the case of an import, for instance).
+        """
+        currency_chf = self.env.ref('base.CHF')
+
+        account_receivable = self.company_data['default_account_receivable']
+        invoice_line = self.create_line_for_reconciliation(1000.0, 1000.0, currency_chf, '2025-01-01', account_receivable)
+        payment_line = self.create_line_for_reconciliation(-500.0, -1000.0, currency_chf, '2025-02-01')
+        currency_exchange_line = self.create_line_for_reconciliation(-500.0, -0.0, currency_chf, '2025-02-01', account_receivable)
+
+        lines = invoice_line + payment_line + currency_exchange_line
+        lines.with_context(no_exchange_difference=True, no_exchange_difference_no_recursive=True).reconcile()
+
+        self.assertEqual(invoice_line.matching_number, payment_line.matching_number)
+        self.assertEqual(payment_line.matching_number, currency_exchange_line.matching_number)
+        self.assertEqual(currency_exchange_line.amount_residual, 0)

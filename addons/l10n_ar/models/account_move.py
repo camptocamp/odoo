@@ -379,6 +379,8 @@ class AccountMove(models.Model):
         base_lines, _tax_lines = self._get_rounded_base_and_tax_lines()
 
         def grouping_function(base_line, tax_data):
+            if not tax_data:
+                return None
             tax_group = tax_data['tax'].tax_group_id
             skip = False
             name = None
@@ -401,7 +403,6 @@ class AccountMove(models.Model):
             if (
                 grouping_key
                 and not grouping_key['skip']
-                and not self.currency_id.is_zero(values['tax_amount_currency'])
             ):
                 results.append({
                     'name': grouping_key['name'],

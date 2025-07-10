@@ -13,20 +13,23 @@ export function clickMenuButton() {
         run: "click",
     };
 }
-export function clickMenuOption(name) {
-    return [clickMenuButton(), clickMenuDropdownOption(name)];
+export function clickMenuOption(name, options) {
+    return [clickMenuButton(), clickMenuDropdownOption(name, options)];
 }
-export function clickMenuDropdownOption(name) {
+export function clickMenuDropdownOption(name, { expectUnloadPage = false } = {}) {
     return {
         content: `click on something in the burger menu`,
         trigger: `span.dropdown-item:contains(${name})`,
         run: "click",
+        expectUnloadPage,
     };
 }
 export function isCashMoveButtonHidden() {
     return [
+        clickMenuButton(),
         {
-            trigger: ".pos-topheader:not(:contains(Cash In/Out))",
+            trigger: "span.dropdown-item:not(:contains(Cash In/Out))",
+            run: () => {},
         },
     ];
 }
@@ -57,11 +60,12 @@ export function startPoS() {
         },
     ];
 }
-export function clickBtn(name) {
+export function clickBtn(name, { expectUnloadPage = false } = {}) {
     return {
         content: `Click on ${name}`,
         trigger: `body button:contains(${name})`,
         run: "click",
+        expectUnloadPage,
     };
 }
 export function fillTextArea(target, value) {
@@ -101,9 +105,7 @@ export function freezeDateTime(millis) {
         {
             trigger: "body",
             run: () => {
-                DateTime.now = () => {
-                    return DateTime.fromMillis(millis);
-                };
+                DateTime.now = () => DateTime.fromMillis(millis);
             },
         },
     ];

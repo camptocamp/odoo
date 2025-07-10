@@ -7,38 +7,22 @@
 # Martin Trigaux, 2024
 # pezzin <christian.pezzin@gmail.com>, 2024
 # Wil Odoo, 2025
-# Marianna Ciofani, 2025
 # Sergio Zanchetta <primes2h@gmail.com>, 2025
+# Marianna Ciofani, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-07 20:36+0000\n"
+"POT-Creation-Date: 2025-06-27 18:38+0000\n"
 "PO-Revision-Date: 2024-09-25 09:41+0000\n"
-"Last-Translator: Sergio Zanchetta <primes2h@gmail.com>, 2025\n"
+"Last-Translator: Marianna Ciofani, 2025\n"
 "Language-Team: Italian (https://app.transifex.com/odoo/teams/41243/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Language: it\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
-
-#. module: account
-#. odoo-python
-#: code:addons/account/models/account_move.py:0
-msgid ""
-"\n"
-"\n"
-"The move (%(move)s) is not balanced.\n"
-"The total of debits equals %(debit_total)s and the total of credits equals %(credit_total)s.\n"
-"You might want to specify a default account on journal \"%(journal)s\" to automatically balance each move."
-msgstr ""
-"\n"
-"\n"
-"Il movimento (%(move)s) non è bilanciato.\n"
-"Il totale dei debiti è uguale a %(debit_total)s e il totale dei crediti è uguale a %(credit_total)s.\n"
-"Potresti voler specificare un conto di default sul registro \"%(journal)s\" per saldare automaticamente ogni movimento."
 
 #. module: account
 #: model:ir.model.fields,help:account.field_account_journal__type
@@ -218,6 +202,18 @@ msgstr "%(tag)s (%(country_code)s)"
 
 #. module: account
 #. odoo-python
+#: code:addons/account/models/account_tax.py:0
+msgid ""
+"%(tax_account)s (%(account_name)s) should be an account of type "
+"\"%(receivable)s\" or \"%(payable)s\" with both options "
+"\"%(allow_reconciliation)s\" and \"%(non_trade)s\" enabled."
+msgstr ""
+"%(tax_account)s (%(account_name)s) deve essere un conto di tipo "
+"\"%(receivable)s\" o \"%(payable)s\" con entrambe le opzioni "
+"\"%(allow_reconciliation)s\" e \"%(non_trade)s\" attive."
+
+#. module: account
+#. odoo-python
 #: code:addons/account/models/account_move.py:0
 msgid "%(tax_name)s (rounding)"
 msgstr "%(tax_name)s (arrotondamento)"
@@ -343,11 +339,6 @@ msgstr ""
 "    <br/>\n"
 "    --\n"
 "    <br/>"
-
-#. module: account
-#: model_terms:ir.ui.view,arch_db:account.view_partner_property_form
-msgid ". Please make sure that this is a wanted behavior."
-msgstr ". Assicurati che questo comportamento sia voluto."
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_move_form
@@ -592,6 +583,15 @@ msgid ""
 msgstr ""
 "<b>%(count)s#</b> Versamento di <b>%(amount)s</b> in scadenza il <b "
 "style='color: #704A66;'>%(date)s</b>"
+
+#. module: account
+#: model_terms:ir.ui.view,arch_db:account.view_partner_property_form
+msgid ""
+"<br/>\n"
+"                        <span>Please make sure that this is a wanted behavior.</span>"
+msgstr ""
+"<br/>\n"
+"                        <span>Assicurati che questo sia un comportamento desiderato.</span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_invoice_document
@@ -1304,6 +1304,15 @@ msgid "<span>New</span>"
 msgstr "<span>Nuovo</span>"
 
 #. module: account
+#: model_terms:ir.ui.view,arch_db:account.view_partner_property_form
+msgid ""
+"<span>One or more Bank Accounts set on this partner are also used by "
+"others:</span>"
+msgstr ""
+"<span>Uno o più conti bancari selezionati per questo partner sono già "
+"utilizzati da altri:</span>"
+
+#. module: account
 #: model_terms:ir.ui.view,arch_db:account.account_journal_dashboard_kanban_view
 msgid "<span>Operations</span>"
 msgstr "<span>Operazioni</span>"
@@ -1334,6 +1343,11 @@ msgstr "<span>Imposte 0%</span>"
 #: model_terms:ir.ui.view,arch_db:account.report_invoice_document
 msgid "<span>Taxes</span>"
 msgstr "<span>Imposte</span>"
+
+#. module: account
+#: model_terms:ir.ui.view,arch_db:account.view_partner_bank_form_inherit_account
+msgid "<span>The Bank Account could be a duplicate of</span>"
+msgstr "<span>Il conto bancario potrebbe essere un duplicato di</span>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_move_form
@@ -1372,6 +1386,11 @@ msgstr "<span>Vista</span>"
 #: model_terms:ir.ui.view,arch_db:account.view_move_form
 msgid "<span>Warning: this document might be a duplicate of</span>"
 msgstr "<span>Avviso: il documento può essere un duplicato di</span>"
+
+#. module: account
+#: model_terms:ir.ui.view,arch_db:account.report_invoice_document
+msgid "<strong class=\"d-block mt-3\">Shipping Address</strong>"
+msgstr "<strong class=\"d-block mt-3\">Indirizzo di spedizione</strong>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_invoice_document
@@ -1437,11 +1456,6 @@ msgstr "<strong>Data ricevuta</strong>"
 #: model_terms:ir.ui.view,arch_db:account.report_invoice_document
 msgid "<strong>Reference</strong>"
 msgstr "<strong>Riferimento</strong>"
-
-#. module: account
-#: model_terms:ir.ui.view,arch_db:account.report_invoice_document
-msgid "<strong>Shipping Address</strong>"
-msgstr "<strong>Indirizzo di spedizione</strong>"
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.report_invoice_document
@@ -2944,12 +2958,6 @@ msgstr ""
 "                lo stato patrimoniale e il conto economico (profitti e perdite)\n"
 "                I conti annuali di un'azienda forniscono un certo numero di informazioni\n"
 "                richieste dalla legislazione vigente."
-
-#. module: account
-#. odoo-python
-#: code:addons/account/models/account_move.py:0
-msgid "An error has occurred."
-msgstr "Si è verificato un errore."
 
 #. module: account
 #. odoo-python
@@ -5070,6 +5078,8 @@ msgid "Create Automatic Entries"
 msgstr "Creazione registrazioni automatiche"
 
 #. module: account
+#. odoo-python
+#: code:addons/account/models/chart_template.py:0
 #: model:account.reconcile.model,name:account.1_reconcile_bill
 msgid "Create Bill"
 msgstr "Crea fattura"
@@ -6818,6 +6828,14 @@ msgstr "Scadenza"
 #: model_terms:ir.ui.view,arch_db:account.view_payment_term_form
 msgid "Due Terms"
 msgstr "Termini di scadenza"
+
+#. module: account
+#: model:ir.model.fields,field_description:account.field_account_setup_bank_manual_config__duplicate_bank_partner_ids
+#: model:ir.model.fields,field_description:account.field_res_partner__duplicate_bank_partner_ids
+#: model:ir.model.fields,field_description:account.field_res_partner_bank__duplicate_bank_partner_ids
+#: model:ir.model.fields,field_description:account.field_res_users__duplicate_bank_partner_ids
+msgid "Duplicate Bank Partner"
+msgstr "Duplica partner banca"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_account_payment__duplicate_payment_ids
@@ -11380,13 +11398,6 @@ msgid "Once your invoice is ready, confirm it."
 msgstr "Una volta che la fattura è pronta, confermala."
 
 #. module: account
-#: model_terms:ir.ui.view,arch_db:account.view_partner_property_form
-msgid "One or more Bank Accounts set on this partner are also used by other"
-msgstr ""
-"Uno o più conti bancari selezionati per questo partner sono già utilizzati "
-"da altri"
-
-#. module: account
 #. odoo-python
 #: code:addons/account/models/account_move.py:0
 msgid "One or more invoices couldn't be processed."
@@ -11921,7 +11932,7 @@ msgstr "Avviso crediti partner"
 #. module: account
 #: model:ir.actions.act_window,name:account.action_account_moves_ledger_partner
 msgid "Partner Ledger"
-msgstr "Estratto conto cliente - fornitore"
+msgstr "Partitario clienti/fornitori"
 
 #. module: account
 #: model:ir.model.fields,field_description:account.field_res_partner__use_partner_credit_limit
@@ -11982,7 +11993,6 @@ msgstr "I partner dovrebbero avere un indirizzo e-mail."
 #: code:addons/account/models/partner.py:0
 #: model:ir.model.fields,field_description:account.field_account_report__filter_partner
 #: model_terms:ir.ui.view,arch_db:account.view_message_tree_audit_log_search
-#: model_terms:ir.ui.view,arch_db:account.view_partner_property_form
 msgid "Partners"
 msgstr "Partner"
 
@@ -11998,6 +12008,12 @@ msgid "Partners that are used in hashed entries cannot be merged."
 msgstr ""
 "I partner utilizzati in registrazioni con il cancelletto non possono essere "
 "abbinati."
+
+#. module: account
+#: model_terms:ir.ui.view,arch_db:account.view_partner_bank_form_inherit_account
+#: model_terms:ir.ui.view,arch_db:account.view_partner_property_form
+msgid "Partners with same bank"
+msgstr "Partner con stessa banca"
 
 #. module: account
 #. odoo-python
@@ -15505,6 +15521,15 @@ msgstr ""
 " non è implementata"
 
 #. module: account
+#. odoo-python
+#: code:addons/account/models/partner.py:0
+msgid ""
+"The commercial partner has been updated for all related accounting entries."
+msgstr ""
+"Il partner commerciale è stato aggiornato per tutte le registrazioni "
+"contabili correlate."
+
+#. module: account
 #: model:ir.model.fields,help:account.field_account_tax_repartition_line__company_id
 msgid "The company this distribution line belongs to."
 msgstr "L'azienda a cui appartiene la riga di ripartizione."
@@ -15725,6 +15750,16 @@ msgstr "Vengono generate le seguenti registrazioni contabili"
 #: code:addons/account/models/account_account.py:0
 msgid "The following accounts must be assigned to at least one company:"
 msgstr "È necessario assegnare i seguenti conti ad almeno un'azienda:"
+
+#. module: account
+#. odoo-python
+#: code:addons/account/models/account_move.py:0
+msgid ""
+"The following entries are unbalanced:\n"
+"\n"
+msgstr ""
+"Le seguenti registrazioni non sono bilanciate:\n"
+"\n"
 
 #. module: account
 #. odoo-python
@@ -16920,8 +16955,8 @@ msgid ""
 "To keep the audit trail, you can not delete journal entries once they have been posted.\n"
 "Instead, you can cancel the journal entry."
 msgstr ""
-"Per mantenere la traccia di audit non devi eliminare le registazioni contabili una volta che sono state registrate.\n"
-"È possibile annullare una registazione."
+"Per mantenere la traccia di audit non devi eliminare le registrazioni contabili una volta che sono state registrate.\n"
+"È possibile annullare una registrazione."
 
 #. module: account
 #: model_terms:ir.ui.view,arch_db:account.view_account_invoice_filter
@@ -18334,10 +18369,12 @@ msgstr ""
 #. module: account
 #. odoo-python
 #: code:addons/account/wizard/account_payment_register.py:0
-msgid "You can't create payments for entries belonging to different branches."
+msgid ""
+"You can't create payments for entries belonging to different branches "
+"without access to parent company."
 msgstr ""
-"Impossibile creare pagamenti per registrazioni che appartengono a filiali "
-"diverse."
+"Non è possibile creare pagamenti per registrazioni che appartengono a "
+"diverse filiali senza accedere all'azienda principale."
 
 #. module: account
 #. odoo-python
@@ -18825,6 +18862,16 @@ msgid ""
 msgstr ""
 "Impossibile impostare una valuta su questo conto, possiede già registrazioni"
 " contabili con valuta estera diversa."
+
+#. module: account
+#. odoo-python
+#: code:addons/account/models/partner.py:0
+msgid ""
+"You cannot set a partner as an invoicing address of another if they have a "
+"different %(vat_label)s."
+msgstr ""
+"Non è possibile configurare un partner come indirizzo di fatturazione di un "
+"altro se hanno una %(vat_label)s differente."
 
 #. module: account
 #. odoo-python

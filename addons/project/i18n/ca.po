@@ -33,16 +33,16 @@
 # Josep Anton Belchi, 2024
 # Harcogourmet, 2024
 # Wil Odoo, 2025
-# Santiago Payà <santiagopim@gmail.com>, 2025
 # Noemi Pla, 2025
+# Santiago Payà <santiagopim@gmail.com>, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 20:46+0000\n"
+"POT-Creation-Date: 2025-06-27 18:38+0000\n"
 "PO-Revision-Date: 2024-09-25 09:41+0000\n"
-"Last-Translator: Noemi Pla, 2025\n"
+"Last-Translator: Santiago Payà <santiagopim@gmail.com>, 2025\n"
 "Language-Team: Catalan (https://app.transifex.com/odoo/teams/41243/ca/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -138,7 +138,6 @@ msgstr "# Valoracions"
 #. module: project
 #. odoo-javascript
 #: code:addons/project/static/src/views/burndown_chart/burndown_chart_model.js:0
-#: model:ir.model.fields,field_description:project.field_project_milestone__task_count
 #: model:ir.model.fields,field_description:project.field_report_project_task_user__nbr
 msgid "# of Tasks"
 msgstr "# de tasques"
@@ -478,6 +477,19 @@ msgid ""
 "</div>\n"
 "        "
 msgstr ""
+"<div>\n"
+"    Benvolgut <t t-out=\"object.partner_id.name or 'customer'\">Brandon Freeman</t>,<br/><br/>\n"
+"    Gràcies per posar-se en contacte amb nosaltres. Agraïm el seu interès en els nostres productes/serveis.<br/>\n"
+"    El nostre equip està revisant la seva sol·licitud i respondrà al seu correu al més aviat possible.<br/>\n"
+"    Si té més preguntes o desitja consultar alguna cosa, si us plau, no dubti a contactar amb nosaltres. Estem aquí per ajudar-lo.<br/><br/>\n"
+"    Gràcies per la seva paciència.<br/>\n"
+"    Salutacions cordials,\n"
+"    <t t-if=\"user.signature\" data-o-mail-quote-container=\"1\">\n"
+"        <br/>\n"
+"        <t t-out=\"user.signature or ''\" data-o-mail-quote=\"1\">--<br data-o-mail-quote=\"1\"/>Mitchell Admin</t>\n"
+"    </t>\n"
+"</div>\n"
+"        "
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.view_task_form2
@@ -1181,7 +1193,7 @@ msgstr "Avaluació Mitjana (%)"
 #. module: project
 #: model:ir.model.fields,field_description:project.field_report_project_task_user__rating_avg
 msgid "Average Rating (1-5)"
-msgstr ""
+msgstr "Valoració mitjana (1-5)"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.view_project_kanban
@@ -1346,7 +1358,7 @@ msgstr "Tasques tancades"
 #: model:ir.model.fields,field_description:project.field_project_task__is_closed
 #: model:ir.model.fields,field_description:project.field_report_project_task_user__is_closed
 msgid "Closed state"
-msgstr ""
+msgstr "Estat tancat"
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_task_burndown_chart_report__is_closed__closed
@@ -2654,7 +2666,7 @@ msgstr "Últim mes"
 #. module: project
 #: model:ir.model.fields,field_description:project.field_report_project_task_user__rating_last_value
 msgid "Last Rating (1-5)"
-msgstr ""
+msgstr "Última valoració (1-5)"
 
 #. module: project
 #. odoo-python
@@ -3496,7 +3508,7 @@ msgid ""
 "Portal users will be removed from the followers of the project and its "
 "tasks."
 msgstr ""
-"Els usuaris portuaris seran retirats dels seguidors del projecte i de les "
+"Els usuaris del portal seran retirats dels seguidors del projecte i de les "
 "seves tasques."
 
 #. module: project
@@ -4548,7 +4560,7 @@ msgstr "Tasca cancelada"
 #. module: project
 #: model:mail.message.subtype,name:project.mt_task_canceled
 msgid "Task Cancelled"
-msgstr ""
+msgstr "Tasca cancel·lada"
 
 #. module: project
 #. odoo-python

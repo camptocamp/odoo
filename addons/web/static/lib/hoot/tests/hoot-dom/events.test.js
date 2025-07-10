@@ -2,6 +2,8 @@
 
 import { after, describe, expect, getFixture, test } from "@odoo/hoot";
 import {
+    advanceTime,
+    animationFrame,
     clear,
     click,
     dblclick,
@@ -26,7 +28,7 @@ import {
     setInputRange,
     uncheck,
 } from "@odoo/hoot-dom";
-import { advanceTime, animationFrame, mockFetch, mockTouch, mockUserAgent } from "@odoo/hoot-mock";
+import { mockFetch, mockTouch, mockUserAgent } from "@odoo/hoot-mock";
 import { Component, xml } from "@odoo/owl";
 import { EventList } from "@web/../lib/hoot-dom/helpers/events";
 import { mountForTest, parseUrl } from "../local_helpers";
@@ -375,6 +377,25 @@ describe(parseUrl(import.meta.url), () => {
         events = await click(interactiveButton);
         expect(events.get("click").target).toBe(container.parentElement);
         expect("button:interactive").not.toHaveCount();
+    });
+
+    test("click on inert element", async () => {
+        await mountForTest(/* xml */ `
+            <div class="container">
+                <button class="btn">Button</button>
+                <iframe inert="" srcdoc="&lt;button&gt;iframe button&lt;/button&gt;" />
+            </div>
+        `);
+
+        let events = await click(".btn");
+        expect(events.get("click")).not.toBe(null);
+
+        queryOne`.btn`.setAttribute("inert", "");
+
+        events = await click(".btn");
+        expect(events.get("click").target).toBe(queryOne`.container`);
+
+        await expect(click(":iframe button")).rejects.toThrow();
     });
 
     test("click on common parent", async () => {
@@ -751,11 +772,7 @@ describe(parseUrl(import.meta.url), () => {
 
         for (const event of dragEvents) {
             expect(event.dataTransfer).toBe(dataTransfer, {
-                message: (_, r) => [
-                    r`drag event`,
-                    event.type,
-                    r`should share the same dataTransfer object`,
-                ],
+                message: `drag event "${event.type}" should share the same dataTransfer object`,
             });
         }
     });
@@ -787,13 +804,14 @@ describe(parseUrl(import.meta.url), () => {
         expect(dataTransfer.items).toHaveLength(2);
         expect(dataTransfer.types).toEqual(["text/plain", "text/html"]);
 
+        dataTransfer.setData("custom-data", "yes");
+
+        expect(dataTransfer.items).toHaveLength(3);
+        expect(dataTransfer.types).toEqual(["text/plain", "text/html", "custom-data"]);
+
         for (const event of dragEvents) {
             expect(event.dataTransfer).toBe(dataTransfer, {
-                message: (_, r) => [
-                    r`drag event`,
-                    event.type,
-                    r`should share the same dataTransfer object`,
-                ],
+                message: `drag event "${event.type}" should share the same dataTransfer object`,
             });
         }
     });

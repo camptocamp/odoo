@@ -9,15 +9,15 @@
 # Martin Trigaux, 2024
 # Fernanda Alvarez, 2024
 # Pedro M. Baeza <pedro.baeza@tecnativa.com>, 2025
-# Wil Odoo, 2025
 # Pilar Vargas, 2025
+# Wil Odoo, 2025
 # Larissa Manderfeld, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 20:46+0000\n"
+"POT-Creation-Date: 2025-06-27 18:38+0000\n"
 "PO-Revision-Date: 2024-09-25 09:42+0000\n"
 "Last-Translator: Larissa Manderfeld, 2025\n"
 "Language-Team: Spanish (https://app.transifex.com/odoo/teams/41243/es/)\n"
@@ -1958,6 +1958,16 @@ msgstr ""
 "                                <span class=\"h5-fs\">increíbles páginas</span>"
 
 #. module: website
+#: model_terms:ir.ui.view,arch_db:website.s_numbers_charts
+msgid "<span class=\"s_progress_bar_text small d-none\">25%</span>"
+msgstr "<span class=\"s_progress_bar_text small d-none\">25 %</span>"
+
+#. module: website
+#: model_terms:ir.ui.view,arch_db:website.s_numbers_charts
+msgid "<span class=\"s_progress_bar_text small d-none\">80%</span>"
+msgstr "<span class=\"s_progress_bar_text small d-none\">80 %</span>"
+
+#. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_progress_bar
 msgid "<span class=\"s_progress_bar_text small\">80%</span>"
 msgstr "<span class=\"s_progress_bar_text small\">80 %</span>"
@@ -3851,7 +3861,7 @@ msgid ""
 msgstr ""
 "llamada a la acción, botón, btn, acción, interacción, enlace, oferta, "
 "interés, cta, instrucciones, interactuar, activar, elementos, listas de "
-"verificación, entradas, secuencias, viñetas, puntos, lista, grupo, "
+"comprobación, entradas, secuencias, viñetas, puntos, lista, grupo, "
 "beneficios, funciones, ventajas"
 
 #. module: website
@@ -5272,7 +5282,7 @@ msgstr "Por defecto"
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.res_config_settings_view_form
 msgid "Default Access Rights"
-msgstr "Permiso de acceso por defecto"
+msgstr "Permisos de acceso por defecto"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.searchbar_input_snippet_options
@@ -9527,24 +9537,25 @@ msgstr "Iconos pequeños"
 #. module: website
 #: model:website.configurator.feature,name:website.feature_module_live_chat
 msgid "Live Chat"
-msgstr "Chat en vivo"
+msgstr "Chat en directo"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.res_config_settings_view_form
 msgid "Livechat"
-msgstr "Chat en vivo"
+msgstr "Chat en directo"
 
 #. module: website
 #. odoo-javascript
 #: code:addons/website/static/src/systray_items/new_content.js:0
 msgid "Livechat Widget"
-msgstr "Widget de chat en vivo"
+msgstr "Widget de chat en directo"
 
 #. module: website
 #. odoo-javascript
 #: code:addons/website/static/src/client_actions/website_preview/website_preview.xml:0
 #: code:addons/website/static/src/components/dialog/add_page_dialog.js:0
 #: code:addons/website/static/src/components/dialog/seo.xml:0
+#: code:addons/website/static/src/js/editor/html_editor.js:0
 #: code:addons/website/static/src/xml/web_editor.xml:0
 #: code:addons/website/static/src/xml/website.background.video.xml:0
 msgid "Loading..."
@@ -9563,7 +9574,7 @@ msgstr "Logotipo"
 #: model_terms:ir.ui.view,arch_db:website.template_footer_contact
 #: model_terms:ir.ui.view,arch_db:website.template_footer_minimalist
 msgid "Logo of MyCompany"
-msgstr "Logotipo de MyCompany"
+msgstr "Logotipo de MiCompañía"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippet_options
@@ -10079,7 +10090,7 @@ msgstr "Módulo de Automatización de marketing"
 #. module: website
 #: model:ir.model.fields,field_description:website.field_res_config_settings__module_website_livechat
 msgid "Module Website Livechat"
-msgstr "Módulo del Chat en vivo del Sitio web"
+msgstr "Módulo del Chat en directo del Sitio web"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.res_config_settings_view_form
@@ -10096,9 +10107,9 @@ msgid ""
 msgstr ""
 "Supervise a sus visitantes mientras navegan en su sitio web con la "
 "aplicación Marketing social de Odoo. Interactúe con ellos con solo un clic "
-"gracias al chat en vivo o con una notificación emergente. Si han completado "
-"uno de sus formularios, también puede enviarles un SMS o llamarles mientras "
-"navegan por su sitio web."
+"gracias al chat en directo o con una notificación emergente. Si han "
+"completado uno de sus formularios, también puede enviarles un SMS o "
+"llamarles mientras navegan por su sitio web."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_mega_menu_odoo_menu
@@ -11967,6 +11978,11 @@ msgstr "Pulso"
 #: model_terms:ir.ui.view,arch_db:website.snippets
 msgid "Punchy Image"
 msgstr "Imagen llamativa"
+
+#. module: website
+#: model:ir.model.fields,field_description:website.field_website__domain_punycode
+msgid "Punycode Domain"
+msgstr "Dominio de Punycode"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.cookie_policy
@@ -14936,6 +14952,12 @@ msgstr ""
 "    "
 
 #. module: website
+#. odoo-javascript
+#: code:addons/website/static/src/xml/html_editor.xml:0
+msgid "Type your URL"
+msgstr "Escriba su URL"
+
+#. module: website
 #: model:ir.model.fields,field_description:website.field_website_controller_page__name_slugified
 #: model_terms:ir.ui.view,arch_db:website.s_countdown_options
 #: model_terms:ir.ui.view,arch_db:website.s_website_form_options
@@ -14956,6 +14978,12 @@ msgid "URL matching those filters will be rewritten using the CDN Base URL"
 msgstr ""
 "La URL que coincida con esos filtros se escribirá a través de la URL base "
 "CDN "
+
+#. module: website
+#. odoo-python
+#: code:addons/website/models/website_rewrite.py:0
+msgid "URL must not start with '#'."
+msgstr "La URL debe comenzar por “#”."
 
 #. module: website
 #: model:ir.model.fields,field_description:website.field_website_rewrite__url_to
@@ -15796,7 +15824,7 @@ msgid ""
 "email, and phone, to assist with any queries."
 msgstr ""
 "Proporcionamos soporte 24/7 a través de varios canales, incluyendo chat en "
-"vivo, correo electrónico y teléfono para ayudarle con cualquier consulta."
+"directo, correo electrónico y teléfono para ayudarle con cualquier consulta."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.s_cards_grid
@@ -16423,7 +16451,7 @@ msgid ""
 "You can choose to have your computer warn you each time a cookie is being sent, or you can choose to turn off all cookies.\n"
 "                            Each browser is a little different, so look at your browser's Help menu to learn the correct way to modify your cookies."
 msgstr ""
-"Puede elegir entre dos opciones: que su computadora le advierta cada vez que se envía una cookie o desactivar todas las cookies.\n"
+"Puede elegir entre dos opciones: que su ordenador le advierta cada vez que se envía una cookie o desactivar todas las cookies.\n"
 "                            Cada navegador es distinto, así que consulte el menú de Ayuda de su navegador para aprender la forma correcta de modificar sus cookies."
 
 #. module: website
@@ -16770,6 +16798,12 @@ msgstr "una tienda en línea"
 #: code:addons/website/static/src/client_actions/configurator/configurator.xml:0
 msgid "and"
 msgstr "y"
+
+#. module: website
+#. odoo-python
+#: code:addons/website/models/website_rewrite.py:0
+msgid "base URL of 'URL to' should not be same as 'URL from'."
+msgstr "La URL base de “URL a” no debe ser la misma que “URL de”."
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets
@@ -17245,7 +17279,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:website.template_footer_contact
 #: model_terms:ir.ui.view,arch_db:website.template_footer_descriptive
 msgid "hello@mycompany.com"
-msgstr "hello@mycompany.com"
+msgstr "hello@micompania.com"
 
 #. module: website
 #: model_terms:ir.ui.view,arch_db:website.snippets

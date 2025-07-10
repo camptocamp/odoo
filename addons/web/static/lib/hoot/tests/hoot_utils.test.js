@@ -85,20 +85,20 @@ describe(parseUrl(import.meta.url), () => {
 
         for (const [a, b] of TRUTHY_CASES) {
             expect(deepEqual(a, b)).toBe(true, {
-                message: (_, r) => [a, r`==`, b],
+                message: [a, `==`, b],
             });
         }
         for (const [a, b] of FALSY_CASES) {
             expect(deepEqual(a, b)).toBe(false, {
-                message: (_, r) => [a, r`!=`, b],
+                message: [a, `!=`, b],
             });
         }
         for (const [a, b] of TRUTHY_IF_UNORDERED_CASES) {
             expect(deepEqual(a, b)).toBe(false, {
-                message: (_, r) => [a, r`!=`, b],
+                message: [a, `!=`, b],
             });
             expect(deepEqual(a, b, { ignoreOrder: true })).toBe(true, {
-                message: (_, r) => [a, r`==`, b, r`(unordered))`],
+                message: [a, `==`, b, `(unordered))`],
             });
         }
     });
@@ -161,12 +161,14 @@ describe(parseUrl(import.meta.url), () => {
         expect(
             formatTechnical({
                 b: 2,
+                [Symbol("s")]: "value",
                 a: true,
             })
         ).toBe(
             `{
   a: true,
   b: 2,
+  Symbol(s): "value",
 }`.trim()
         );
 
@@ -238,7 +240,7 @@ describe(parseUrl(import.meta.url), () => {
                 toEqual: (expected) =>
                     expect(result).toEqual(
                         expected.map((item) => ({ [property]: item })),
-                        { message: (_, r) => [r`query`, query, r`should match`, expected] }
+                        { message: `query ${query} should match ${expected}` }
                     ),
             };
         };

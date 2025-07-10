@@ -249,7 +249,7 @@ class AccountChartTemplate(models.AbstractModel):
         if not isinstance(companies, models.BaseModel):
             companies = self.env['res.company'].browse(companies)
         for company in companies:
-            self.sudo()._load_data(self._get_demo_data(company))
+            self.sudo()._load_data(self._get_demo_data(company), ignore_duplicates=True)
             self._post_load_demo_data(company)
 
     def _pre_reload_data(self, company, template_data, data, force_create=True):
@@ -839,8 +839,7 @@ class AccountChartTemplate(models.AbstractModel):
                 company[company_attr_name] = account
 
         # No fields on company
-        is_accounting_installed_next = self.env["ir.module.module"].search([('name', '=', 'accountant')]).state in ('to install', 'installed')
-        if not company.parent_id and not is_accounting_installed_next:
+        if not company.parent_id:
             accounts_data_no_fields = {
                 'account_journal_payment_debit_account_id': {
                     'name': _("Outstanding Receipts"),
@@ -895,8 +894,9 @@ class AccountChartTemplate(models.AbstractModel):
                 'name': f"{existing_account.name} - {additional_label}",
                 'code': new_code,
                 'account_type': existing_account.account_type,
+                'reconcile': reconcilable or existing_account.reconcile,
+                'non_trade': existing_account.non_trade,
                 'company_ids': [Command.link(company.id)],
-                'reconcile': reconcilable,
             })
 
         existing_accounts = {'': None, None: None}  # keeps tracks of the created account by foreign xml_id
@@ -993,7 +993,7 @@ class AccountChartTemplate(models.AbstractModel):
         # Assign the account based on the map
         for field, account_name in field_and_names:
             for tax_group in tax_group_data.values():
-                tax_group[field] = existing_accounts.get(account_template_xml_id)
+                tax_group[field] = existing_accounts.get(tax_group.get(field))
 
         for tax_template in tax_data.values():
             # This is required because the country isn't provided directly by the template
@@ -1134,7 +1134,7 @@ class AccountChartTemplate(models.AbstractModel):
                 "match_partner": True,
             },
             "reconcile_bill": {
-                "name": 'Create Bill',
+                "name": _('Create Bill'),
                 "sequence": 5,
                 "rule_type": 'writeoff_button',
                 'counterpart_type': 'purchase',

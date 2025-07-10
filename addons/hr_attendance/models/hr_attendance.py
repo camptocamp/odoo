@@ -354,21 +354,14 @@ class HrAttendance(models.Model):
                 overtime_duration_real = 0
                 # Overtime is not counted if any shift is not closed or if there are no attendances for that day,
                 # this could happen when deleting attendances.
-                if not unfinished_shifts and attendances:
-                    # The employee is working flexible hours
-                    if emp.is_flexible:
-                        work_duration = 0
-                        for attendance in attendances:
-                            local_check_in = pytz.utc.localize(attendance.check_in)
-                            local_check_out = pytz.utc.localize(attendance.check_out)
-                            work_duration += (local_check_out - local_check_in).total_seconds() / 3600.0
-                        # In case of fully flexible employee, no overtime is computed
-                        if not emp.is_fully_flexible:
-                            overtime_duration = work_duration - emp.resource_id.calendar_id.hours_per_day
-                            overtime_duration_real = overtime_duration
 
+                # No overtime computed for fully flexible employees
+                if emp.is_fully_flexible:
+                    continue
+
+                if not unfinished_shifts and attendances:
                     # The employee usually doesn't work on that day
-                    elif not working_times[attendance_date]:
+                    if not working_times[attendance_date]:
                         # User does not have any resource_calendar_attendance for that day (week-end for example)
                         overtime_duration = sum(attendances.mapped('worked_hours'))
                         overtime_duration_real = overtime_duration
@@ -411,10 +404,13 @@ class HrAttendance(models.Model):
                                              overtime_to_unlink.employee_id.ids)
         overtime_to_unlink.sudo().unlink()
         to_recompute = self.search([('employee_id', 'in', employees_worked_hours_to_compute)])
+        # for automatically validated attendances, avoid recomputing extra hours if user has changed its value
+        validated_modified = to_recompute.filtered(lambda att: att.employee_id.company_id.attendance_overtime_validation == 'no_validation'
+                                                        and float_compare(att.overtime_hours, att.validated_overtime_hours, precision_digits=2))
         self.env.add_to_compute(self._fields['overtime_hours'],
                                 to_recompute)
         self.env.add_to_compute(self._fields['validated_overtime_hours'],
-                                to_recompute)
+                                to_recompute - validated_modified)
         self.env.add_to_compute(self._fields['expected_hours'],
                                 to_recompute)
 
@@ -461,8 +457,9 @@ class HrAttendance(models.Model):
                 stop_dt = min(planned_end_dt, local_check_out)
                 work_duration += (stop_dt - start_dt).total_seconds() / 3600.0
                 # remove lunch time from work duration
-                lunch_intervals = employee._employee_attendance_intervals(start_dt, stop_dt, lunch=True)
-                work_duration -= sum((i[1] - i[0]).total_seconds() / 3600.0 for i in lunch_intervals)
+                if not employee.is_flexible:
+                    lunch_intervals = employee._employee_attendance_intervals(start_dt, stop_dt, lunch=True)
+                    work_duration -= sum((i[1] - i[0]).total_seconds() / 3600.0 for i in lunch_intervals)
 
             # There is an overtime at the end of the day
             if local_check_out > planned_end_dt:
@@ -696,7 +693,8 @@ class HrAttendance(models.Model):
     def _cron_auto_check_out(self):
         to_verify = self.env['hr.attendance'].search(
             [('check_out', '=', False),
-             ('employee_id.company_id.auto_check_out', '=', True)]
+             ('employee_id.company_id.auto_check_out', '=', True),
+             ('employee_id.resource_calendar_id.flexible_hours', '=', False)]
         )
 
         if not to_verify:
@@ -746,7 +744,9 @@ class HrAttendance(models.Model):
 
         technical_attendances_vals = []
         absent_employees = self.env['hr.employee'].search([('id', 'not in', checked_in_employees.ids),
-                                                           ('company_id', 'in', companies.ids)])
+                                                           ('company_id', 'in', companies.ids),
+                                                           ('resource_calendar_id.flexible_hours', '=', False)])
+
         for emp in absent_employees:
             local_day_start = pytz.utc.localize(yesterday).astimezone(pytz.timezone(emp._get_tz()))
             technical_attendances_vals.append({

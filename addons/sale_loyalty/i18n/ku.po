@@ -372,7 +372,7 @@ msgstr ""
 #. module: sale_loyalty
 #: model:ir.model.fields,field_description:sale_loyalty.field_loyalty_program__sale_ok
 msgid "Sales"
-msgstr ""
+msgstr "فرۆشتنەکان"
 
 #. module: sale_loyalty
 #: model:ir.model,name:sale_loyalty.model_sale_order
@@ -516,7 +516,7 @@ msgstr ""
 #. module: sale_loyalty
 #: model_terms:ir.ui.view,arch_db:sale_loyalty.sale_order_portal_loyalty_content
 msgid "Used"
-msgstr ""
+msgstr "بەکارهاتوو"
 
 #. module: sale_loyalty
 #. odoo-javascript

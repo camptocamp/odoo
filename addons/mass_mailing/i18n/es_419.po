@@ -2060,7 +2060,7 @@ msgstr "Contenido del correo"
 #: model:ir.ui.menu,name:mass_mailing.mass_mailing_menu_root
 #: model_terms:ir.ui.view,arch_db:mass_mailing.res_config_settings_view_form
 msgid "Email Marketing"
-msgstr "Marketing por correo electrónico"
+msgstr "Marketing por correo"
 
 #. module: mass_mailing
 #. odoo-python
@@ -2068,7 +2068,7 @@ msgstr "Marketing por correo electrónico"
 msgid ""
 "Email Marketing uses it as its default mail server to send mass mailings"
 msgstr ""
-"Marketing por correo electrónico lo usa como el servidor automático para "
+"Marketing por correo lo usa como el servidor de correo predeterminado para "
 "enviar correos masivos."
 
 #. module: mass_mailing
@@ -2779,7 +2779,7 @@ msgstr "Texto a la izquierda "
 #. odoo-javascript
 #: code:addons/mass_mailing/static/src/js/tours/mass_mailing_tour.js:0
 msgid "Let's try the Email Marketing app."
-msgstr "Probemos la aplicación de Marketing por correo electrónico."
+msgstr "Probemos la aplicación Marketing por correo."
 
 #. module: mass_mailing
 #: model:ir.model,name:mass_mailing.model_link_tracker
@@ -2809,9 +2809,9 @@ msgid ""
 "Link Trackers will measure how many times each link is clicked as well as "
 "the proportion of %s who clicked at least once in your mailing."
 msgstr ""
-"Los rastreadores de enlaces medirán cuántas veces se hace clic a un enlace "
-"así como la proporción de %s que hicieron click al link al menos una vez en "
-"su correo."
+"Los rastreadores de enlaces medirán cuántas veces alguien hace clic en un "
+"enlace, así como la proporción de %s que hicieron clic en el enlace al menos"
+" una vez en su correo."
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.social_links
@@ -3513,8 +3513,8 @@ msgid ""
 "No need to import mailing lists, you can send mailings to contacts saved in "
 "other Odoo apps."
 msgstr ""
-"No hay necesidad de importar las listas de correos, puede enviar correos a "
-"contactos que estén guardados en otras aplicaciones de Odoo."
+"No necesita importar las listas de correos, puede enviar correos los "
+"contactos que haya guardado en otras aplicaciones de Odoo."
 
 #. module: mass_mailing
 #: model_terms:ir.actions.act_window,help:mass_mailing.mailing_filter_action
@@ -5295,7 +5295,7 @@ msgstr "Ya no forma parte de la lista de correo%(mailing_names)s."
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.unsubscribe_form
 msgid "You are not subscribed to any of our mailing list."
-msgstr "No está suscrito a ninguna de nuestras listas de mailing"
+msgstr "No está suscrito a ninguna de nuestras listas de correo."
 
 #. module: mass_mailing
 #: model_terms:ir.ui.view,arch_db:mass_mailing.s_features_grid
@@ -5315,7 +5315,7 @@ msgid ""
 "You cannot delete these UTM Mediums as they are linked to the following mailings in Mass Mailing:\n"
 "%(mailing_names)s"
 msgstr ""
-"No puede borrar estos medios UTM ya que están vinculados a los siguientes correos en Correos masivos:\n"
+"No puede eliminar estos medios UTM, están vinculados a los siguientes correos en Correos masivos:\n"
 "%(mailing_names)s"
 
 #. module: mass_mailing
@@ -5325,7 +5325,7 @@ msgid ""
 "You cannot delete these UTM Sources as they are linked to the following mailings in Mass Mailing:\n"
 "%(mailing_names)s"
 msgstr ""
-"No puede borrar estos recursos UTM ya que están vinculados a los siguientes correos en Correos masivos:\n"
+"No puede eliminar estos recursos UTM, están vinculados a los siguientes correos en Correos masivos:\n"
 "%(mailing_names)s"
 
 #. module: mass_mailing
@@ -5335,8 +5335,8 @@ msgid ""
 "You don't need to import your mailing lists, you can easily\n"
 "                send emails<br> to any contact saved in other Odoo apps."
 msgstr ""
-"No necesita importar sus listas de correo, puede fácilmente\n"
-"                 enviar correos electrónicos<br> a cualquier contacto guardado en otras aplicaciones de Odoo."
+"No necesita importar sus listas de correo, puede\n"
+"                 enviar correos electrónicos con facilidad <br>a cualquier contacto que haya guardado en otras aplicaciones de Odoo."
 
 #. module: mass_mailing
 #. odoo-python

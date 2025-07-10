@@ -17,7 +17,8 @@ from odoo import tools
 
 from .test_token_access import TestTokenAccess
 
-@tagged('odoo2google')
+
+@tagged('odoo2google', 'calendar_performance')
 @patch.object(User, '_get_google_calendar_token', lambda user: 'dummy-token')
 class TestSyncOdoo2Google(TestSyncGoogle):
 
@@ -80,7 +81,7 @@ class TestSyncOdoo2Google(TestSyncGoogle):
         })
         partner_model = self.env.ref('base.model_res_partner')
         partner = self.env['res.partner'].search([], limit=1)
-        with self.assertQueryCount(__system__=615):
+        with self.assertQueryCount(__system__=526):
             events = self.env['calendar.event'].create([{
                 'name': "Event %s" % (i),
                 'start': datetime(2020, 1, 15, 8, 0),
@@ -95,9 +96,8 @@ class TestSyncOdoo2Google(TestSyncGoogle):
 
             events._sync_odoo2google(self.google_service)
 
-        with self.assertQueryCount(__system__=29):
+        with self.assertQueryCount(__system__=24):
             events.unlink()
-
 
     @patch_api
     @users('__system__')
@@ -111,7 +111,7 @@ class TestSyncOdoo2Google(TestSyncGoogle):
             'duration': 18,
         })
         partner_model = self.env.ref('base.model_res_partner')
-        with self.assertQueryCount(__system__=86):
+        with self.assertQueryCount(__system__=105):
             event = self.env['calendar.event'].create({
                 'name': "Event",
                 'start': datetime(2020, 1, 15, 8, 0),
@@ -128,7 +128,7 @@ class TestSyncOdoo2Google(TestSyncGoogle):
                 'res_id': partner.id,
             })
 
-        with self.assertQueryCount(__system__=38):
+        with self.assertQueryCount(__system__=29):  # gc: 34
             event.unlink()
 
     def test_event_without_user(self):
@@ -962,59 +962,6 @@ class TestSyncOdoo2Google(TestSyncGoogle):
             'extendedProperties': {'shared': {'%s_odoo_id' % self.env.cr.dbname: event2.id}},
         })
 
-    @patch_api
-    @patch.object(User, '_sync_request')
-    def test_skip_sync_for_non_synchronized_users_new_events(self, mock_sync_request):
-        """
-        Skip the synchro of new events by attendees when the organizer is not synchronized with Google.
-        Otherwise, the event ownership will be lost to the attendee and it could generate duplicates in
-        Odoo, as well cause problems in the future the synchronization of that event for the original owner.
-        """
-        with self.mock_datetime_and_now("2023-01-10"):
-            # Stop the synchronization for the organizer and leave the attendee synchronized.
-            # Then, create an event with the organizer and attendee. Assert that it was not inserted.
-            self.organizer_user.google_synchronization_stopped = True
-            self.attendee_user.google_synchronization_stopped = False
-            record = self.env['calendar.event'].with_user(self.organizer_user).create({
-                'name': "Event",
-                'start': datetime(2023, 1, 15, 8, 0),
-                'stop': datetime(2023, 1, 15, 18, 0),
-                'need_sync': True,
-                'partner_ids': [(4, self.organizer_user.partner_id.id), (4, self.attendee_user.partner_id.id)]
-            })
-            self.assertGoogleEventNotInserted()
-
-            # Define mock return values for the '_sync_request' method.
-            mock_sync_request.return_value = {
-                'events': GoogleEvent([]),
-                'default_reminders': (),
-                'full_sync': False,
-            }
-
-            # Synchronize the attendee, and ensure that the event was not inserted after it.
-            self.attendee_user.with_user(self.attendee_user).sudo()._sync_google_calendar(self.google_service)
-            self.assertGoogleAPINotCalled()
-
-            # Now, we synchronize the organizer and make sure the event got inserted by him.
-            self.organizer_user.with_user(self.organizer_user).restart_google_synchronization()
-            self.organizer_user.with_user(self.organizer_user).sudo()._sync_google_calendar(self.google_service)
-            self.assertGoogleEventInserted({
-                'id': False,
-                'start': {'dateTime': '2023-01-15T08:00:00+00:00', 'date': None},
-                'end': {'dateTime': '2023-01-15T18:00:00+00:00', 'date': None},
-                'summary': 'Event',
-                'description': '',
-                'location': '',
-                'guestsCanModify': True,
-                'transparency': 'opaque',
-                'reminders': {'overrides': [], 'useDefault': False},
-                'organizer': {'email': self.organizer_user.email, 'self': True},
-                'attendees': [
-                                {'email': self.attendee_user.email, 'responseStatus': 'needsAction'},
-                                {'email': self.organizer_user.email, 'responseStatus': 'accepted'}
-                            ],
-                'extendedProperties': {'shared': {'%s_odoo_id' % self.env.cr.dbname: record.id}},
-            })
 
 @tagged('odoo2google')
 class TestSyncOdoo2GoogleMail(TestTokenAccess, TestSyncGoogle, MailCommon):

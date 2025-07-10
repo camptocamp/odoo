@@ -42,8 +42,8 @@ import {
 } from "../mock/window";
 import { DEFAULT_CONFIG, FILTER_KEYS } from "./config";
 import { makeExpect } from "./expect";
-import { HootFixtureElement, destroy, makeFixtureManager } from "./fixture";
-import { LOG_LEVELS, logger } from "./logger";
+import { destroy, makeFixtureManager } from "./fixture";
+import { logger } from "./logger";
 import { Suite, suiteError } from "./suite";
 import { Tag, getTagSimilarities, getTags } from "./tag";
 import { Test, testError } from "./test";
@@ -94,7 +94,7 @@ import * as hootMock from "@odoo/hoot-mock";
 
 /**
  * @template {unknown[]} T
- * @typedef {T extends [any, ...infer U] ? U : never} DropFirst
+ * @typedef {import("../hoot_utils").DropFirst} DropFirst
  */
 
 /**
@@ -108,7 +108,7 @@ import * as hootMock from "@odoo/hoot-mock";
 
 const {
     clearTimeout,
-    console: { error: $error, groupEnd: $groupEnd, log: $log, table: $table },
+    console: { error: $error },
     EventTarget,
     Map,
     Math: { abs: $abs, floor: $floor },
@@ -119,6 +119,7 @@ const {
         entries: $entries,
         freeze: $freeze,
         fromEntries: $fromEntries,
+        keys: $keys,
     },
     performance,
     Promise,
@@ -137,27 +138,29 @@ const $now = performance.now.bind(performance);
 /**
  * @param {Job[]} jobs
  */
-const filterReady = (jobs) =>
-    jobs.filter((job) => {
+function filterReady(jobs) {
+    return jobs.filter((job) => {
         if (job instanceof Suite) {
             job.setCurrentJobs(filterReady(job.currentJobs));
             return job.currentJobs.length;
         }
         return job.run;
     });
+}
 
 /**
  * @param {Record<string, number>} values
  */
-const formatIncludes = (values) =>
-    $entries(values)
+function formatIncludes(values) {
+    return $entries(values)
         .filter(([, value]) => $abs(value) === INCLUDE_LEVEL.url)
         .map(([id, value]) => (value >= 0 ? id : `${EXCLUDE_PREFIX}${id}`));
+}
 
 /**
  * @param {import("./expect").Assertion[]} assertions
  */
-const formatAssertions = (assertions) => {
+function formatAssertions(assertions) {
     const lines = [];
     for (const { failedDetails, label, message, number } of assertions) {
         const formattedMessage = message.map((part) => (isLabel(part) ? part[0] : String(part)));
@@ -185,18 +188,22 @@ const formatAssertions = (assertions) => {
         }
     }
     return lines;
-};
+}
 
 /**
  * @param {Event} ev
  */
-const safePrevent = (ev) => ev.cancelable && ev.preventDefault();
+function safePrevent(ev) {
+    if (ev.cancelable) {
+        ev.preventDefault();
+    }
+}
 
 /**
  * @template T
  * @param {T[]} array
  */
-const shuffle = (array) => {
+function shuffle(array) {
     const copy = [...array];
     let randIndex;
     for (let i = 0; i < copy.length; i++) {
@@ -204,46 +211,16 @@ const shuffle = (array) => {
         [copy[i], copy[randIndex]] = [copy[randIndex], copy[i]];
     }
     return copy;
-};
+}
 
 /**
  * @param {Test} test
  * @param {boolean} shouldSuppress
  */
-const handleConsoleIssues = (test, shouldSuppress) => {
+function handleConsoleIssues(test, shouldSuppress) {
     if (shouldSuppress && test.config.todo) {
-        const restoreConsole = () => $assign(globalThis.console, originalMethods);
-
-        /**
-         * @param {string} label
-         * @param {string} color
-         */
-        const suppressIssueLogger = (label, color) => {
-            const groupName = [`%c[${label}]%c suppressed by "test.todo"`, `color: ${color}`, ""];
-            return (...args) => {
-                logger.groupCollapsed(...groupName);
-                $log(...args);
-                $groupEnd();
-            };
-        };
-
-        const originalMethods = {
-            error: globalThis.console.error,
-            warn: globalThis.console.warn,
-        };
-        $assign(globalThis.console, {
-            error: suppressIssueLogger("ERROR", "#9f1239"),
-            warn: suppressIssueLogger("WARNING", "#f59e0b"),
-        });
-
-        return restoreConsole;
+        return logger.suppressIssues(`suppressed by "test.todo"`);
     } else {
-        const offConsoleEvents = () => {
-            while (cleanups.length) {
-                cleanups.pop()();
-            }
-        };
-
         const cleanups = [];
         if (globalThis.console instanceof EventTarget) {
             cleanups.push(
@@ -252,14 +229,18 @@ const handleConsoleIssues = (test, shouldSuppress) => {
             );
         }
 
-        return offConsoleEvents;
+        return function offConsoleEvents() {
+            while (cleanups.length) {
+                cleanups.pop()();
+            }
+        };
     }
-};
+}
 
 /**
  * @param {Event} ev
  */
-const warnUserEvent = (ev) => {
+function warnUserEvent(ev) {
     if (!ev.isTrusted) {
         return;
     }
@@ -270,7 +251,7 @@ const warnUserEvent = (ev) => {
     );
 
     removeEventListener(ev.type, warnUserEvent);
-};
+}
 
 const WARNINGS = {
     viewport: "Viewport size does not match the expected size for the current preset",
@@ -334,7 +315,7 @@ export class Runner {
          *  - +1/-1: included/excluded by URL
          *  - +2/-2: included/excluded by explicit test tag (readonly)
          *  - +3/-3: included/excluded by preset (readonly)
-         * @type {Record<Omit<SearchFilter, "filter">, Record<string, number>>}
+         * @type {Record<Exclude<SearchFilter, "filter">, Record<string, number>>}
          */
         includeSpecs: {
             suite: {},
@@ -372,7 +353,7 @@ export class Runner {
      * @type {boolean}
      */
     get hasFilter() {
-        return this._hasRemovableFilter;
+        return this._hasRemovableFilter > 0;
     }
 
     // Private properties
@@ -380,8 +361,8 @@ export class Runner {
     /** @type {Job[]} */
     _currentJobs = [];
     _failed = 0;
-    _hasRemovableFilter = false;
-    _hasIncludeFilter = false;
+    _hasRemovableFilter = 0;
+    _hasIncludeFilter = 0;
     /** @type {(() => MaybePromise<void>)[]} */
     _missedCallbacks = [];
     _populateState = false;
@@ -441,22 +422,22 @@ export class Runner {
                     this.queryInclude.push(queryPart);
                 }
             }
-            this._hasIncludeFilter = this.queryInclude.length;
+            this._hasIncludeFilter += this.queryInclude.length;
         }
 
         // Suites
         if (this.config.suite?.length) {
-            this._include("suite", this.config.suite);
+            this._include(this.state.includeSpecs.suite, this.config.suite, INCLUDE_LEVEL.url);
         }
 
         // Tags
         if (this.config.tag?.length) {
-            this._include("tag", this.config.tag);
+            this._include(this.state.includeSpecs.tag, this.config.tag, INCLUDE_LEVEL.url);
         }
 
         // Tests
         if (this.config.test?.length) {
-            this._include("test", this.config.test);
+            this._include(this.state.includeSpecs.test, this.config.test, INCLUDE_LEVEL.url);
         }
 
         if (this.config.networkDelay) {
@@ -571,7 +552,7 @@ export class Runner {
         const runFn = this.dry ? null : fn;
         let test = markRaw(new Test(parentSuite, name, config));
         const originalTest = this.tests.get(test.id);
-        if (originalTest) {
+        if (originalTest && !originalTest.isMinimized) {
             if (this.dry || originalTest.run) {
                 throw testError(
                     { name, parent: parentSuite },
@@ -582,6 +563,9 @@ export class Runner {
             }
             test = originalTest;
         } else {
+            if (!this.dry && this._prepared) {
+                return null;
+            }
             parentSuite.addJob(test);
             this.tests.set(test.id, test);
         }
@@ -815,19 +799,8 @@ export class Runner {
      * @param {number} value
      */
     include(type, id, value) {
-        const { includeSpecs } = this.state;
-        if (value) {
-            includeSpecs[type][id] = value;
-        } else {
-            delete includeSpecs[type][id];
-        }
-
-        for (const type of FILTER_KEYS) {
-            if (type === "filter") {
-                continue;
-            }
-            this.config[type] = formatIncludes(includeSpecs[type]);
-        }
+        this._include(this.state.includeSpecs[type], [id], value);
+        this._updateConfigFromSpecs();
     }
 
     manualStart() {
@@ -848,6 +821,39 @@ export class Runner {
         for (const callback of callbacks) {
             callbackRegistry.add("error", callback, Boolean(test));
         }
+    }
+
+    /**
+     * @param {Partial<Record<SearchFilter, Iterable<string>>>} ids
+     */
+    simplifyUrlIds(ids) {
+        if (!ids) {
+            return {};
+        }
+        const specs = {
+            suite: {},
+            tag: {},
+            test: {},
+        };
+        let items = 0;
+        for (const key in specs) {
+            if (ids[key]) {
+                for (const id of ensureArray(ids[key])) {
+                    items++;
+                    specs[key][id] = INCLUDE_LEVEL.url;
+                }
+            }
+        }
+        if (items > 1) {
+            this._simplifyIncludeSpecs(specs, {
+                test: this.tests,
+                suite: this.suites,
+            });
+        }
+        for (const key in specs) {
+            specs[key] = $keys(specs[key]);
+        }
+        return specs;
     }
 
     /**
@@ -890,29 +896,7 @@ export class Runner {
         /** @type {Runner["_handleError"]} */
         const handleError = this._handleError.bind(this);
 
-        /**
-         * @param {Job} [job]
-         */
-        const nextJob = (job) => {
-            this.state.currentTest = null;
-            if (job) {
-                const sibling = job.currentJobs?.[job.currentJobIndex++];
-                if (sibling) {
-                    return sibling;
-                }
-                const parent = job.parent;
-                if (parent && (!jobs.length || jobs.some((j) => parent.path.includes(j)))) {
-                    return parent;
-                }
-            }
-            const index = this._currentJobs.findIndex(Boolean);
-            if (index >= 0) {
-                return this._currentJobs.splice(index, 1)[0];
-            }
-            return null;
-        };
-
-        let job = nextJob();
+        let job = this._nextJob(jobs);
         while (job && this.state.status === "running") {
             const callbackChain = this._getCallbackChain(job);
             if (job instanceof Suite) {
@@ -921,7 +905,7 @@ export class Runner {
 
                 /** @type {Suite} */
                 const suite = job;
-                if (!suite.config.skip) {
+                if (!suite.config.skip && suite.currentJobs.length) {
                     if (suite.currentJobIndex <= 0) {
                         // before suite code
                         this.suiteStack.push(suite);
@@ -945,15 +929,15 @@ export class Runner {
                         suite.runCount++;
                         if (suite.willRunAgain()) {
                             suite.reset();
+                            continue;
                         } else {
                             suite.cleanup();
                         }
-                        if (suite.runCount < (suite.config.multi || 0)) {
-                            continue;
-                        }
                     }
+                } else {
+                    suite.minimize();
                 }
-                job = nextJob(job);
+                job = this._nextJob(jobs, job);
                 continue;
             }
 
@@ -967,7 +951,7 @@ export class Runner {
                 this._pushTest(test);
                 test.setRunFn(null);
                 test.parent.reporting.add({ skipped: +1, tests: +1 });
-                job = nextJob(job);
+                job = this._nextJob(jobs, job);
                 continue;
             }
 
@@ -1107,7 +1091,7 @@ export class Runner {
                 continue;
             }
 
-            job = nextJob(job);
+            job = this._nextJob(jobs, job);
         }
 
         if (this.state.status === "done") {
@@ -1142,18 +1126,19 @@ export class Runner {
             await this._missedCallbacks.shift()();
         }
 
-        await this._callbacks.call("after-all", logger.error);
+        await this._callbacks.call("after-all", this, logger.error);
 
         const { passed, failed, assertions } = this.reporting;
         if (failed > 0) {
             const errorMessage = ["Some tests failed: see above for details"];
             if (this.config.headless) {
-                const link = createUrlFromId(this.state.failedIds, "test");
+                const ids = this.simplifyUrlIds({ test: this.state.failedIds });
+                const link = createUrlFromId(ids, { debug: true });
                 // Tweak parameters to make debugging easier
                 link.searchParams.set("debug", "assets");
-                link.searchParams.set("loglevel", LOG_LEVELS.tests);
-                link.searchParams.delete("debugTest");
                 link.searchParams.delete("headless");
+                link.searchParams.delete("loglevel");
+                link.searchParams.delete("timeout");
                 errorMessage.push(`Failed tests link: ${link.toString()}`);
             }
             // Use console.dir for this log to appear on runbot sub-builds page
@@ -1213,28 +1198,28 @@ export class Runner {
         const current = getCurrent && (() => this._createCurrentConfigurators(getCurrent));
 
         /** @type {Configurators["debug"]} */
-        const debug = () => {
+        function debug() {
             tags("debug");
             return configurableFn;
-        };
+        }
 
         /** @type {Configurators["only"]} */
-        const only = () => {
+        function only() {
             tags("only");
             return configurableFn;
-        };
+        }
 
         /** @type {Configurators["skip"]} */
-        const skip = () => {
+        function skip() {
             tags("skip");
             return configurableFn;
-        };
+        }
 
         /** @type {Configurators["todo"]} */
-        const todo = () => {
+        function todo() {
             tags("todo");
             return configurableFn;
-        };
+        }
 
         // FUNCTION MODIFIERS
 
@@ -1254,16 +1239,16 @@ export class Runner {
          *  test.config({ multi: 100 });
          *  test("non-deterministic test", async () => { ... });
          */
-        const config = (...configs) => {
+        function config(...configs) {
             $assign(currentConfig, ...configs);
             return configurators;
-        };
+        }
 
         /** @type {Configurators["multi"]} */
-        const multi = (count) => {
+        function multi(count) {
             currentConfig.multi = count;
             return configurators;
-        };
+        }
 
         /**
          * Adds tags to the current test/suite.
@@ -1279,16 +1264,25 @@ export class Runner {
          *  test.tags("mobile");
          *  test("my mobile test", () => { ... });
          */
-        const tags = (...tagNames) => {
+        function tags(...tagNames) {
             currentConfig.tags.push(...getTags(tagNames));
             return configurators;
-        };
+        }
 
         /** @type {Configurators["timeout"]} */
-        const timeout = (ms) => {
+        function timeout(ms) {
             currentConfig.timeout = ms;
             return configurators;
-        };
+        }
+
+        /** @type {ConfigurableFunction} */
+        function configurableFn(...args) {
+            const jobConfig = { ...currentConfig };
+            currentConfig = { tags: [] };
+            return boundFn(jobConfig, ...args);
+        }
+
+        const boundFn = fn.bind(this);
 
         const configuratorGetters = { debug, only, skip, todo };
         const configuratorMethods = { config, multi, tags, timeout };
@@ -1297,13 +1291,6 @@ export class Runner {
         }
         /** @type {Configurators} */
         const configurators = { ...configuratorGetters, ...configuratorMethods };
-
-        /** @type {ConfigurableFunction} */
-        const configurableFn = (...args) => {
-            const jobConfig = { ...currentConfig };
-            currentConfig = { tags: [] };
-            return fn.call(this, jobConfig, ...args);
-        };
 
         const properties = {};
         for (const [key, getter] of $entries(configuratorGetters)) {
@@ -1344,7 +1331,7 @@ export class Runner {
                         );
                     }
                     this._include(
-                        job instanceof Suite ? "suite" : "test",
+                        this.state.includeSpecs[job instanceof Suite ? "suite" : "test"],
                         [job.id],
                         INCLUDE_LEVEL.tag
                     );
@@ -1373,32 +1360,17 @@ export class Runner {
     }
 
     /**
-     * @param {keyof Runner["config"]} configKey
-     * @param {Map<string, any>} valuesMap
-     */
-    _checkUrlValidity(configKey, valuesMap) {
-        const values = this.state.includeSpecs[configKey];
-        const availableValues = new Set(valuesMap.keys());
-        for (const [key, incLevel] of $entries(values)) {
-            if ($abs(incLevel) === INCLUDE_LEVEL.url && !availableValues.has(key)) {
-                delete values[key];
-                this.config[configKey] = this.config[configKey].filter((val) => key !== val);
-            }
-        }
-    }
-
-    /**
      * @param {() => Job} getCurrent
      */
     _createCurrentConfigurators(getCurrent) {
         /**
          * @param {JobConfig} config
          */
-        const configureCurrent = (config) => {
+        function configureCurrent(config) {
             getCurrent().configure(config);
 
             return currentConfigurators;
-        };
+        }
 
         /**
          * @param  {...string} tagNames
@@ -1465,25 +1437,60 @@ export class Runner {
     }
 
     /**
-     * @param {SearchFilter} type
+     * @param {Record<string, number>} values
      * @param {Iterable<string>} ids
-     * @param {number} [priority=1]
+     * @param {number} includeLevel
+     * @param {boolean} [noIncrement]
      */
-    _include(type, ids, priority = INCLUDE_LEVEL.url) {
-        priority = $abs(priority);
-        if (priority === INCLUDE_LEVEL.url) {
-            this._hasRemovableFilter = true;
-        }
-        const values = this.state.includeSpecs[type];
+    _include(values, ids, includeLevel, noIncrement = false) {
+        const isRemovable = $abs(includeLevel) === INCLUDE_LEVEL.url;
+        const shouldInclude = !!includeLevel;
+        let applied = 0;
         for (const id of ids) {
-            const nId = normalize(id.toLowerCase());
-            if (id.startsWith(EXCLUDE_PREFIX)) {
-                values[nId.slice(EXCLUDE_PREFIX.length)] = priority * -1;
-            } else if ((values[nId]?.[0] || 0) >= 0) {
-                this._hasIncludeFilter = true;
-                values[nId] = priority;
+            let nId = normalize(id.toLowerCase());
+            if (nId.startsWith(EXCLUDE_PREFIX)) {
+                nId = nId.slice(EXCLUDE_PREFIX.length);
+                if (includeLevel > 0) {
+                    includeLevel *= -1;
+                }
+            }
+            const previousValue = values[nId] || 0;
+            const wasRemovable = $abs(previousValue) === INCLUDE_LEVEL.url;
+            if (wasRemovable) {
+                applied++;
+            }
+            if (shouldInclude) {
+                if (previousValue === includeLevel) {
+                    continue;
+                }
+                values[nId] = includeLevel;
+                if (noIncrement) {
+                    continue;
+                }
+                if (previousValue <= 0 && includeLevel > 0) {
+                    this._hasIncludeFilter++;
+                } else if (previousValue > 0 && includeLevel <= 0) {
+                    this._hasIncludeFilter--;
+                }
+                if (!wasRemovable && isRemovable) {
+                    this._hasRemovableFilter++;
+                } else if (wasRemovable && !isRemovable) {
+                    this._hasRemovableFilter--;
+                }
+            } else {
+                delete values[nId];
+                if (noIncrement) {
+                    continue;
+                }
+                if (previousValue > 0) {
+                    this._hasIncludeFilter--;
+                }
+                if (wasRemovable) {
+                    this._hasRemovableFilter--;
+                }
             }
         }
+        return applied;
     }
 
     /**
@@ -1524,6 +1531,29 @@ export class Runner {
         }
 
         return false;
+    }
+
+    /**
+     * @param {Job[]} jobs
+     * @param {Job} [job]
+     */
+    _nextJob(jobs, job) {
+        this.state.currentTest = null;
+        if (job) {
+            const sibling = job.currentJobs?.[job.currentJobIndex++];
+            if (sibling) {
+                return sibling;
+            }
+            const parent = job.parent;
+            if (parent && (!jobs.length || jobs.some((j) => parent.path.includes(j)))) {
+                return parent;
+            }
+        }
+        const index = this._currentJobs.findIndex(Boolean);
+        if (index >= 0) {
+            return this._currentJobs.splice(index, 1)[0];
+        }
+        return null;
     }
 
     /**
@@ -1612,7 +1642,7 @@ export class Runner {
                 throw new HootError(`unknown preset: "${this.config.preset}"`);
             }
             if (preset.tags?.length) {
-                this._include("tag", preset.tags, INCLUDE_LEVEL.preset);
+                this._include(this.state.includeSpecs.tag, preset.tags, INCLUDE_LEVEL.preset);
             }
             if (preset.platform) {
                 mockUserAgent(preset.platform);
@@ -1624,14 +1654,13 @@ export class Runner {
         }
 
         // Cleanup invalid IDs and tags from URL
-        if (this.config.suite) {
-            this._checkUrlValidity("suite", this.suites);
-        }
-        if (this.config.tag) {
-            this._checkUrlValidity("tag", this.tags);
-        }
-        if (this.config.test) {
-            this._checkUrlValidity("test", this.tests);
+        const hasChanged = this._simplifyIncludeSpecs(this.state.includeSpecs, {
+            test: this.tests,
+            suite: this.suites,
+            tag: this.tags,
+        });
+        if (hasChanged) {
+            this._updateConfigFromSpecs();
         }
 
         // Cleanup invalid tests from storage
@@ -1657,6 +1686,20 @@ export class Runner {
 
         if (!this.state.tests.length) {
             throw new HootError(`no tests to run`);
+        }
+
+        // Reduce non-included suites & tests info to a miminum
+        const includedSuites = new Set(this.state.suites);
+        for (const suite of this.suites.values()) {
+            if (!includedSuites.has(suite)) {
+                suite.minimize();
+            }
+        }
+        const includedTests = new Set(this.state.tests);
+        for (const test of this.tests.values()) {
+            if (!includedTests.has(test)) {
+                test.minimize();
+            }
         }
     }
 
@@ -1751,7 +1794,7 @@ export class Runner {
             globalWarnings[key] = {
                 count: 1,
                 message,
-                name: "warning",
+                name: this.config.fun ? "warming" : "warning",
             };
         }
         return false;
@@ -1770,9 +1813,9 @@ export class Runner {
                 table[key] = `[${[...table[key]].join(", ")}]`;
             }
         }
-        logger.groupCollapsed("Configuration (click to expand)");
-        $table(table);
-        $groupEnd();
+        logger.group("Configuration (click to expand)", () => {
+            logger.table(table);
+        });
         logger.logRun("Starting test suites");
 
         // Adjust debug mode if more or less than 1 test will be run
@@ -1791,18 +1834,17 @@ export class Runner {
                     destroy,
                     getFixture: this.fixture.get,
                 });
-                logger.debug(
+                logger.setLevel("debug");
+                logger.logDebug(
                     `Debug mode is active: Hoot helpers available from \`window.${nameSpace}\``
                 );
             }
         }
 
         // Register default hooks
-        this.beforeAll(() => {
-            document.head.appendChild(HootFixtureElement.styleElement);
-            return () => HootFixtureElement.styleElement.remove();
-        });
+        this.beforeAll(this.fixture.globalSetup);
         this.afterAll(
+            this.fixture.globalCleanup,
             // Warn user events
             !this.debug && on(window, "pointermove", warnUserEvent),
             !this.debug && on(window, "pointerdown", warnUserEvent),
@@ -1821,12 +1863,73 @@ export class Runner {
             cleanupTime
         );
 
-        if (this.debug) {
-            logger.level = LOG_LEVELS.debug;
-        }
-        enableEventLogs(logger.level === LOG_LEVELS.debug);
+        enableEventLogs(logger.allows("debug"));
         setFrameRate(this.config.fps);
 
-        await this._callbacks.call("before-all", logger.error);
+        await this._callbacks.call("before-all", this, logger.error);
+    }
+
+    /**
+     * @param {Runner["state"]["includeSpecs"]} includeSpecs
+     * @param {Partial<Record<keyof includeSpecs, Map<string, Job>>>} valuesMaps
+     */
+    _simplifyIncludeSpecs(includeSpecs, valuesMaps) {
+        let hasChanged = false;
+        const ignored = [];
+        const removed = [];
+        for (const [configKey, valuesMap] of $entries(valuesMaps)) {
+            const specs = includeSpecs[configKey];
+            let remaining = $keys(specs);
+            while (remaining.length) {
+                const id = remaining.shift();
+                if (specs[id] !== INCLUDE_LEVEL.url) {
+                    continue;
+                }
+                const item = valuesMap.get(id);
+                if (!item) {
+                    const applied = this._include(specs, [id], 0, true);
+                    if (applied) {
+                        removed.push(`\n- ${configKey} "${id}"`);
+                    } else {
+                        ignored.push(`\n- ${configKey} "${id}"`);
+                    }
+                    hasChanged = true;
+                }
+                if (!item?.parent || item.parent.jobs.length < 1) {
+                    // No parent or no need to simplify
+                    continue;
+                }
+                const siblingIds = item.parent.jobs.map((job) => job.id);
+                if (
+                    siblingIds.every(
+                        (siblingId) => siblingId === id || remaining.includes(siblingId)
+                    )
+                ) {
+                    remaining = remaining.filter((id) => !siblingIds.includes(id));
+                    this._include(includeSpecs.suite, [item.parent.id], INCLUDE_LEVEL.url, true);
+                    this._include(specs, siblingIds, 0, true);
+                    hasChanged = true;
+                }
+            }
+        }
+        if (removed.length) {
+            logger.warn(
+                `The following IDs were not found and and have been removed from URL filters:`,
+                ...removed
+            );
+        }
+        if (ignored.length) {
+            logger.warn(`The following IDs were not found and and have been ignored:`, ...ignored);
+        }
+        return hasChanged;
+    }
+
+    _updateConfigFromSpecs() {
+        for (const type of FILTER_KEYS) {
+            if (type === "filter") {
+                continue;
+            }
+            this.config[type] = formatIncludes(this.state.includeSpecs[type]);
+        }
     }
 }

@@ -242,6 +242,7 @@ export class LinkPlugin extends Plugin {
         /** Overrides */
         split_element_block_overrides: this.handleSplitBlock.bind(this),
         insert_line_break_element_overrides: this.handleInsertLineBreak.bind(this),
+        delete_image_overrides: this.deleteImageLink.bind(this),
     };
     setup() {
         this.overlay = this.dependencies.overlay.createOverlay(LinkPopover, {}, { sequence: 50 });
@@ -283,6 +284,7 @@ export class LinkPlugin extends Plugin {
         this.getAttachmentMetadata = memoize((url) =>
             fetchAttachmentMetaData(url, this.services.orm)
         );
+        this.LinkPopoverState = { editing: false };
     }
 
     destroy() {
@@ -378,6 +380,14 @@ export class LinkPlugin extends Plugin {
                 anchorEl.appendChild(newFont);
                 this.dependencies.color.colorElement(newFont, color, "color");
             }
+
+            // When a link contains unsupported element (like an iframe or a link),
+            // we remove the link. Cases can happen when a image link is replaced
+            // by a document or a video
+            const hasUnsupportedMedia = anchorEl.querySelector("a, iframe");
+            if (hasUnsupportedMedia) {
+                this.removeLink(anchorEl);
+            }
         }
     }
 
@@ -400,6 +410,7 @@ export class LinkPlugin extends Plugin {
             getAttachmentMetadata: this.getAttachmentMetadata,
             recordInfo: this.config.getRecordInfo?.() || {},
             type: this.type || "",
+            LinkPopoverState: this.LinkPopoverState,
         };
         if (
             this._isNavigatingByMouse &&
@@ -458,6 +469,7 @@ export class LinkPlugin extends Plugin {
                 if (this.linkElement !== imageNode.parentElement) {
                     this.overlay.close();
                     this.removeCurrentLinkIfEmtpy();
+                    this.LinkPopoverState.editing = false;
                 }
                 this.linkElement = imageNode.parentElement;
 
@@ -470,6 +482,7 @@ export class LinkPlugin extends Plugin {
                         this.dependencies.selection.setCursorEnd(this.linkElement);
                         this.dependencies.selection.focusEditable();
                         this.removeCurrentLinkIfEmtpy();
+                        this.LinkPopoverState.editing = false;
                         this.dependencies.history.addStep();
                     },
                 };
@@ -477,6 +490,9 @@ export class LinkPlugin extends Plugin {
                 // close the overlay to always position the popover to the bottom of selected image
                 if (this.overlay.isOpen) {
                     this.overlay.close();
+                }
+                if (!this.linkElement.href) {
+                    this.LinkPopoverState.editing = true;
                 }
                 this.overlay.open({ target: imageNode, props: imageLinkProps });
             } else {
@@ -493,6 +509,7 @@ export class LinkPlugin extends Plugin {
                 this.removeCurrentLinkIfEmtpy();
                 this.overlay.close();
                 this.linkElement = linkEl;
+                this.LinkPopoverState.editing = false;
             }
 
             // if the link includes an inline image, we close the previous opened popover to reposition it
@@ -507,9 +524,15 @@ export class LinkPlugin extends Plugin {
                     ...props,
                     isImage: false,
                     linkEl: this.linkElement,
-                    onApply: (url, label, classes) => {
+                    onApply: (url, label, classes, attachmentId) => {
                         this.linkElement.href = url;
-                        if (cleanZWChars(this.linkElement.innerText) === label) {
+                        if (attachmentId) {
+                            this.linkElement.dataset.attachmentId = attachmentId;
+                        }
+                        if (
+                            cleanZWChars(this.linkElement.innerText) === label ||
+                            !!this.linkElement.childElementCount
+                        ) {
                             this.overlay.close();
                             this.dependencies.selection.setSelection(
                                 this.dependencies.selection.getEditableSelection()
@@ -529,12 +552,16 @@ export class LinkPlugin extends Plugin {
                         cleanTrailingBR(closestBlock(this.linkElement));
                         this.dependencies.selection.focusEditable();
                         this.removeCurrentLinkIfEmtpy();
+                        this.LinkPopoverState.editing = false;
                         this.dependencies.history.addStep();
                     },
                     canEdit: !this.linkElement.classList.contains("o_link_readonly"),
                     canUpload: !this.config.disableFile,
                     onUpload: this.config.onAttachmentChange,
                 };
+                if (!this.linkElement.href) {
+                    this.LinkPopoverState.editing = true;
+                }
                 // pass the link element to overlay to prevent position change
                 this.overlay.open({ target: this.linkElement, props: linkProps });
             }
@@ -572,6 +599,7 @@ export class LinkPlugin extends Plugin {
             return linkElement;
         } else {
             // create a new link element
+            this.LinkPopoverState.editing = true;
             const selectedNodes = this.dependencies.selection.getSelectedNodes();
             const imageNode = selectedNodes.find((node) => node.tagName === "IMG");
 
@@ -619,8 +647,7 @@ export class LinkPlugin extends Plugin {
     /**
      * Remove the link from the collapsed selection
      */
-    removeLink() {
-        const link = this.linkElement;
+    removeLink(link = this.linkElement) {
         const cursors = this.dependencies.selection.preserveSelection();
         if (link && link.isContentEditable) {
             cursors.update(callbacksForCursorUpdate.unwrap(link));
@@ -819,6 +846,18 @@ export class LinkPlugin extends Plugin {
     onPasteNormalizeLink() {
         this.updateCurrentLinkSyncState();
         this.onInputDeleteNormalizeLink();
+    }
+
+    deleteImageLink(imageToDelete) {
+        if (imageToDelete.parentElement.tagName === "A") {
+            // If the link is empty after removing the image, remove it.
+            imageToDelete.remove();
+            this.overlay.close();
+            this.removeCurrentLinkIfEmtpy();
+            this.dependencies.history.addStep();
+            return true;
+        }
+        return false;
     }
 
     /**

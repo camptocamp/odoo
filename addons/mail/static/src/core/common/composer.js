@@ -175,7 +175,15 @@ export class Composer extends Component {
         useEffect(
             () => {
                 if (this.fakeTextarea.el.scrollHeight) {
+                    let wasEmpty = false;
+                    if (!this.fakeTextarea.el.value) {
+                        wasEmpty = true;
+                        this.fakeTextarea.el.value = "0";
+                    }
                     this.ref.el.style.height = this.fakeTextarea.el.scrollHeight + "px";
+                    if (wasEmpty) {
+                        this.fakeTextarea.el.value = "";
+                    }
                 }
                 this.saveContentDebounced();
             },
@@ -250,6 +258,7 @@ export class Composer extends Component {
     }
 
     onClickCancelOrSaveEditText(ev) {
+        ev.preventDefault();
         const composer = toRaw(this.props.composer);
         if (composer.message && ev.target.dataset?.type === EDIT_CLICK_TYPE.CANCEL) {
             this.props.onDiscardCallback(ev);
@@ -564,7 +573,7 @@ export class Composer extends Component {
         }
         default_body = this.formatDefaultBodyForFullComposer(
             default_body,
-            this.props.composer.emailAddSignature ? markup(this.store.self.signature) : ""
+            this.props.composer.emailAddSignature ? this.thread.effectiveSelf.signature : ""
         );
         const context = {
             default_attachment_ids: attachmentIds,

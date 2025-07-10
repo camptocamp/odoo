@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 20:46+0000\n"
+"POT-Creation-Date: 2025-06-27 18:38+0000\n"
 "PO-Revision-Date: 2024-09-25 09:41+0000\n"
 "Last-Translator: Marta Wacławek, 2025\n"
 "Language-Team: Czech (https://app.transifex.com/odoo/teams/41243/cs/)\n"
@@ -110,7 +110,6 @@ msgstr "# Hodnocení"
 #. module: project
 #. odoo-javascript
 #: code:addons/project/static/src/views/burndown_chart/burndown_chart_model.js:0
-#: model:ir.model.fields,field_description:project.field_project_milestone__task_count
 #: model:ir.model.fields,field_description:project.field_report_project_task_user__nbr
 msgid "# of Tasks"
 msgstr "Počet úkolů"
@@ -151,7 +150,7 @@ msgstr "%(closed_task_count)s / %(task_count)s (%(closed_rate)s%%)"
 #. odoo-javascript
 #: code:addons/project/static/src/views/widget/subtask_counter.js:0
 msgid "%(count1)s/%(count2)s"
-msgstr ""
+msgstr "%(count1)s/%(count2)s"
 
 #. module: project
 #. odoo-python
@@ -3324,6 +3323,21 @@ msgid ""
 "\n"
 "In any case, an internal user with no project access rights can still access a task, provided that they are given the corresponding URL (and that they are part of the followers if the project is private)."
 msgstr ""
+"Lidé, pro které bude tento projekt a jeho úkoly viditelný.\n"
+"\n"
+"- Pozvaní interní uživatelé: při sledování projektu získají interní uživatelé přístup ke všem jeho úkolům bez rozdílu. V opačném případě získají přístup pouze ke konkrétním úkolům, které sledují.\n"
+" Uživatel s úrovní přístupových práv projekt > administrátor má k tomuto projektu a jeho úkolům přístup i v případě, že není výslovně součástí sledovaných.\n"
+"\n"
+"- Všichni interní uživatelé: Všichni interní uživatelé mají přístup k projektu a všem jeho úkolům bez rozlišení.\n"
+"\n"
+"- Pozvaní uživatelé portálu a všichni interní uživatelé: K projektu a všem jeho úkolům mají přístup všichni interní uživatelé bez rozdílu.\n"
+"When following a project, portal users will get access to all of its tasks without distinction. Otherwise, they will only get access to the specific tasks they are following.\n"
+"\n"
+"Při sledování projektu získají uživatelé portálu přístup pouze ke konkrétním úkolům, které sledují.\n"
+"Když je projekt sdílen v režimu pouze pro čtení, jsou uživatelé portálu přesměrováni na svůj portál. Mohou si sledované úkoly prohlížet, ale ne upravovat.\n"
+"Když je projekt sdílen v režimu úprav, je uživatel portálu přesměrován na zobrazení kanbanu a seznamu úkolů. Může upravovat vybraný počet polí úkolů.\n"
+"\n"
+"Interní uživatel bez přístupových práv k projektu může v každém případě k úkolu přistupovat, pokud je mu poskytnuta příslušná adresa URL (a pokud je projekt soukromý, je součástí sledujících)."
 
 #. module: project
 #: model:ir.model.fields,help:project.field_project_project__rating_percentage_satisfaction

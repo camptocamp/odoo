@@ -565,10 +565,10 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"이 모듈은 음식점 관리와 관련된 몇 가지 기능을 POS에 추가합니다 :\n"
-"- 계산서 인쇄: 주문이 결제되기 전에 수령증을 인쇄할 수 있습니다\n"
-"- 계산서 분할: 한 주문을 여러 개 주문으로 분할할 수 있습니다\n"
-"- 주방용 주문서 인쇄: 주방 또는 바 프린터로 주문서를 인쇄 할 수 있습니다\n"
+"이 모듈을 활용하여 POS에 레스토랑점 관리에 특화된 다음과 같은 기능을 추가할 수 있습니다:\n"
+"- 계산서 인쇄: 주문 결제 전에 영수증을 인쇄할 수 있습니다.\n"
+"- 계산서 분할: 한 주문을 여러 개 주문으로 분할할 수 있습니다.\n"
+"- 주방용 주문서 인쇄: 주방이나 바에 있는 프린터로 주문서를 전송하여 인쇄할 수 있습니다.\n"
 "\n"
 
 #. module: base
@@ -628,6 +628,9 @@ msgid ""
 "            Egypt Tax Authority Invoice Integration\n"
 "        "
 msgstr ""
+"\n"
+"            이집트 국세청 청구서 통합\n"
+"        "
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_ke_edi_oscu
@@ -1272,6 +1275,9 @@ msgid ""
 "Accounting Data for Malaysian Payroll Rules\n"
 "===========================================\n"
 msgstr ""
+"\n"
+"말레이시아 급여 규칙용 회계 데이터\n"
+"==========================================\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_mx_hr_payroll_account
@@ -2304,6 +2310,8 @@ msgid ""
 "\n"
 "Additional module to allow the export of the Italian monthly tax report to XML format.\n"
 msgstr ""
+"\n"
+"해당 명세서를 가져올 전표를 찾을 수 없습니다. 전표를 직접 선택하세요.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_it_edi_ndd
@@ -2410,6 +2418,8 @@ msgid ""
 "\n"
 "Adds the support for services intrastat codes.\n"
 msgstr ""
+"\n"
+"인트라스탯 코드 서비스 지원을 추가합니다.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_quality_mrp
@@ -2471,6 +2481,17 @@ msgid ""
 "* Quick payments by swiping, scanning, or tapping your credit/debit card or UPI QR code at the payment terminal.\n"
 "* Supported cards: Visa, MasterCard, RuPay.\n"
 msgstr ""
+"\n"
+"Pine Labs POS 결제 허용\n"
+"==============================\n"
+"\n"
+"이 모듈은 INR 통화를 사용하는 회사에 한해서만 사용할 수 있습니다.\n"
+"고객은 Pine Labs POS 단말기를 통해 직불/신용 카드 및 UPI 방식으로 주문 금액을 결제할 수 있습니다.\n"
+"거래를 처리하기 위해서는 Pine Labs 가맹점 계정이 필요합니다.\n"
+"주요 기능은 다음과 같습니다:\n"
+"\n"
+"* 결제 단말기에서 신용/직불 카드 또는 UPI QR 코드를 스와이프, 스캔 또는 탭하여 빠른 결제 가능\n"
+"* 지원되는 카드: Visa, MasterCard, RuPay.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_pos_razorpay
@@ -3565,6 +3586,10 @@ msgid ""
 "================================\n"
 "Provides electronic invoicing for Brazil through Avatax in the POS.\n"
 msgstr ""
+"\n"
+"브라질 회계 POS용 EDI\n"
+"================================\n"
+"브라질 전자 청구서를 Avatax를 통해 POS에서 제공합니다.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_br_edi_sale
@@ -4739,6 +4764,8 @@ msgid ""
 "\n"
 "E-invoice implementation for Saudi Arabia; Integration with ZATCA\n"
 msgstr ""
+"\n"
+"사우디아라비아 전자 청구서 구현; ZATCA 연동\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_sa_edi_pos
@@ -4769,6 +4796,12 @@ msgid ""
 "TaxBase (DPP) has to be mulitplied by factor of 11/12 while multiplied to tax of 12% which\n"
 "is resulting to 11%.\n"
 msgstr ""
+"\n"
+"DJP(인도네시아 세무서)에서 제공하는 전자 청구서 기능입니다. 2025년 1월 1일부터 인도네시아에서는,\n"
+"CoreTax 시스템을 사용 중이며, 이를 기준으로 E-Faktur의 파일 형식과 내용이 변경됩니다.\n"
+"CSV 파일운 XML 파일로 변경됩니다.\n"
+"또한 세금 규정이 수시로 변경되는 상황을 고려하여 일반 E-Faktur의 경우,\n"
+"과세 표준(TaxBase: DPP)에 11/12를 곱한 후 12%의 세율을 적용하여 11%로 계산합니다.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_hr_skills_slides
@@ -5140,7 +5173,7 @@ msgstr ""
 "DI는 표준화된 형식을 사용하여 비즈니스 정보를 전자적으로 교환하는 것입니다.\n"
 "\n"
 "이것은 다양한 EDI 형식의 송장 가져 오기 및 내보내기를 위한 기본 모듈이며, \n"
-"해당 문서를 교환에 관련된 다양한 당사자 (타사, 정부 등)\n"
+"해당 문서를 교환에 관련된 다양한 당사자 (외부 업체, 정부 기관 등)\n"
 "에게 전송합니다\n"
 
 #. module: base
@@ -6434,7 +6467,7 @@ msgid ""
 "correctly when the cn2an library is installed. (e.g. with pip3 install cn2an)\n"
 msgstr ""
 "\n"
-"Includes the following data for the Chinese localization\n"
+"중국 현지화용으로 다음 정보가 포함되었습니다.\n"
 "========================================================\n"
 "\n"
 "계정 유형/科目类型\n"
@@ -6453,8 +6486,9 @@ msgstr ""
 "\n"
 "    增加大企业会计科目表\n"
 "\n"
-"바우처 인쇄 옵션이 추가되어 금액을 문자로 (숫자의 경우 특수 한자 인쇄)\n"
-"cn2an 라이브러리가 설치되면 올바르게 인쇄할 수 있습니다 (예: pip3로 cn2an 설치).\n"
+"cn2an 라이브러리가 설치되면 해당 금액을 단어 (숫자의 경우 특수 한자)로\n"
+"바우처를 올바르게 표시하여 인쇄하는\n"
+"옵션이 추가되였습니다 (예: pip3 설치 cn2an 사용).\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_cn_city
@@ -6631,6 +6665,9 @@ msgid ""
 "Intrastat Reports for Services\n"
 "==============================\n"
 msgstr ""
+"\n"
+"인스타스탯 서비스 보고서\n"
+"==============================\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_dk_intrastat
@@ -6995,6 +7032,12 @@ msgid ""
 "- Income tax calculations\n"
 "- Stamp tax deductions\n"
 msgstr ""
+"\n"
+"말레이시아 급여 및 세금 규칙\n"
+"=============================\n"
+"- 고용 및 실업 관련 사회 보장 보험료 및 보험금 계산\n"
+"- 소득세 계산\n"
+"- 인지대 세금 공제\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_mt_reports
@@ -7525,6 +7568,8 @@ msgid ""
 "\n"
 "Module for ledger reports\n"
 msgstr ""
+"\n"
+"M원장 보고서용 모듈\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_hr_recruitment_integration_monster
@@ -7568,6 +7613,10 @@ msgid ""
 "Official website: https://sie.se/\n"
 "XSD and documentation: https://sie.se/format/\n"
 msgstr ""
+"\n"
+"회계 데이터를 SIE 4 표준 파일로 내보내는 모듈입니다.\n"
+"공식 웹사이트: https://sie.se/\n"
+"XSD 및 문서: https://sie.se/format/\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_fr_fec_import
@@ -7674,6 +7723,10 @@ msgid ""
 "Official website: https://sie.se/\n"
 "XSD and documentation: https://sie.se/format/\n"
 msgstr ""
+"\n"
+"SIE 4 표준 파일 가져오기용 모듈입니다.\n"
+"공식 웹사이트: https://sie.se/\n"
+"XSD 및 문서: https://sie.se/format/\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_se_sie_import
@@ -8012,6 +8065,10 @@ msgid ""
 "The Independent Authority for Public Revenue (IAPR),\n"
 "to digitize business tax and accounting information declaration.\n"
 msgstr ""
+"\n"
+"MyDATA는 그리스 국세청인,\n"
+"공공세무독립청(IAPR)에서\n"
+"사업자의 세무 및 회계 정보 신고를 디지털화하기 위해 구축한 플랫폼입니다.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_nz
@@ -8462,10 +8519,10 @@ msgstr ""
 "이 모듈을 통해 대상 국가에 부합하도록 전화번호 인증 및 번호 형식  지정 기능을\n"
 "사용할 수 있습니다.\n"
 "\n"
-"특정 모델을 통해서 블랙리스트에 올린 전화번호를 관리하는 전화 블랙리스트 관리 기능도\n"
+"특정 모델을 통해서 블랙리스트에 올린 전화번호를 관리하는 수신 거부 전화 관리 기능도\n"
 "추가되어 있습니다.\n"
 "\n"
-"저장한 번호에 대한 검증 및 블랙리스트 처리를 관리하는 mail.thread.phone 기능도 \n"
+"저장한 번호에 대한 검증 및 수신 거부 처리를 관리하는 mail.thread.phone 기능도 \n"
 "추가되어 있습니다. "
 
 #. module: base
@@ -8696,6 +8753,8 @@ msgid ""
 "\n"
 "Report ledger for Bulgaria\n"
 msgstr ""
+"\n"
+"불가리아 원장 보고서\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_it_riba
@@ -9924,6 +9983,17 @@ msgid ""
 "- Taxes\n"
 "- Tax report\n"
 msgstr ""
+"\n"
+"Odoo 방글라데시 회계 계정과목표를 관리하기 위한 기본 모듈입니다.\n"
+"===================================================================================\n"
+"\n"
+"방글라데시 회계 기본 계정과목표 및 현지화.\n"
+"\n"
+"활성화 항목:\n"
+"\n"
+"- 계정과목표\n"
+"- 세금\n"
+"- 세금 신고서\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_be
@@ -11247,13 +11317,13 @@ msgid ""
 "Forecast shifts and keep an eye on the hours consumed on your plannable products.\n"
 msgstr ""
 "\n"
-"이 모듈을 통해서 제품 구성 내용을 바탕으로 판매 주문을 예약할 수 있습니다.\n"
+"이 모듈을 통해 제품 구성을 바탕으로 판매주문서를 예약할 수 있습니다.\n"
 "\n"
-"\"서비스 계획\" 옵션이 활성화되어 있는 제품의 경우, 교대 근무가 가능한 직원 정보 관련\n"
-"변동 사항을 자동으로 예측할 수 있습니다.\n"
-"(예: 제품에서 설정되어 있는 내용에 부합하게 업무 역할이 있는 직원)\n"
+"특히 \"서비스 계획\" 옵션이 활성화되어 있는 제품의 경우에는, 교대 근무가 가능한 직원을\n"
+"자동으로 예측하는 기능을 활용할 수 있습니다\n"
+"(이 경우, 직원은 제품에 지정되어 있는 역할과 동일한 업무를 맡고 있는 직원임).\n"
 "\n"
-"교대 근무 내용을 예측하여 계획 중인 제품에 소요되는 시간을 검토해보십시오.\n"
+"교대 근무를 예측하고 계획 대상 제품에 투입되는 시간을 관리해 보세요.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_sale_planning
@@ -11268,13 +11338,13 @@ msgid ""
 "Plan shifts and keep an eye on the hours consumed on your plannable products.\n"
 msgstr ""
 "\n"
-"이 모듈을 통해서 제품 구성 내용을 바탕으로 판매 주문을 예약할 수 있습니다.\n"
+"이 모듈을 통해 제품 구성을 바탕으로 판매주문서를 예약할 수 있습니다.\n"
 "\n"
-"\"서비스 계획\" 옵션이 활성화되어 있는 제품의 경우, 교대 근무가 가능한 직원 정보 관련\n"
-"변동 사항을 자동으로 예측할 수 있습니다.\n"
-"(예: 제품에서 설정되어 있는 내용에 부합하게 업무 역할이 있는 직원)\n"
+"특히 \"서비스 계획\" 옵션이 활성화되어 있는 제품의 경우에는, 교대 근무가 가능한 직원을\n"
+"자동으로 계획하는 기능을 활용할 수 있습니다\n"
+"(이 경우, 직원은 제품에 지정되어 있는 역할과 동일한 업무를 맡고 있는 직원임).\n"
 "\n"
-"근무 교대를 계획하여 계획이 가능한 제품에 소요되는 시간을 검토해보십시오.\n"
+"교대 근무를 계획하고 계획 대상 제품에 투입되는 시간을 관리해 보세요.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_website_sale_renting
@@ -11560,10 +11630,10 @@ msgid ""
 "The service is provided by the In App Purchase Odoo platform.\n"
 msgstr ""
 "\n"
-"이 모듈은 SMS 문자 메시지를 위한 프레임 워크를 제공합니다.\n"
+"이 모듈을 통해 SMS 문자 메시지 발송용 형식을 활용할 수 있습니다.\n"
 "----------------------------------------------------\n"
 "\n"
-"이 서비스는 인앱 구매 Odoo 플랫폼에서 제공합니다.\n"
+"이 서비스는 인앱 결제 Odoo 플랫폼에서 제공합니다.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_contacts
@@ -12317,6 +12387,8 @@ msgid ""
 "\n"
 "This module provides the point of sale function of the Odoo Mobile App.\n"
 msgstr ""
+"\n"
+"이 모듈을 통해 Odoo 모바일 앱에서 POS 기능을 제공합니다.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_es_edi_tbai
@@ -13071,6 +13143,8 @@ msgid ""
 "\n"
 "eFaktura E-invoice implementation for Serbia\n"
 msgstr ""
+"\n"
+"세르비아 eFaktura 전자 청구서 구현\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_be_hr_payroll_dmfa_sftp
@@ -13880,6 +13954,8 @@ msgid ""
 "<span invisible=\"evaluation_type != 'value' or update_field_type in "
 "['one2many', 'many2many']\">to</span>"
 msgstr ""
+"<span invisible=\"evaluation_type != 'value' or update_field_type in "
+"['one2many', 'many2many']\"></span>"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_server_action_form
@@ -13887,6 +13963,8 @@ msgid ""
 "<span invisible=\"evaluation_type != 'value' or update_field_type not in "
 "['one2many', 'many2many']\">by</span>"
 msgstr ""
+"<span invisible=\"evaluation_type != 'value' or update_field_type not in "
+"['one2many', 'many2many']\">작성자</span>"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_partner_form
@@ -14469,7 +14547,7 @@ msgstr "인도 지역을 담당하는 결제대행업체입니다."
 #. module: base
 #: model:ir.module.module,summary:base.module_payment_nuvei
 msgid "A payment provider covering Latin America."
-msgstr ""
+msgstr "라틴 아메리카 지역에서 이용할 수 있는 결제대행업체입니다."
 
 #. module: base
 #: model:ir.module.module,summary:base.module_payment_mercado_pago
@@ -15318,7 +15396,7 @@ msgstr "고객이 Stripe으로 결제할 수 있는 셀프 주문 앱용 애드�
 #. module: base
 #: model:ir.module.module,description:base.module_tests
 msgid "Addons to test Odoo industries code."
-msgstr ""
+msgstr "Odoo 인더스트리 코드 테스트용 애드온"
 
 #. module: base
 #. odoo-python
@@ -17477,7 +17555,7 @@ msgstr "아르메니아"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_art_craft
 msgid "Arts & Crafts Store"
-msgstr ""
+msgstr "공예점"
 
 #. module: base
 #: model:res.country,name:base.aw
@@ -18172,7 +18250,7 @@ msgstr "방문자에게 메일링 리스트에 가입하도록 유도"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_certification_organism
 msgid "Audit & Certification"
-msgstr ""
+msgstr "감사 및 인증"
 
 #. module: base
 #: model:res.currency,currency_subunit_label:base.ISK
@@ -18455,7 +18533,7 @@ msgstr "직원 계약을 기반으로 한 자동화 규칙"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_automobile
 msgid "Automobile Spare Parts"
-msgstr ""
+msgstr "차량 예비용 부품"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_actions_server__available_model_ids
@@ -18766,7 +18844,7 @@ msgstr "은행은 귀하 및 귀하의 지인들이 계좌를 가지고 있는 �
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_bar_industry
 msgid "Bar & Pub"
-msgstr ""
+msgstr "바 & 펍"
 
 #. module: base
 #: model:res.country,name:base.bb
@@ -18993,7 +19071,7 @@ msgstr "벨기에 Intrastat 선언"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_intrastat_services
 msgid "Belgian Intrastat Declaration (Services)"
-msgstr ""
+msgstr "벨기에 인트라스탯 신고서(서비스)"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_pos_restaurant
@@ -19073,12 +19151,12 @@ msgstr "벨기에 - 급여 - Dimona"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_hr_payroll_dmfa_sftp
 msgid "Belgium - Payroll - DmfA SFTP"
-msgstr ""
+msgstr "벨기에 - 급여 - DmfA SFTP"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_hr_payroll_acerta
 msgid "Belgium - Payroll - Export to Acerta"
-msgstr ""
+msgstr "벨기에 - 급여 - Acerta로 내보내기"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_hr_payroll_group_s
@@ -19093,7 +19171,7 @@ msgstr "벨기에 - 급여 - Partena로 내보내기."
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_hr_payroll_prisma
 msgid "Belgium - Payroll - Export to Prisma"
-msgstr ""
+msgstr "벨기에 - 급여 - Prisma로 내보내기"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_be_hr_payroll_sd_worx
@@ -19384,7 +19462,7 @@ msgstr "판매용 브라질 회계 EDI"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_br_edi_pos
 msgid "Brazilian Accounting EDI for POS"
-msgstr ""
+msgstr "POS용 브라젤 회계 EDI"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_br_edi_website_sale
@@ -19632,12 +19710,12 @@ msgstr "불가리아 - 회계 보고서"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_bg_reports_ledger
 msgid "Bulgaria - Accounting Reports Ledger"
-msgstr ""
+msgstr "불가리아 - 회계 보고서 원장"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_bg_ledger
 msgid "Bulgaria - Report ledger"
-msgstr ""
+msgstr "불가리아 - 보고서 원장"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_asset__bundle
@@ -20637,7 +20715,7 @@ msgstr "콜롬비아 회계 및 세무 사전설정"
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_co_edi_mandate
 msgid "Colombian EDI Mandate Invoicing extension"
-msgstr ""
+msgstr "콜롬비아 EDI 필수 청구서 발행 확장판"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_co_dian
@@ -21036,7 +21114,7 @@ msgstr "하드웨어 주변 기기에 웹 클라이언트 연결"
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_gr_edi
 msgid "Connect to MyDATA API implementation for Greece"
-msgstr ""
+msgstr "그리스 MyDATA API 구현에 연결하기"
 
 #. module: base
 #. odoo-python
@@ -21215,7 +21293,7 @@ msgstr "연락처에는 이름이 필요합니다."
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.module_form
 msgid "Contains In-App Purchases"
-msgstr "인앱 구매 포함"
+msgstr "인앱 결제 포함"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_embedded_actions__context
@@ -22002,7 +22080,7 @@ msgstr "사용자 지정 필드"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_custom_furniture
 msgid "Custom Furniture Production"
-msgstr ""
+msgstr "맞춤형 가구 제품"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_model__state__manual
@@ -22132,8 +22210,8 @@ msgstr "D - 전기, 가스, 난방기 및 에어컨 공급업체"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery_dhl
-msgid "DHL Express Shipping"
-msgstr "DHL 익스프레스 선적"
+msgid "DHL Express Shipping (Legacy)"
+msgstr "DHL 익스프레스 선적 (레거시)"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_din5008
@@ -23000,9 +23078,9 @@ msgid ""
 "%(country_name)s: the name of the country\n"
 "%(country_code)s: the code of the country"
 msgstr ""
-"이 국가에 속한 주소에 사용할 형식을 표시합니다.\n"
+"주소가 해당 국가에 위치하고 있을 경우 적용될 표시 형식입니다.\n"
 "\n"
-"주소의 모든 필드에 파이썬 스타일의 문자열 패턴을 사용할 수 있습니다 (예 : '%(street)s'를 사용하여  '도로명' 필드 표시)\n"
+"모든 주소 필드에 파이썬 스타일의 문자열 패턴을 사용할 수 있습니다 (예 : '%(street)s' 를 활용하여 '도로명' 필드 표시)\n"
 "%(state_name)s: 시/도명\n"
 "%(state_code)s: 시/도 코드\n"
 "%(country_name)s: 국가명\n"
@@ -23373,7 +23451,7 @@ msgstr "루마니아의 전자 청구서 구현"
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_rs_edi
 msgid "E-Invoice implementation for Serbia"
-msgstr ""
+msgstr "세르비아 전자 청구서 구현"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_dk_oioubl
@@ -24062,7 +24140,7 @@ msgstr "에스토니아 - 반올림"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_ee_intrastat
 msgid "Estonia Intrastat Declaration"
-msgstr ""
+msgstr "에스토니아 인트라스탯 신고"
 
 #. module: base
 #: model:res.country,name:base.sz
@@ -24823,7 +24901,7 @@ msgstr "내보내기"
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_se_sie4_export
 msgid "Export Accounting Data to SIE 4 files"
-msgstr ""
+msgstr "SIE 4 파일로 회계 데이터 내보내기"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.wizard_lang_export
@@ -24871,7 +24949,7 @@ msgstr "ADP로 작업 항목 내보내기"
 #: model:ir.module.module,description:base.module_l10n_be_hr_payroll_acerta
 #: model:ir.module.module,summary:base.module_l10n_be_hr_payroll_acerta
 msgid "Export Work Entries to Acerta"
-msgstr ""
+msgstr "Acerta로 작업 항목 내보내기"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_be_hr_payroll_group_s
@@ -24889,7 +24967,7 @@ msgstr "Partena로 작업 항목 내보내기."
 #: model:ir.module.module,description:base.module_l10n_be_hr_payroll_prisma
 #: model:ir.module.module,summary:base.module_l10n_be_hr_payroll_prisma
 msgid "Export Work Entries to Prisma"
-msgstr ""
+msgstr "Prisma로 작업 항목 내보내기"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_be_hr_payroll_sd_worx
@@ -25014,7 +25092,7 @@ msgstr "외부 식별 기호"
 msgid ""
 "External Key/Identifier that can be used for data integration with third-"
 "party systems"
-msgstr "타사 시스템과의 데이터 통합에 사용할 수 있는 외부 키/식별 기호"
+msgstr "외부 기관의 시스템과의 데이터 통합에 사용할 수 있는 외부 키/식별 기호"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_subscription_external_tax
@@ -25809,7 +25887,7 @@ msgstr "강좌 포럼"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_coal_petroleum
 msgid "Fossil Fuel Trading"
-msgstr ""
+msgstr "화석 연료 거래"
 
 #. module: base
 #. odoo-python
@@ -25906,7 +25984,7 @@ msgstr "프랑스 Intrastat 선언"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_fr_intrastat_services
 msgid "French Intrastat Declaration (Services)"
-msgstr ""
+msgstr "프랑스 인트라스탯 신고서(서비스)"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_fr_hr_payroll
@@ -26441,7 +26519,7 @@ msgstr "그리스 - 회계 보고서"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_gr_edi
 msgid "Greece - MyDATA"
-msgstr ""
+msgstr "그리스 - MyDATA"
 
 #. module: base
 #: model:res.country,name:base.gl
@@ -26797,7 +26875,7 @@ msgstr "모든 보고서의 상단에 표시되는 머리말 문구입니다."
 #. module: base
 #: model:ir.module.category,name:base.module_category_health_and_fitness
 msgid "Health and Fitness"
-msgstr ""
+msgstr "헬스 및 피트니스"
 
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_Q
@@ -27398,7 +27476,7 @@ msgstr "ISO 코드"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_it_hardware
 msgid "IT Hardware & Support"
-msgstr ""
+msgstr "IT 하드웨어 및 지원"
 
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_J
@@ -27739,12 +27817,12 @@ msgstr "SAF-T 파일에서 회계 데이터 가져오기"
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_se_sie4_import
 msgid "Import Accounting Data from SIE 4 files"
-msgstr ""
+msgstr "SIE 4 파일에서 회계 데이터 가져오기"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_l10n_se_sie_import
 msgid "Import Accounting Data from SIE 5 files"
-msgstr ""
+msgstr "SIE 5 파일에서 회계 데이터 가져오기"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_sale_amazon
@@ -27854,7 +27932,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_iap
 msgid "In-App Purchases"
-msgstr "인앱 구입"
+msgstr "인앱 결제"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_currency_search
@@ -28110,7 +28188,7 @@ msgstr "인도네시아 전자 팩스"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_id_efaktur_coretax
 msgid "Indonesia E-faktur (Coretax)"
-msgstr ""
+msgstr "인도네시아 E-faktur (Coretax)"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_id
@@ -28301,7 +28379,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_pine_labs
 msgid "Integrate your POS with Pine Labs payment terminals"
-msgstr ""
+msgstr "POS를 Pine Labs 결제 단말기와 통합하세요"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_paytm
@@ -28331,7 +28409,7 @@ msgstr "POS를 Stripe 결제용 단말기와 통합"
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_tyro
 msgid "Integrate your POS with a Tyro payment terminal (AU)"
-msgstr ""
+msgstr "POS를 Tyro 결제 단말기(AU)와 통합 사용"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_viva_wallet
@@ -28463,7 +28541,7 @@ msgstr "Intrastat 보고서"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_account_intrastat_services
 msgid "Intrastat Reports for Services"
-msgstr ""
+msgstr "인트라스탯 서비스 보고서"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.report_irmodulereference
@@ -28952,7 +29030,7 @@ msgstr "이탈리아 - POS"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_it_edi_sale
 msgid "Italy - Sale E-invoicing"
-msgstr ""
+msgstr "이탈리아 - 판매용 전자 청구서"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_it_stock_ddt
@@ -28962,7 +29040,7 @@ msgstr "이탈리아 - 재고 DDT"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_it_xml_export
 msgid "Italy - Tax Report XML Export"
-msgstr ""
+msgstr "이탈리아 - 세금 신고서 XML 내보내기"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_it_edi_website_sale
@@ -29953,7 +30031,7 @@ msgstr "pos_sale과 l10n_be 간의 연결 모듈"
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_event_sale
 msgid "Link module between pos_sale and pos_event"
-msgstr ""
+msgstr "pos_sale 과 pos_event 사이의 연결 모듈"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_sale_loyalty
@@ -30444,12 +30522,12 @@ msgstr "말레이시아 - 전자 청구서 기능 확장"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_my_hr_payroll
 msgid "Malaysia - Payroll"
-msgstr ""
+msgstr "말레이시아 - 급여"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_my_hr_payroll_account
 msgid "Malaysia - Payroll with Accounting"
-msgstr ""
+msgstr "말레이시아 - 회계 및 급여"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_my_ubl_pint
@@ -30644,8 +30722,9 @@ msgid ""
 "assigned to specific groups in order to make them accessible to some users "
 "within the system."
 msgstr ""
-"사용자 메뉴 항목을 관리하고 사용자 정의합니다. 각 줄 앞에 상자를 클릭하여 나타나는 단추를 클릭하여 삭제할 수 있습니다. 메뉴 항목을 "
-"특정 사용자 그룹에 할당하여 시스템의 특정 기능을 사용할 수 있습니다."
+"Odoo 시스템 메뉴에 있는 사용 항목을 관리하고 사용자 지정합니다. 삭제하려는 항목을 있을 경우에는 각 행의 시작 부분에 있는 상자를 "
+"클릭하면 나타나는 버튼을 클릭합니다. 특정 사용자 그룹에 메뉴 항목을 지정할 수 있으며 이렇게 지정해 두면 시스템 내 일부 사용자만 "
+"접근할 수 있습니다."
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_slides
@@ -30847,7 +30926,7 @@ msgstr "마나트"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_co_edi_mandate
 msgid "Mandate invoicing for Colombia"
-msgstr ""
+msgstr "콜롬비아 청구서 발행 위임"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_manufacturing
@@ -31013,7 +31092,7 @@ msgstr "판매 주문 고나련 대량 문자 발송"
 #: model:ir.module.module,description:base.module_hr_recruitment_sms
 #: model:ir.module.module,summary:base.module_hr_recruitment_sms
 msgid "Mass mailing sms to job applicants"
-msgstr ""
+msgstr "입사 지원자에게 대량 메일 발송"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_mrp_mps
@@ -31901,10 +31980,9 @@ msgid ""
 "required by the client to appear as a third party in the context of any "
 "claim for damages filed against the client by an end consumer."
 msgstr ""
-"My Company (샌프란시스코)는 합의된 기간 동안 적시에 뛰어난 성능을 가져오기 위한 서비스를 제공하기 위해 최선을 다할 것을 "
-"약속합니다. 그러나, 의무 사항 중 그 어떤 것도 결과를 달성하는 것을 담보하는 의무로 간주될 수 없습니다. My Company "
-"(샌프란시스코)는 어떤 상황에서도 최종 소비자가 고객을 상대로 손해배상청구를 제기하는 경우 고객이 제3자로 당사를 지정하도록 할 수 "
-"없습니다."
+"My Company(샌프란시스코)는 합의된 기간 동안 적시에 성과를 목표로 서비스를 제공하기 위해 최선을 다할 것을 약속합니다. 그러나 "
+"그 어떤 의무 사항도 결과를 달성하는 것을 담보하는 의무로 간주될 수 없습니다. My Company(샌프란시스코)는 어떠한 경우에도 최종"
+" 소비자가 고객을 상대로 제기하는 손해배상 청구와 관련하여 고객이 당사를 제3자로 출석하도록 요구할 수 없습니다."
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_attachment_search
@@ -32383,10 +32461,9 @@ msgid ""
 "This here module is useful to validate that they're doing what they're \n"
 "supposed to do\n"
 msgstr ""
-"타사 테스트 유틸리티에는 모델 및 모든 것이 필요할 수 있습니다.\n"
+"비단순 테스트 유틸리티에는 모델 및 전체 내용이 필요할 수 있습니다.\n"
 "\n"
-"이 모듈은 그들이 해야 할 일을 하고 있는지 확인하는 데 \n"
-"유용합니다.\n"
+"이 모듈은 유틸리티가 제대로 작동하는지 확인해야 할 때 유용합니다..\n"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_mail_server__smtp_encryption__none
@@ -33477,7 +33554,7 @@ msgstr "Odoo 모바일 코어 모듈"
 #. module: base
 #: model:ir.module.module,summary:base.module_pos_mobile
 msgid "Odoo Mobile Point of Sale module"
-msgstr ""
+msgstr "Odoo 모바일 POS 모듈"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_odoo_partner
@@ -34593,7 +34670,7 @@ msgstr "하루에 오직 하나의 환율만 허용됩니다!"
 #. module: base
 #: model:ir.model.constraint,message:base.constraint_decimal_precision_name_uniq
 msgid "Only one value can be defined for each given usage!"
-msgstr "각 주어진 사용에는 하나의 값만 정의할 수 있습니다!"
+msgstr "각각의 사례에는 하나의 값만 지정할 수 있습니다!"
 
 #. module: base
 #. odoo-python
@@ -35165,10 +35242,10 @@ msgid ""
 "due. My Company (San Francisco) will be authorized to suspend any provision "
 "of services without prior warning in the event of late payment."
 msgstr ""
-"당사의 청구 대금은 청구서 또는 주문서에 별도의 지급 기간이 명시되어 있지 않는 한, 영업일 기준으로 21일 이내에 지급되어야 합니다. "
-"만약 기한일까지 결제가 완료되지 않은 경우 My Company(San Francisco)는 미납 금액의 10%에 해당하는 고정 이자를 "
-"청구할 권한을 보유합니다. 또한 My Company(San Francisco)는 연체 발생 시 사전 통지 없이 서비스 제공을 중단할 "
-"권한을 보유합니다."
+"당사의 청구 대금은 청구서 또는 주문서에 별도의 지급 기간이 명시되어 있지 않는 한, 영업일 기준으로 21일 이내에 완납되어야 합니다. "
+"만약 기한일까지 대금이 미납될 경우 My Company(San Francisco)는 미납 금액의 10%에 해당하는 고정 이자를 청구할 "
+"권리를 가집니다. 또한 My Company(San Francisco)는 연체 발생 시 사전 통지 없이 서비스 제공을 중단할 권한을 "
+"보유합니다."
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_outdoor_activities
@@ -35334,7 +35411,7 @@ msgstr "POS PayTM"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_pine_labs
 msgid "POS Pine Labs"
-msgstr ""
+msgstr "POS Pine Labs"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_pricer
@@ -36118,7 +36195,7 @@ msgstr "결제대행업체: Mollie"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_payment_nuvei
 msgid "Payment Provider: Nuvei"
-msgstr ""
+msgstr "결제대행업체: Nuvei"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_payment_paypal
@@ -36442,7 +36519,7 @@ msgstr "암호를 변경하려면 암호 변경 마법사(사용자 프로필 �
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_event_sale
 msgid "PoS - Event Sale"
-msgstr ""
+msgstr "POS - 행사 판매"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_order_tracking_display
@@ -36496,7 +36573,7 @@ msgstr "POS 할인"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_mobile
 msgid "Point of Sale Mobile"
-msgstr ""
+msgstr "모바일 POS"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_sale_stock_renting
@@ -37266,7 +37343,7 @@ msgstr ""
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_condominium
 msgid "Property Owner Association"
-msgstr "부동산 소유자 협회"
+msgstr "부동산 소유주 조합"
 
 #. module: base
 #: model:res.partner.category,name:base.res_partner_category_2
@@ -37860,7 +37937,7 @@ msgstr "채용"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_recruitment_sms
 msgid "Recruitment - SMS"
-msgstr ""
+msgstr "채용 - SMS"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_recruitment_sign
@@ -38061,7 +38138,7 @@ msgstr "제거"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_renting
 msgid "Rental"
-msgstr "임대하기"
+msgstr "렌탈"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_mrp_renting
@@ -38505,7 +38582,7 @@ msgstr "규칙"
 #. odoo-python
 #: code:addons/base/models/ir_rule.py:0
 msgid "Rules can not be applied on the Record Rules model."
-msgstr "레코드 규칙 모델에는 규칙을 적용할 수 없습니다."
+msgstr "레코드 규칙 모델에 규칙을 적용할 수 없습니다."
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_server_action_form
@@ -38932,7 +39009,7 @@ msgstr "브라질의 판매 변경 사항"
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_it_edi_sale
 msgid "Sale modifications for Italy E-invoicing"
-msgstr ""
+msgstr "이탈리아 전자 청구서의 판매 변경 사항"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_spreadsheet_sale_management
@@ -39549,8 +39626,13 @@ msgstr "shiprocket를 통해 소포를 발송하고 온라인에서 배송 현�
 
 #. module: base
 #: model:ir.module.module,description:base.module_delivery_dhl
-msgid "Send your shippings through DHL and track them online"
-msgstr "DHL을 통한 상품 운송 및 온라인 물류 정보 추적"
+msgid ""
+"This is the legacy integration with DHL Express that is no longer supported."
+" Please install the new \"DHL Express Shipping\" module and uninstall this "
+"one as soon as possible."
+msgstr ""
+"더 이상 지원되지 않는 DHL Express 통합 레거시 버전입니다. 새로운 'DHL Express 배송' 모듈을 설치 후 최대한 빠른 "
+"시일 내에 해당 모듈을 제거하시기 바랍니다."
 
 #. module: base
 #: model:ir.module.module,description:base.module_delivery_fedex_rest
@@ -39701,7 +39783,7 @@ msgstr "세르비아 - 회계 보고서"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_rs_edi
 msgid "Serbia - eFaktura E-invoicing"
-msgstr ""
+msgstr "세르비아 - eFaktura 전자 청구서"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_logging__type__server
@@ -39931,7 +40013,7 @@ msgstr "활성 통화 표시"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_partner_bank_search
 msgid "Show inactive bank account"
-msgstr ""
+msgstr "비활성화된 은행 계좌 표시"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_currency_search
@@ -40212,7 +40294,7 @@ msgstr "소프트웨어 리셀러"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_solar_installation
 msgid "Solar Energy Systems"
-msgstr ""
+msgstr "태양광 에너지 시스템"
 
 #. module: base
 #: model:res.currency,currency_unit_label:base.PEN
@@ -40256,7 +40338,7 @@ msgstr "죄송합니다, 이 문서를 사용할 수 있는 권한이 없습니�
 #. odoo-python
 #: code:addons/base/models/ir_attachment.py:0
 msgid "Sorry, you are not allowed to write on this document"
-msgstr "죄송합니다, 이 문서를 작성할 수 있는 권한이 없습니다."
+msgstr "죄송합니다, 이 문서를 작성할 권한이 없습니다."
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_filters__sort
@@ -40395,7 +40477,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.actions.act_window,help:base.res_partner_industry_action
 msgid "Specify industries to classify your contacts and draw up reports."
-msgstr "연락처를 분류하고 보고서를 작성할 대상 산업을 지정하십시오."
+msgstr "연락처를 분류하고 보고서를 작성할 인더스트리를 지정하세요."
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_actions_server__crud_model_id
@@ -41000,7 +41082,7 @@ msgstr "수리남"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_surveyor
 msgid "Surveying & Mapping"
-msgstr ""
+msgstr "측량 및 지도 제작"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_marketing_surveys
@@ -41032,17 +41114,17 @@ msgstr "스웨덴 - 회계 보고서"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_se_sie4_export
 msgid "Sweden - SIE 4 Export"
-msgstr ""
+msgstr "스웨덴 - SIE 4 내보내기"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_se_sie4_import
 msgid "Sweden - SIE 4 Import"
-msgstr ""
+msgstr "스웨덴 - SIE 4 가져오기"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_se_sie_import
 msgid "Sweden - SIE 5 Import"
-msgstr ""
+msgstr "스웨덴 - SIE 5 가져오기"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_pos_l10n_se
@@ -42509,7 +42591,7 @@ msgstr "제3자 및 이연/전자 수표 관리"
 #: model:ir.actions.act_url,name:base.action_third_party
 #: model:ir.ui.menu,name:base.menu_third_party
 msgid "Third-Party Apps"
-msgstr "타사 앱"
+msgstr "외부 앱"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_res_lang__iso_code
@@ -42729,6 +42811,8 @@ msgid ""
 "This module allows connection to CodaBox\n"
 "and automatically imports CODA and SODA statements in Odoo.\n"
 msgstr ""
+"이 모듈을 통해 CodaBox에 연결한 후\n"
+"Odoo에서 CODA 및 SODA 명세서를 자동으로 가져올 수 있습니다.\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_account_online_payment
@@ -43352,7 +43436,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/image.py:0
 msgid "Too large image (above %sMpx), reduce the image size."
-msgstr ""
+msgstr "이미지가 너무 큽니다(%sMpx 이상). 이미지 크기를 줄이세요."
 
 #. module: base
 #. odoo-python
@@ -45431,8 +45515,9 @@ msgid ""
 "number upon assignment, there can still be gaps in the sequence if records "
 "are deleted. The 'no gap' implementation is slower than the standard one."
 msgstr ""
-"레코드에 시퀀스 번호를 할당하는 동안 '차이 없음'시퀀스 구현은 각 이전 시퀀스 번호가 이미 할당되었는지 확인합니다. 이 시퀀스 구현은 "
-"할당 시퀀스 번호를 건너뛰지 않지만 레코드가 삭제되면 시퀀스에 틈이 있을 수 있습니다. '차이 없음' 구현은 표준 구현보다 느립니다."
+"레코드에 연번으로 시퀀스 번호를 지정하는 경우, '공백 없음' 으로 시퀀스를 설정하면 이전의 시퀀스 번호가 이미 배정이 된 번호인지 "
+"여부를 확인합니다. 이렇게 시퀀스를 설정할 경우 시퀀스 번호를 지정할 때 건너뛰지는 않지만 레코드가 삭제된 경우에는 시퀀스에 공백이 "
+"발생할 수 있습니다. '공백 없음' 설정을 하면 표준 설정을 할 때보다 속도가 느립니다."
 
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_G

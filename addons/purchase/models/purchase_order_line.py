@@ -226,7 +226,7 @@ class PurchaseOrderLine(models.Model):
     @api.ondelete(at_uninstall=False)
     def _unlink_except_purchase_or_done(self):
         for line in self:
-            if line.order_id.state in ['purchase', 'done']:
+            if line.order_id.state in ['purchase', 'done'] and line.display_type not in ['line_note', 'line_section']:
                 state_description = {state_desc[0]: state_desc[1] for state_desc in self._fields['state']._description_selection(self.env)}
                 raise UserError(_('Cannot delete a purchase order line which is in state “%s”.', state_description.get(line.state)))
 
@@ -465,9 +465,12 @@ class PurchaseOrderLine(models.Model):
         '''
         if not self.product_id:
             return
-        seller_min_qty = self.product_id.seller_ids\
-            .filtered(lambda r: r.partner_id == self.order_id.partner_id and (not r.product_id or r.product_id == self.product_id))\
-            .sorted(key=lambda r: r.min_qty)
+        seller_min_qty = self.product_id._select_seller(
+            partner_id=self.order_id.partner_id,
+            quantity=None,
+            date=self.order_id.date_order and self.order_id.date_order.date() or fields.Date.context_today(self),
+            params=self._get_select_sellers_params(),
+        )
         if seller_min_qty:
             self.product_qty = seller_min_qty[0].min_qty or 1.0
             self.product_uom = seller_min_qty[0].product_uom
@@ -565,8 +568,6 @@ class PurchaseOrderLine(models.Model):
             'purchase_line_id': self.id,
             'is_downpayment': self.is_downpayment,
         }
-        if self.analytic_distribution and not self.display_type:
-            res['analytic_distribution'] = self.analytic_distribution
         return res
 
     @api.model

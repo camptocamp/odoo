@@ -5,7 +5,7 @@
 # Translators:
 # RGB Consulting <odoo@rgbconsulting.com>, 2024
 # Iván Infantes Castarnado, 2024
-# Xavier, 2024
+# Harcogourmet, 2024
 # Arnau Ros, 2024
 # José Cabrera Lozano <jose.cabrera@edukative.es>, 2024
 # Marc Tormo i Bochaca <mtbochaca@gmail.com>, 2024
@@ -21,6 +21,7 @@
 # CristianCruzParra, 2024
 # Óscar Fonseca <tecnico@pyming.com>, 2024
 # Josep Anton Belchi, 2025
+# Noemi Pla, 2025
 # Santiago Payà <santiagopim@gmail.com>, 2025
 # 
 msgid ""
@@ -318,6 +319,15 @@ msgid ""
 "                        outside the box. We expect the candidate to be proactive and have a \"get it done\"\n"
 "                        spirit. To be successful, you will have solid solving problem skills."
 msgstr ""
+"Com a empleat de la nostra empresa, <b>col·laboraràs amb tots els departaments\n"
+"                        per crear i implementar productes revolucionaris.</b> Vine a treballar a una empresa en creixement\n"
+"                        que ofereix grans beneficis amb oportunitats per avançar i aprendre\n"
+"                        de la mà de líders amb una trajectòria destacada. Busquem una persona\n"
+"                        amb experiència.\n"
+"                        <br><br>\n"
+"                        Aquesta posició és tan <b>creativa com rigorosa</b> per naturalesa; cal que pensis de manera\n"
+"                        innovadora. Què esperem del candidat? Que sigui proactiu i tingui un esperit de\n"
+"                        «fer que les coses passin». L'èxit dependrà de la teva habilitat per solucionar problemes."
 
 #. module: sale_timesheet
 #: model_terms:hr.job,website_description:sale_timesheet.job_engineer
@@ -331,7 +341,7 @@ msgstr "Autonomia"
 #: model_terms:hr.job,website_description:sale_timesheet.job_interior_designer
 #: model_terms:hr.job,website_description:sale_timesheet.job_labour
 msgid "Bachelor Degree or Higher"
-msgstr "Grau o Grau Superior"
+msgstr "Grau o superior"
 
 #. module: sale_timesheet
 #. odoo-python
@@ -544,6 +554,11 @@ msgid ""
 "                    Several activities are often organized all over the year, such as weekly\n"
 "                    sports sessions, team building events, monthly drink, and much more"
 msgstr ""
+"Cada empleat té l'oportunitat de veure l'impacte que genera el seu treball.\n"
+"                    Pots contribuir de manera efectiva a l'èxit de l'empresa.\n"
+"                    <br>\n"
+"                    Sovint s'organitzen activitats, per exemple,\n"
+"                    sessions esportives setmanals, esdeveniments de team building, trobades socials mensuals i molt  més"
 
 #. module: sale_timesheet
 #: model_terms:hr.job,website_description:sale_timesheet.job_engineer
@@ -1605,8 +1620,8 @@ msgstr "Mostra els fulls d'hores"
 #: model_terms:ir.ui.view,arch_db:sale_timesheet.view_product_timesheet_form
 msgid "Warn the salesperson for an upsell when work done exceeds"
 msgstr ""
-"Avisa al comercial d'una venda addicional quan el treball realitzat "
-"s'excedeixi"
+"Aviseu el comercial per realitzar una venda addicional quan el treball "
+"realitzat superi el"
 
 #. module: sale_timesheet
 #: model_terms:hr.job,website_description:sale_timesheet.job_engineer

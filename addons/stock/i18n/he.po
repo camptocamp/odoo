@@ -28,12 +28,12 @@
 # yael terner, 2024
 # Uri Segman, 2024
 # Mendi Soudry, 2024
-# Yoram Lavi, 2024
 # ZVI BLONDER <ZVIBLONDER@gmail.com>, 2024
 # MichaelHadar, 2025
 # Lilach Gilliam <lilach.gilliam@gmail.com>, 2025
 # tomerlayline, 2025
 # Hed Shefer <hed@laylinetech.com>, 2025
+# Yoram Lavi, 2025
 # or balmas, 2025
 # 
 msgid ""
@@ -6770,7 +6770,7 @@ msgstr "רענון מלאי מוצר"
 #. module: stock
 #: model:ir.model,name:stock.model_stock_replenish_mixin
 msgid "Product Replenish Mixin"
-msgstr ""
+msgstr "Product Replenish Mixin"
 
 #. module: stock
 #: model:ir.actions.report,name:stock.action_report_stock_rule
@@ -8968,6 +8968,9 @@ msgid ""
 "order to be valid, any derogation must be expressly agreed to in advance in "
 "writing."
 msgstr ""
+"הלקוח מוותר במפורש על התנאים וההתניות הסטנדרטיים שלו, גם אם נוסחו לאחר תנאי "
+"מכירה סטנדרטיים אלה. כל סטייה מהתנאים תחייב תוקף רק אם סוכמה מראש ובכתב "
+"באופן מפורש."
 
 #. module: stock
 #. odoo-python

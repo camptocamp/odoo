@@ -21,6 +21,17 @@ registry.category("web_tour.tours").add("self_mobile_each_table_takeaway_in", {
         Utils.clickBtn("Pay"),
         Utils.clickBtn("Ok"),
         Utils.checkIsNoBtn("Order Now"),
+        Utils.clickBtn("My Order"),
+        ...CartPage.cancelOrder(),
+        Utils.checkBtn("Order Now"),
+        Utils.checkBtn("My Orders"),
+        Utils.clickBtn("Order Now"),
+        LandingPage.selectLocation("Eat In"),
+        ProductPage.clickProduct("Coca-Cola"),
+        Utils.clickBtn("Order"),
+        CartPage.checkProduct("Coca-Cola", "2.53", "1"),
+        CartPage.removeLine("Coca-Cola"),
+        ProductPage.isShown(),
     ],
 });
 
@@ -244,4 +255,21 @@ registry.category("web_tour.tours").add("SelfOrderOrderNumberTour", {
         Utils.clickBtn("Ok"),
         Utils.checkIsNoBtn("Ok"),
     ],
+});
+
+registry.category("web_tour.tours").add("self_order_mobile_0_price_order", {
+    steps: () =>
+        [
+            Utils.checkIsNoBtn("My Order"),
+            Utils.clickBtn("Order Now"),
+            LandingPage.selectLocation("Eat In"),
+            ProductPage.clickProduct("Ketchup"),
+            Utils.clickBtn("Order"),
+            CartPage.checkProduct("Ketchup", "0", "1"),
+            Utils.clickBtn("Pay"),
+            CartPage.selectTable("3"),
+            ConfirmationPage.isShown(),
+            Utils.clickBtn("Ok"),
+            Utils.clickBtn("My Order"),
+        ].flat(),
 });

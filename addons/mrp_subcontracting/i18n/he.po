@@ -17,6 +17,7 @@
 # Yihya Hugirat <hugirat@gmail.com>, 2024
 # דודי מלכה <Dudimalka6@gmail.com>, 2024
 # tomerlayline, 2024
+# Yoram Lavi, 2025
 # or balmas, 2025
 # 
 msgid ""
@@ -94,6 +95,8 @@ msgid ""
 "company. Note that standard subcontracting routes will be adapted so as to "
 "take these into account automatically."
 msgstr ""
+"סמן תיבה זו כדי ליצור מיקום חדש וייעודי לקבלנות משנה עבור חברה זו. שים לב "
+"שמסלולי הקבלנות הסטנדרטיים יעודכנו בהתאם כך שיתחשבו במיקום זה באופן אוטומטי."
 
 #. module: mrp_subcontracting
 #: model:ir.model.fields,help:mrp_subcontracting.field_product_supplierinfo__is_subcontractor
@@ -210,7 +213,7 @@ msgstr ""
 #. module: mrp_subcontracting
 #: model:ir.model.fields,field_description:mrp_subcontracting.field_stock_location__is_subcontracting_location
 msgid "Is a Subcontracting Location?"
-msgstr ""
+msgstr "האם מיקום לקבלני משנה?"
 
 #. module: mrp_subcontracting
 #: model:ir.model.fields,help:mrp_subcontracting.field_mrp_production__bom_product_ids
@@ -309,7 +312,7 @@ msgstr "תנועות המוצר (תנועת שורת מלאי)"
 #. module: mrp_subcontracting
 #: model:ir.model,name:mrp_subcontracting.model_stock_replenish_mixin
 msgid "Product Replenish Mixin"
-msgstr ""
+msgstr "Product Replenish Mixin"
 
 #. module: mrp_subcontracting
 #: model:ir.model,name:mrp_subcontracting.model_product_product
@@ -585,6 +588,8 @@ msgid ""
 "Wizard in case of consumption in warning/strict and more component has been "
 "used for a MO (related to the bom)"
 msgstr ""
+"אשף במקרה של צריכה תחת אזהרה/חומרה, כאשר נעשה שימוש ביותר רכיבים מהמצופה על "
+"פי עץ המוצר בהזמנת ייצור (בהקשר לעץ מוצר)."
 
 #. module: mrp_subcontracting
 #. odoo-python

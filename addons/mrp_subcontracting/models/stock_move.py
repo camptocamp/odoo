@@ -59,8 +59,8 @@ class StockMove(models.Model):
         return res
 
     def _compute_picked(self):
-       subcontracted_moves = self.filtered(lambda m: m.is_subcontract)
-       super(StockMove, self - subcontracted_moves)._compute_picked()
+        subcontracted_moves = self.filtered(lambda m: m.is_subcontract and float_compare(m.product_uom_qty, m.quantity, precision_rounding=m.product_uom.rounding) != 0)
+        super(StockMove, self - subcontracted_moves)._compute_picked()
 
     def _set_quantity_done(self, qty):
         to_set_moves = self
@@ -304,6 +304,9 @@ class StockMove(models.Model):
         if not should_bypass_reservation and self.is_subcontract:
             return True
         return should_bypass_reservation
+
+    def _get_available_move_lines(self, assigned_moves_ids, partially_available_moves_ids):
+        return super(StockMove, self.filtered(lambda m: not m.is_subcontract))._get_available_move_lines(assigned_moves_ids, partially_available_moves_ids)
 
     def _update_subcontract_order_qty(self, new_quantity):
         for move in self:

@@ -12,8 +12,10 @@ from odoo import api, fields, models, _
 from odoo.osv import expression
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, mute_logger
 from odoo.exceptions import ValidationError, UserError
-from odoo.addons.base.models.res_partner import WARNING_MESSAGE, WARNING_HELP
 from odoo.tools import SQL, unique
+
+from odoo.addons.account.models.account_move import BYPASS_LOCK_CHECK
+from odoo.addons.base.models.res_partner import WARNING_MESSAGE, WARNING_HELP
 from odoo.addons.base_vat.models.res_partner import _ref_vat
 
 _logger = logging.getLogger(__name__)
@@ -346,6 +348,7 @@ class ResPartner(models.Model):
     fiscal_country_codes = fields.Char(compute='_compute_fiscal_country_codes')
     partner_vat_placeholder = fields.Char(compute='_compute_partner_vat_placeholder')
     partner_company_registry_placeholder = fields.Char(compute='_compute_partner_company_registry_placeholder')
+    duplicate_bank_partner_ids = fields.Many2many(related="bank_ids.duplicate_bank_partner_ids")
 
     @api.depends('company_id')
     @api.depends_context('allowed_company_ids')
@@ -608,6 +611,7 @@ class ResPartner(models.Model):
     )
 
     # Technical field holding the amount partners that share the same account number as any set on this partner.
+    # TODO remove in master
     duplicated_bank_account_partners_count = fields.Integer(
         compute='_compute_duplicated_bank_account_partners_count',
     )
@@ -657,6 +661,7 @@ class ResPartner(models.Model):
                     partner.supplier_invoice_count += count
                 partner = partner.parent_id
 
+    # TODO remove in master
     def _get_duplicated_bank_accounts(self):
         self.ensure_one()
         if not self.bank_ids:
@@ -671,7 +676,7 @@ class ResPartner(models.Model):
         return self.env['res.partner.bank'].search(domain)
 
     @api.depends_context('company')
-    @api.depends('commercial_partner_id.country_code')
+    @api.depends('country_code')
     def _compute_invoice_edi_format(self):
         for partner in self:
             if not partner.commercial_partner_id or partner.commercial_partner_id.invoice_edi_format_store == 'none':
@@ -736,6 +741,7 @@ class ResPartner(models.Model):
         action['context'] = {'default_move_type': 'out_invoice', 'move_type': 'out_invoice', 'journal_type': 'sale', 'search_default_unpaid': 1}
         return action
 
+    # TODO remove in master
     def action_view_partner_with_same_bank(self):
         self.ensure_one()
         bank_partners = self._get_duplicated_bank_accounts()
@@ -785,6 +791,24 @@ class ResPartner(models.Model):
         return super().can_edit_vat() and not self._has_invoice(
             [('partner_id', 'child_of', self.commercial_partner_id.id)]
         )
+
+    def write(self, vals):
+        if 'parent_id' in vals:
+            partner2moves = self.sudo().env['account.move'].search([('partner_id', 'in', self.ids)]).grouped('partner_id')
+            parent_vat = self.env['res.partner'].browse(vals['parent_id']).vat
+            if partner2moves and vals['parent_id'] and {parent_vat} != set(self.mapped('vat')):
+                raise UserError(_("You cannot set a partner as an invoicing address of another if they have a different %(vat_label)s.", vat_label=self.vat_label))
+
+        res = super().write(vals)
+
+        if 'parent_id' in vals:
+            for partner, moves in partner2moves.items():
+                partner._compute_commercial_partner()
+                # Make sure to write on all the lines at the same time to avoid breaking the reconciliation check
+                moves.line_ids.with_context(bypass_lock_check=BYPASS_LOCK_CHECK).partner_id = partner.commercial_partner_id
+                moves.with_context(bypass_lock_check=BYPASS_LOCK_CHECK).commercial_partner_id = partner.commercial_partner_id
+                partner._message_log(body=_("The commercial partner has been updated for all related accounting entries."))
+        return res
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -1030,3 +1054,6 @@ class ResPartner(models.Model):
         for partner in self:
             country_code = partner.country_id.code or ''
             partner.partner_company_registry_placeholder = _ref_company_registry.get(country_code.lower(), '')
+
+    def action_open_business_doc(self):
+        return self._get_records_action()

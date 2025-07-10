@@ -36,7 +36,6 @@ import {
     mailDataHelpers,
 } from "./mock_server/mail_mock_server";
 import { Base } from "./mock_server/mock_models/base";
-import { DEFAULT_MAIL_VIEW_ID } from "./mock_server/mock_models/constants";
 import { DiscussChannel } from "./mock_server/mock_models/discuss_channel";
 import { DiscussChannelMember } from "./mock_server/mock_models/discuss_channel_member";
 import { DiscussChannelRtcSession } from "./mock_server/mock_models/discuss_channel_rtc_session";
@@ -142,7 +141,7 @@ export const mailModels = {
  */
 export function onRpcBefore(route, callback) {
     if (typeof route === "string") {
-        const handler = registry.category("mock_rpc").get(route);
+        const handler = registry.category("mail.mock_rpc").get(route);
         patchWithCleanup(handler, { before: callback });
     } else {
         const onRpcBeforeGlobal = registry.category("mail.on_rpc_before_global").get(true);
@@ -158,7 +157,7 @@ export function onRpcBefore(route, callback) {
  * @param {Function} callback - The function to execute just before the end of RPC call.
  */
 export function onRpcAfter(route, callback) {
-    const handler = registry.category("mock_rpc").get(route);
+    const handler = registry.category("mail.mock_rpc").get(route);
     patchWithCleanup(handler, { after: callback });
 }
 
@@ -182,7 +181,7 @@ export async function openFormView(resModel, resId, params) {
     return openView({
         res_model: resModel,
         res_id: resId,
-        views: [[getMailViewId(resModel, "form") || false, "form"]],
+        views: [[false, "form"]],
         ...params,
     });
 }
@@ -190,7 +189,7 @@ export async function openFormView(resModel, resId, params) {
 export async function openKanbanView(resModel, params) {
     return openView({
         res_model: resModel,
-        views: [[getMailViewId(resModel, "kanban"), "kanban"]],
+        views: [[false, "kanban"]],
         ...params,
     });
 }
@@ -198,7 +197,7 @@ export async function openKanbanView(resModel, params) {
 export async function openListView(resModel, params) {
     return openView({
         res_model: resModel,
-        views: [[getMailViewId(resModel, "list"), "list"]],
+        views: [[false, "list"]],
         ...params,
     });
 }
@@ -217,22 +216,11 @@ export async function openView({ context, res_model, res_id, views, domain, ...p
         type,
         resModel: res_model,
         resId: res_id,
-        arch:
-            params?.arch ||
-            archs[viewId || res_model + `,${getMailViewId(res_model, type) || false},` + type] ||
-            undefined,
+        arch: params?.arch || archs[viewId || res_model + `,false,` + type] || undefined,
         viewId: params?.arch || viewId,
         ...params,
     });
     await getService("action").doAction(action, { props: options });
-}
-/** @type {import("@web/../tests/_framework/mock_server/mock_server").MockServerEnvironment} */
-let pyEnv;
-function getMailViewId(res_model, type) {
-    const prefix = `${type},${DEFAULT_MAIL_VIEW_ID}`;
-    if (pyEnv[res_model]._views[prefix]) {
-        return DEFAULT_MAIL_VIEW_ID;
-    }
 }
 
 let tabs = [];
@@ -346,14 +334,13 @@ export async function start(options) {
 }
 
 export async function startServer() {
-    const { env } = await makeMockServer();
-    pyEnv = env;
+    const { env: pyEnv } = await makeMockServer();
     pyEnv["res.users"].write([serverState.userId], {
         groups_id: pyEnv["res.groups"]
             .search_read([["id", "=", serverState.groupId]])
             .map(({ id }) => id),
     });
-    return env;
+    return pyEnv;
 }
 
 /**

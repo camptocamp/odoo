@@ -207,6 +207,23 @@ class AccountEdiCommon(models.AbstractModel):
         else:
             return create_dict(tax_category_code='E', tax_exemption_reason=_('Articles 226 items 11 to 15 Directive 2006/112/EN'))
 
+    def _get_tax_category_code(self, customer, supplier, tax):
+        if not tax:
+            return 'E'
+        return self._get_tax_unece_codes(customer, supplier, tax).get('tax_category_code')
+
+    def _get_tax_exemption_reason(self, customer, supplier, tax):
+        if not tax:
+            return {
+                'tax_exemption_reason': _("Exempt from tax"),
+                'tax_exemption_reason_code': None,
+            }
+        res = self._get_tax_unece_codes(customer, supplier, tax)
+        return {
+            'tax_exemption_reason': res.get('tax_exemption_reason'),
+            'tax_exemption_reason_code': res.get('tax_exemption_reason_code'),
+        }
+
     def _get_tax_category_list(self, customer, supplier, taxes):
         """ Full list: https://unece.org/fileadmin/DAM/trade/untdid/d16b/tred/tred5305.htm
         Subset: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNCL5305/
@@ -655,8 +672,9 @@ class AccountEdiCommon(models.AbstractModel):
         # discount
         discount = 0
         if delivered_qty * price_unit != 0 and price_subtotal is not None:
-            inferred_discount = 100 * (1 - (price_subtotal - charge_amount) / (delivered_qty * price_unit))
-            discount = inferred_discount if not float_is_zero(inferred_discount, 2) else 0.0
+            currency = self.env.company.currency_id
+            inferred_discount = 100 * (1 - (price_subtotal - charge_amount) / currency.round(delivered_qty * price_unit))
+            discount = inferred_discount if not float_is_zero(inferred_discount, currency.decimal_places) else 0.0
 
         # Sometimes, the xml received is very bad; e.g.:
         #   * unit price = 0, qty = 0, but price_subtotal = -200

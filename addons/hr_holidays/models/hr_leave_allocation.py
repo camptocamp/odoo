@@ -4,6 +4,7 @@
 
 from datetime import datetime, date, time
 from dateutil.relativedelta import relativedelta
+from calendar import monthrange
 
 from odoo import api, fields, models, _
 from odoo.addons.hr_holidays.models.hr_leave import get_employee_from_context
@@ -304,7 +305,9 @@ class HolidaysAllocation(models.Model):
         elif carryover_time == 'allocation':
             carryover_date = date(date_from.year, self.date_from.month, self.date_from.day)
         else:
-            carryover_date = date(date_from.year, MONTHS_TO_INTEGER[accrual_plan.carryover_month], accrual_plan.carryover_day)
+            max_day = monthrange(date_from.year, MONTHS_TO_INTEGER[accrual_plan.carryover_month])[1]
+            day = min(accrual_plan.carryover_day, max_day)
+            carryover_date = date(date_from.year, MONTHS_TO_INTEGER[accrual_plan.carryover_month], day)
         if date_from > carryover_date:
             carryover_date += relativedelta(years=1)
         return carryover_date
@@ -902,7 +905,7 @@ class HolidaysAllocation(models.Model):
     def activity_update(self):
         to_clean, to_do, to_second_do = self.env['hr.leave.allocation'], self.env['hr.leave.allocation'], self.env['hr.leave.allocation']
         activity_vals = []
-        model_id = self.env.ref('hr_holidays.model_hr_leave_allocation').id
+        model_id = self.env['ir.model']._get_id('hr.leave.allocation')
         confirm_activity = self.env.ref('hr_holidays.mail_act_leave_allocation_approval')
         approval_activity = self.env.ref('hr_holidays.mail_act_leave_allocation_second_approval')
         for allocation in self:

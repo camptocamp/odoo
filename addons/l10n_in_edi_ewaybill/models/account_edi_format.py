@@ -132,7 +132,7 @@ class AccountEdiFormat(models.Model):
         cancel_json = {
             "ewbNo": ewaybill_response_json.get("ewayBillNo") or ewaybill_response_json.get("EwbNo"),
             "cancelRsnCode": int(invoices.l10n_in_edi_cancel_reason),
-            "CnlRem": invoices.l10n_in_edi_cancel_remarks,
+            "cancelRmrk": invoices.l10n_in_edi_cancel_remarks,
         }
         response = self._l10n_in_edi_ewaybill_cancel(invoices.company_id, cancel_json)
         if response.get("error"):
@@ -288,6 +288,12 @@ class AccountEdiFormat(models.Model):
                 "TransMode": invoice.l10n_in_mode,
                 "VehNo": invoice.l10n_in_vehicle_no,
                 "VehType": invoice.l10n_in_vehicle_type,
+                **{
+                    k: v for k, v in {
+                        "TransId": invoice.l10n_in_transporter_id.vat,
+                        "TransName": invoice.l10n_in_transporter_id.name,
+                    }.items() if v
+                },
             })
         elif invoice.l10n_in_mode in ("2", "3", "4"):
             doc_date = invoice.l10n_in_transportation_doc_date
@@ -502,6 +508,12 @@ class AccountEdiFormat(models.Model):
                 "transMode": invoices.l10n_in_mode,
                 "vehicleNo": invoices.l10n_in_vehicle_no or "",
                 "vehicleType": invoices.l10n_in_vehicle_type or "",
+                **{
+                    k: v for k, v in {
+                        "transporterId": invoices.l10n_in_transporter_id.vat,
+                        "transporterName": invoices.l10n_in_transporter_id.name,
+                    }.items() if v
+                },
             })
         return json_payload
 

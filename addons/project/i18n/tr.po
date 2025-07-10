@@ -35,15 +35,15 @@
 # Ediz Duman <neps1192@gmail.com>, 2024
 # Wil Odoo, 2025
 # Melih Melik Sonmez, 2025
-# Deniz Guvener, 2025
+# Deniz Guvener_Odoo <degu@odoo.com>, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 20:46+0000\n"
+"POT-Creation-Date: 2025-06-27 18:38+0000\n"
 "PO-Revision-Date: 2024-09-25 09:41+0000\n"
-"Last-Translator: Deniz Guvener, 2025\n"
+"Last-Translator: Deniz Guvener_Odoo <degu@odoo.com>, 2025\n"
 "Language-Team: Turkish (https://app.transifex.com/odoo/teams/41243/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -139,7 +139,6 @@ msgstr "# Değerlendirmeler"
 #. module: project
 #. odoo-javascript
 #: code:addons/project/static/src/views/burndown_chart/burndown_chart_model.js:0
-#: model:ir.model.fields,field_description:project.field_project_milestone__task_count
 #: model:ir.model.fields,field_description:project.field_report_project_task_user__nbr
 msgid "# of Tasks"
 msgstr "# nın Görevleri"
@@ -376,14 +375,14 @@ msgid ""
 "            "
 msgstr ""
 "<div>\n"
-"    Sayın <t t-out=\"object.partner_id.name or 'customer'\">Brandon Freeman</t>,<br/>\n"
-"   Projeyi başarıyla tamamladığımızı bildirmekten mutluluk duyuyorum. \"<strong t-out=\"object.name or ''\">Renovations</strong>\".\n"
+"    Sayın <t t-out=\"object.partner_id.name or 'customer'\">Brandon Freeman</t>,<br/> \n"
+"    \"<strong t-out=\"object.name or ''\">Tadilatlar</strong>\" projesini başarıyla tamamladığımızı size bildirmekten memnuniyet duyarım. \n"
 "    <t t-if=\"user.signature\" data-o-mail-quote-container=\"1\">\n"
-"        <br/>\n"
+"       <br/> \n"
 "        <t t-out=\"user.signature or ''\" data-o-mail-quote=\"1\">--<br data-o-mail-quote=\"1\"/>Mitchell Admin</t>\n"
 "    </t>\n"
 "</div>\n"
-"<br/><span style=\"margin: 0px 0px 0px 0px; font-size: 12px; opacity: 0.5; color: #454748;\" groups=\"project.group_project_stages\">Bu e-postayı, projenizin aşamaya taşınması nedeniyle alıyorsunuz<b t-out=\"object.stage_id.name or ''\">Biten</b></span>\n"
+"<br/><span style=\"margin: 0px 0px 0px 0px; font-size: 12px; opacity: 0.5; color: #454748;\" groups=\"project.group_project_stages\">Bu e-postanın tarafınıza gönderilme amacı, projenizin <b t-out=\"object.stage_id.name or ''\">Tamamlandı</b>aşamasına geçmiş olmasıdır</span>\n"
 "            "
 
 #. module: project
@@ -1030,6 +1029,8 @@ msgid ""
 "Attach all documents or links to the task directly, to have all research "
 "information centralized."
 msgstr ""
+"Tüm araştırma bilgilerini tek bir yerde toplamak için tüm belgeleri veya "
+"bağlantıları doğrudan göreve ekleyin."
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_milestone__message_attachment_count
@@ -1302,9 +1303,6 @@ msgid ""
 "Rating when changing stage: an email will be automatically sent when the task reaches the stage on which the rating email template is set.\n"
 "Periodic rating: an email will be automatically sent at regular intervals as long as the task remains in the stage in which the rating email template is set."
 msgstr ""
-"Bir görev belirli bir aşamaya girdiğinde onlara bir derecelendirme isteği göndererek müşterilerinizden geri bildirim toplayın. Bunu yapmak için ilgili aşamalarda bir derecelendirme e-posta şablonu tanımlayın.\n"
-"Derece değiştirirken aşama: Görev, derecelendirme e-posta şablonunun ayarlandığı aşamaya geldiğinde otomatik olarak bir e-posta gönderilir.\n"
-"Periyodik derecelendirme: Görev, derecelendirme e-posta şablonunun ayarlandığı aşamada kaldığı sürece otomatik olarak düzenli aralıklarla bir e-posta gönderilecektir."
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_tags__color
@@ -1669,9 +1667,9 @@ msgid ""
 "Date on which this task was last assigned (or unassigned). Based on this, "
 "you can get statistics on the time it usually takes to assign tasks."
 msgstr ""
-"Bu görevin en son atandığı (veya atanmadığı) tarih. Buna dayanarak, "
-"genellikle görevleri atamak için geçen süreye ilişkin istatistikler "
-"alabilirsiniz."
+"Bu görevin en son atandığı (veya atanmasının kaldırıldığı) tarih. Buna göre,"
+" görevlerin atanması için genellikle ne kadar zaman gerektiğine dair "
+"istatistikler elde edebilirsiniz."
 
 #. module: project
 #: model:ir.model.fields.selection,name:project.selection__project_task__repeat_unit__day
@@ -2324,7 +2322,8 @@ msgid ""
 "ID of the parent record holding the alias (example: project holding the task"
 " creation alias)"
 msgstr ""
-"Rumuzu tutan üst kayıt ID (örnek: görev oluşturma rumuzunu tutan proje)"
+"Takma adı barındıran üst kayıt kimliği (örnek: görev oluşturma takma adını "
+"barındıran proje)"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_project__activity_exception_icon
@@ -3233,9 +3232,9 @@ msgid ""
 "attached, even if they did not reply to it. If set, this will disable the "
 "creation of new records completely."
 msgstr ""
-"Yanıt vermemiş olsalar bile, gelen tüm mesajların ekleneceği bir ileti "
-"dizisinin (kayıt) isteğe bağlı kimliği. Ayarlanırsa, bu, yeni kayıtların "
-"oluşturulmasını tamamen devre dışı bırakacaktır."
+"Gelen tüm mesajların, yanıt verilmemiş olsa bile ekleneceği bir iş "
+"parçacığının (kayıt) isteğe bağlı kimliği. Ayarlandığı durumlarda yeni "
+"kayıtların oluşturulması tamamen devre dışı bırakılır."
 
 #. module: project
 #. odoo-javascript
@@ -3351,20 +3350,20 @@ msgid ""
 "\n"
 "In any case, an internal user with no project access rights can still access a task, provided that they are given the corresponding URL (and that they are part of the followers if the project is private)."
 msgstr ""
-"Bu projenin ve görevlerinin görülebileceği kişiler.\n"
+"Bu proje ve görevleri görebilecek kişiler:\n"
 "\n"
-"Davetli dahili kullanıcılar: Bir projeyi takip ederken, dahili kullanıcılar ayrım yapılmaksızın tüm görevlerine erişim elde eder. Aksi takdirde, yalnızca takip ettikleri belirli görevlere erişim elde ederler.\n"
-"Proje > yönetici erişim hakkı düzeyine sahip bir kullanıcı, takipçilerin açık bir parçası olmasa bile bu projeye ve görevlerine erişebilir.\n"
+"- Davet edilen dahili kullanıcılar: bir projeyi takip eden dahili kullanıcılar, tüm görevlere ayrım yapılmaksızın erişebilirler. Aksi takdirde, yalnızca takip ettikleri belirli görevlere erişebilirler.\n"
+" Proje > yönetici erişim hakkı düzeyine sahip bir kullanıcı, takipçiler arasında açıkça yer almıyor olsa bile bu projeye ve görevlerine erişebilir.\n"
 "\n"
-"- Tüm dahili kullanıcılar: Tüm dahili kullanıcılar, ayrım yapılmaksızın projeye ve tüm görevlerine erişebilir.\n"
+"- Tüm dahili kullanıcılar: tüm dahili kullanıcılar, projeye ve tüm görevlerine ayrım yapılmaksızın erişebilir.\n"
 "\n"
-"- Davetli portal kullanıcıları ve tüm dahili kullanıcılar: tüm dahili kullanıcılar, ayrım yapılmaksızın projeye ve tüm görevlerine erişebilir.\n"
-"Bir projeyi takip ederken, portal kullanıcıları yalnızca takip ettikleri belirli görevlere erişebilecek.\n"
+"- Davet edilen portal kullanıcıları ve tüm iç kullanıcılar: tüm iç kullanıcılar, projeye ve tüm görevlerine ayrım yapılmaksızın erişebilir.\n"
+"Bir projeyi takip eden portal kullanıcıları, yalnızca takip ettikleri belirli görevlere erişebilir.\n"
 "\n"
-"Bir proje salt okunur olarak paylaşıldığında, portal kullanıcısı kendi portalına yönlendirilir. Takip ettikleri görevleri görüntüleyebilirler ancak düzenleyemezler.\n"
-"Bir proje düzenlemede paylaşıldığında, portal kullanıcısı görevlerin kanban ve liste görünümlerine yönlendirilir. Görevlerdeki seçili sayıda alanı değiştirebilirler.\n"
+"Bir proje salt okunur olarak paylaşıldığında, portal kullanıcısı kendi portalına yönlendirilir. Takip ettikleri görevleri görüntüleyebilirler, ancak düzenleyemezler.\n"
+"Bir proje düzenleme modunda paylaşıldığında, portal kullanıcısı görevlerin kanban ve liste görünümlerine yönlendirilir. Görevlerde seçilen sayıda alanı değiştirebilirler.\n"
 "\n"
-"Her durumda, proje erişim hakları olmayan dahili bir kullanıcı, ilgili URL'nin verilmesi (ve proje özel ise takipçilerin bir parçası olması) koşuluyla yine de bir göreve erişebilir."
+"Her halükarda, proje erişim hakları olmayan bir iç kullanıcı, ilgili URL verildiği takdirde (ve proje özel ise takipçilerin bir parçası olduğu takdirde) bir göreve erişebilir."
 
 #. module: project
 #: model:ir.model.fields,help:project.field_project_project__rating_percentage_satisfaction
@@ -5274,6 +5273,14 @@ msgid ""
 "\n"
 "        Make sure to use the right format and order e.g. Improve the configuration screen 5h #feature #v16 @Mitchell !"
 msgstr ""
+"Yeni görevler oluşturmak için başlıkta bu anahtar kelimeleri kullanın:\n"
+"\n"
+"        30s Göreve 30 saat ayırın \n"
+"        #etiketler Görev üzerinde etiketler oluşturun\n"
+"        @kullanıcı Görevi bir kullanıcıya atayın\n"
+"        ! Görevi yüksek önem derecesine sahip olarak ayarlayın\n"
+"\n"
+"        Doğru formatı ve sırayı kullandığınızdan emin olun örn. Yapılandırma ekranını iyileştirin 5s #özellik #v16 @Mitchell !"
 
 #. module: project
 #: model:res.groups,name:project.group_project_user
@@ -5361,7 +5368,7 @@ msgstr "Hafta"
 #. module: project
 #: model:project.tags,name:project.project_tags_14
 msgid "Work"
-msgstr ""
+msgstr "İş"
 
 #. module: project
 #: model:ir.model.fields,field_description:project.field_project_task__working_days_open
@@ -5403,6 +5410,7 @@ msgid ""
 "Would you like to unarchive all of the projects contained in these stages as"
 " well?"
 msgstr ""
+"Bu aşamalarda bulunan tüm projeleri de arşivden çıkarmak ister misiniz?"
 
 #. module: project
 #: model_terms:ir.ui.view,arch_db:project.view_project_task_type_unarchive_wizard
@@ -5534,6 +5542,8 @@ msgid ""
 "You have full control and can revoke portal access anytime. Are you ready to"
 " proceed?"
 msgstr ""
+"Tam kontrol sizde ve portal erişimini istediğiniz zaman iptal edebilirsiniz."
+" Devam etmeye hazır mısınız?"
 
 #. module: project
 #. odoo-javascript

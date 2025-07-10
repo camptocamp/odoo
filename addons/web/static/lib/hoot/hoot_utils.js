@@ -34,6 +34,7 @@ import { getRunner } from "./main_runner";
  *
  * @typedef {{
  *  ignoreOrder?: boolean;
+ *  partial?: boolean;
  * }} DeepEqualOptions
  *
  * @typedef {[string, ArgumentType]} Label
@@ -55,6 +56,11 @@ import { getRunner } from "./main_runner";
  * }} Reporting
  *
  * @typedef {import("./core/runner").Runner} Runner
+ */
+
+/**
+ * @template {unknown[]} T
+ * @typedef {T extends [any, ...infer U] ? U : never} DropFirst
  */
 
 /**
@@ -100,6 +106,7 @@ const {
     PromiseRejectionEvent,
     Reflect: { ownKeys: $ownKeys },
     RegExp,
+    requestAnimationFrame,
     Set,
     setTimeout,
     String,
@@ -126,45 +133,9 @@ const $writeText = $clipboard?.writeText.bind($clipboard);
 //-----------------------------------------------------------------------------
 
 /**
- * Returns the constructor of the given value, and if it is "Object": tries to
- * infer the actual constructor name from the string representation of the object.
- *
- * This is needed for cursed JavaScript objects such as "Arguments", which is an
- * array-like object without a proper constructor.
- *
- * @param {any} value
- */
-const getConstructor = (value) => {
-    const { constructor } = value;
-    if (constructor !== Object) {
-        return constructor || { name: null };
-    }
-    const str = value.toString();
-    const match = str.match(R_OBJECT);
-    if (!match || match[1] === "Object") {
-        return constructor;
-    }
-
-    // Custom constructor
-    const className = match[1];
-    if (!objectConstructors.has(className)) {
-        objectConstructors.set(
-            className,
-            class {
-                static name = className;
-                constructor(...values) {
-                    $assign(this, ...values);
-                }
-            }
-        );
-    }
-    return objectConstructors.get(className);
-};
-
-/**
  * @param {(...args: any[]) => any} fn
  */
-const getFunctionString = (fn) => {
+function getFunctionString(fn) {
     if (R_CLASS.test(fn.name)) {
         return `${fn.name ? `class ${fn.name}` : "anonymous class"} { ${ELLIPSIS} }`;
     }
@@ -179,62 +150,70 @@ const getFunctionString = (fn) => {
 
     const args = fn.length ? "...args" : "";
     return `${prefix}(${args}) => { ${ELLIPSIS} }`;
-};
+}
 
 /**
  * @param {unknown} value
  */
-const getGenericSerializer = (value) => {
+function getGenericSerializer(value) {
     for (const [constructor, serialize] of GENERIC_SERIALIZERS) {
         if (value instanceof constructor) {
             return serialize;
         }
     }
     return null;
-};
+}
 
-const makeObjectCache = () => {
+function makeObjectCache() {
     const cache = new Set();
     return {
         add: (...values) => values.forEach((value) => cache.add(value)),
         has: (...values) => values.every((value) => cache.has(value)),
     };
-};
+}
 
 /**
- * @template {(...args: any[]) => T} T
- * @param {T} instanceGetter
+ * @template T
+ * @param {T | (() => T)} value
  * @returns {T}
  */
-const memoize = (instanceGetter) => {
-    let called = false;
-    let value;
-    return function memoized(...args) {
-        if (!called) {
-            called = true;
-            value = instanceGetter(...args);
-        }
+function resolve(value) {
+    if (typeof value === "function") {
+        return value();
+    } else {
         return value;
-    };
-};
+    }
+}
+
+/**
+ * Useful to deal with symbols as primitives
+ * @param {unknown} a
+ * @param {unknown} b
+ */
+function stringSort(a, b) {
+    const strA = String(a).toLowerCase();
+    const strB = String(b).toLowerCase();
+    return strA > strB ? 1 : strA < strB ? -1 : 0;
+}
 
 /**
  * @param {string} value
  * @param {number} [length=MAX_HUMAN_READABLE_SIZE]
  */
-const truncate = (value, length = MAX_HUMAN_READABLE_SIZE) => {
+function truncate(value, length = MAX_HUMAN_READABLE_SIZE) {
     const strValue = String(value);
     return strValue.length <= length ? strValue : strValue.slice(0, length) + ELLIPSIS;
-};
+}
 
 /**
  * @param {unknown} a
  * @param {unknown} b
  * @param {boolean} ignoreOrder
+ * @param {boolean} partial
  * @param {ReturnType<makeObjectCache>} cache
  * @returns {boolean}
  */
-const _deepEqual = (a, b, ignoreOrder, cache) => {
+function _deepEqual(a, b, ignoreOrder, partial, cache) {
     // Primitives
     if (strictEqual(a, b)) {
         return true;
@@ -274,12 +253,13 @@ const _deepEqual = (a, b, ignoreOrder, cache) => {
 
     // Non-iterable objects
     if (!aIsIterable) {
-        const aKeys = $ownKeys(a);
-        if (aKeys.length !== $ownKeys(b).length) {
+        const bKeys = $ownKeys(b);
+        const diff = $ownKeys(a).length - bKeys.length;
+        if (partial ? diff < 0 : diff !== 0) {
             return false;
         }
-        for (const key of aKeys) {
-            if (!_deepEqual(a[key], b[key], ignoreOrder, cache)) {
+        for (const key of bKeys) {
+            if (!_deepEqual(a[key], b[key], ignoreOrder, partial, cache)) {
                 return false;
             }
         }
@@ -306,7 +286,7 @@ const _deepEqual = (a, b, ignoreOrder, cache) => {
         const comparisonCache = makeObjectCache();
         for (let i = 0; i < a.length; i++) {
             const bi = b.findIndex((bValue) =>
-                _deepEqual(a[i], bValue, ignoreOrder, comparisonCache)
+                _deepEqual(a[i], bValue, ignoreOrder, partial, comparisonCache)
             );
             if (bi < 0) {
                 return false;
@@ -316,14 +296,14 @@ const _deepEqual = (a, b, ignoreOrder, cache) => {
     } else {
         // Ordered iterables
         for (let i = 0; i < a.length; i++) {
-            if (!_deepEqual(a[i], b[i], ignoreOrder, cache)) {
+            if (!_deepEqual(a[i], b[i], ignoreOrder, partial, cache)) {
                 return false;
             }
         }
     }
 
     return true;
-};
+}
 
 /**
  * @param {unknown} value
@@ -331,7 +311,10 @@ const _deepEqual = (a, b, ignoreOrder, cache) => {
  * @param {ReturnType<makeObjectCache>} cache
  * @returns {[string, number]}
  */
-const _formatHumanReadable = (value, length, cache) => {
+function _formatHumanReadable(value, length, cache) {
+    if (!isSafe(value)) {
+        return `<cannot read value of ${getConstructor(value).name}>`;
+    }
     // Primitives
     switch (typeof value) {
         case "function": {
@@ -423,7 +406,7 @@ const _formatHumanReadable = (value, length, cache) => {
         }
     }
     return `${constructorPrefix}{ ${truncate(content.join(", "))} }`;
-};
+}
 
 /**
  * @param {unknown} value
@@ -432,7 +415,10 @@ const _formatHumanReadable = (value, length, cache) => {
  * @param {ReturnType<makeObjectCache>} cache
  * @returns {string}
  */
-const _formatTechnical = (value, depth, isObjectValue, cache) => {
+function _formatTechnical(value, depth, isObjectValue, cache) {
+    if (!isSafe(value)) {
+        return `<cannot read value of ${getConstructor(value).name}>`;
+    }
     if (value === S_ANY || value === S_NONE) {
         // Special case: internal symbols
         return "";
@@ -484,13 +470,18 @@ const _formatTechnical = (value, depth, isObjectValue, cache) => {
     // Non-iterable objects
     const proto = !constructor.name || constructor.name === "Object" ? "" : `${constructor.name} `;
     const content = $ownKeys(value)
-        .sort()
+        .sort(stringSort)
         .map(
             (key) =>
-                `${startIndent}${key}: ${_formatTechnical(value[key], depth + 1, true, cache)},\n`
+                `${startIndent}${String(key)}: ${_formatTechnical(
+                    value[key],
+                    depth + 1,
+                    true,
+                    cache
+                )},\n`
         );
     return `${baseIndent}${proto}{${content.length ? `\n${content.join("")}${endIndent}` : ""}}`;
-};
+}
 
 class QueryRegExp extends RegExp {
     /**
@@ -609,28 +600,26 @@ export async function copy(text) {
 }
 
 /**
- * @template T
- * @template {(previous: T | null) => T} F
- * @param {F} instanceGetter
+ * @template {(previous: any, ...args: any[]) => any} T
+ * @param {T} instanceGetter
  * @param {() => any} [afterCallback]
- * @returns {F}
+ * @returns {(...args: DropFirst<Parameters<T>>) => ReturnType<T>}
  */
 export function createJobScopedGetter(instanceGetter, afterCallback) {
-    /** @type {F} */
-    const getInstance = () => {
+    /** @type {(...args: DropFirst<Parameters<T>>) => ReturnType<T>} */
+    function getInstance(...args) {
         if (runner.dry) {
-            return memoized();
+            return memoized(...args);
         }
 
         const currentJob = runner.state.currentTest || runner.suiteStack.at(-1) || runner;
         if (!instances.has(currentJob)) {
             const parentInstance = [...instances.values()].at(-1);
-            instances.set(currentJob, instanceGetter(parentInstance));
+            instances.set(currentJob, instanceGetter(parentInstance, ...args));
 
             if (canCallAfter) {
-                runner.after(() => {
+                runner.after(function instanceGetterCleanup() {
                     instances.delete(currentJob);
-
                     canCallAfter = false;
                     afterCallback?.();
                     canCallAfter = true;
@@ -639,14 +628,23 @@ export function createJobScopedGetter(instanceGetter, afterCallback) {
         }
 
         return instances.get(currentJob);
-    };
+    }
 
-    const memoized = memoize(instanceGetter);
+    /** @type {(...args: DropFirst<Parameters<T>>) => ReturnType<T>} */
+    function memoized(...args) {
+        if (!memoizedCalled) {
+            memoizedCalled = true;
+            memoizedValue = instanceGetter(null, ...args);
+        }
+        return memoizedValue;
+    }
 
-    /** @type {Map<Job, T>} */
+    /** @type {Map<Job, Parameters<T>[0]>} */
     const instances = new Map();
     const runner = getRunner();
     let canCallAfter = true;
+    let memoizedCalled = false;
+    let memoizedValue;
 
     runner.after(() => instances.clear());
 
@@ -660,13 +658,13 @@ export function createReporting(parentReporting) {
     /**
      * @param {Partial<Reporting>} values
      */
-    const add = (values) => {
+    function add(values) {
         for (const [key, value] of $entries(values)) {
             reporting[key] += value;
         }
 
         parentReporting?.add(values);
-    };
+    }
 
     const reporting = reactive({
         assertions: 0,
@@ -768,7 +766,7 @@ export function batch(fn, interval) {
     let timeoutId = 0;
 
     /** @type {T} */
-    const batched = (...args) => {
+    function batched(...args) {
         currentBatch.push(() => fn(...args));
         if (timeoutId) {
             return;
@@ -777,15 +775,15 @@ export function batch(fn, interval) {
             timeoutId = 0;
             flush();
         }, interval);
-    };
+    }
 
-    const flush = () => {
+    function flush() {
         if (timeoutId) {
             clearTimeout(timeoutId);
             timeoutId = 0;
         }
         consumeCallbackList(currentBatch, "shift");
-    };
+    }
 
     return [batched, flush];
 }
@@ -819,7 +817,7 @@ export function debounce(fn, delay) {
  * @returns {boolean}
  */
 export function deepEqual(a, b, options) {
-    return _deepEqual(a, b, options?.ignoreOrder, makeObjectCache());
+    return _deepEqual(a, b, !!options?.ignoreOrder, !!options?.partial, makeObjectCache());
 }
 
 /**
@@ -854,7 +852,13 @@ export function ensureArguments(args, ...argumentsDefs) {
  * @returns {T[]}
  */
 export function ensureArray(value) {
-    return isIterable(value) ? [...value] : [value];
+    if (Array.isArray(value)) {
+        return value;
+    }
+    if (isIterable(value)) {
+        return [...value];
+    }
+    return [value];
 }
 
 /**
@@ -946,6 +950,42 @@ export function generateHash(...strings) {
     // Convert the possibly negative number hash code into an 8 character
     // hexadecimal string
     return (hash + 16 ** 8).toString(16).slice(-8);
+}
+
+/**
+ * Returns the constructor of the given value, and if it is "Object": tries to
+ * infer the actual constructor name from the string representation of the object.
+ *
+ * This is needed for cursed JavaScript objects such as "Arguments", which is an
+ * array-like object without a proper constructor.
+ *
+ * @param {unknown} value
+ */
+export function getConstructor(value) {
+    const { constructor } = value;
+    if (constructor !== Object) {
+        return constructor || { name: null };
+    }
+    const str = value.toString();
+    const match = str.match(R_OBJECT);
+    if (!match || match[1] === "Object") {
+        return constructor;
+    }
+
+    // Custom constructor
+    const className = match[1];
+    if (!objectConstructors.has(className)) {
+        objectConstructors.set(
+            className,
+            class {
+                static name = className;
+                constructor(...values) {
+                    $assign(this, ...values);
+                }
+            }
+        );
+    }
+    return objectConstructors.get(className);
 }
 
 /**
@@ -1093,6 +1133,20 @@ export function isOfType(value, type) {
 }
 
 /**
+ * @param {unknown} value
+ */
+export function isSafe(value) {
+    if (value && typeof value.valueOf === "function") {
+        try {
+            value.valueOf();
+        } catch {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
  * Returns the edit distance between 2 strings
  *
  * @param {string} a
@@ -1150,7 +1204,11 @@ export function lookup(parsedQuery, items, property = "key") {
             }
         }
         if (isPartial) {
-            result.sort((a, b) => fuzzyScoreMap[b[property]] - fuzzyScoreMap[a[property]]);
+            result.sort(
+                (a, b) =>
+                    fuzzyScoreMap[b[property].toLowerCase()] -
+                    fuzzyScoreMap[a[property].toLowerCase()]
+            );
         }
         items = result;
     }
@@ -1397,6 +1455,23 @@ export function stringToNumber(string) {
 }
 
 /**
+ * @template {(...args: any[]) => any} T
+ * @param {T} fn
+ * @returns {T}
+ */
+export function throttle(fn) {
+    let canRun = true;
+    return function throttled(...args) {
+        if (!canRun) {
+            return;
+        }
+        canRun = false;
+        requestAnimationFrame(() => (canRun = true));
+        return fn(...args);
+    };
+}
+
+/**
  * @param {string} string
  */
 export function title(string) {
@@ -1428,13 +1503,12 @@ export function toExplicitString(value) {
  * @param {{ el?: HTMLElement }} ref
  */
 export function useAutofocus(ref) {
-    let displayed = new Set();
-    useEffect(() => {
-        if (!ref.el) {
-            return;
-        }
+    /**
+     * @param {HTMLElement} el
+     */
+    function autofocus(el) {
         const nextDisplayed = new Set();
-        for (const element of ref.el.querySelectorAll("[autofocus]")) {
+        for (const element of el.querySelectorAll("[autofocus]")) {
             if (!displayed.has(element)) {
                 element.focus();
                 if (["INPUT", "TEXTAREA"].includes(element.tagName)) {
@@ -1445,7 +1519,10 @@ export function useAutofocus(ref) {
             nextDisplayed.add(element);
         }
         displayed = nextDisplayed;
-    });
+    }
+
+    let displayed = new Set();
+    useEffect(autofocus, () => [ref.el]);
 }
 
 /** @type {EventTarget["addEventListener"]} */
@@ -1466,12 +1543,9 @@ export class Callbacks {
     add(type, callback, once) {
         if (callback instanceof Promise) {
             const promiseValue = callback;
-            callback = () =>
-                Promise.resolve(promiseValue).then((result) => {
-                    if (typeof result === "function") {
-                        result();
-                    }
-                });
+            callback = function waitForPromise() {
+                return Promise.resolve(promiseValue).then(resolve);
+            };
         } else if (typeof callback !== "function") {
             return;
         }
@@ -1832,6 +1906,11 @@ export const CASE_EVENT_TYPES = {
         value: 0b100000,
         icon: "fa-arrow-right text-sm",
         color: "orange",
+    },
+    time: {
+        value: 0b1000000,
+        icon: "fa fa-hourglass text-sm",
+        color: "blue",
     },
 };
 export const DEFAULT_EVENT_TYPES = CASE_EVENT_TYPES.assertion.value | CASE_EVENT_TYPES.error.value;

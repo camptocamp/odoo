@@ -1,7 +1,5 @@
 /** @odoo-module */
 
-import { HootDomError } from "../hoot_dom_utils";
-
 /**
  * @typedef {{
  *  animationFrame?: boolean;
@@ -41,9 +39,11 @@ const $performanceNow = performance.now.bind(performance);
 /**
  * @param {number} id
  */
-const animationToId = (id) => ID_PREFIX.animation + String(id);
+function animationToId(id) {
+    return ID_PREFIX.animation + String(id);
+}
 
-const getNextTimerValues = () => {
+function getNextTimerValues() {
     /** @type {[number, () => any, string] | null} */
     let timerValues = null;
     for (const [internalId, [callback, init, delay]] of timers.entries()) {
@@ -53,41 +53,59 @@ const getNextTimerValues = () => {
         }
     }
     return timerValues;
-};
+}
 
 /**
  * @param {string} id
  */
-const idToAnimation = (id) => Number(id.slice(ID_PREFIX.animation.length));
+function idToAnimation(id) {
+    return Number(id.slice(ID_PREFIX.animation.length));
+}
 
 /**
  * @param {string} id
  */
-const idToInterval = (id) => Number(id.slice(ID_PREFIX.interval.length));
+function idToInterval(id) {
+    return Number(id.slice(ID_PREFIX.interval.length));
+}
 
 /**
  * @param {string} id
  */
-const idToTimeout = (id) => Number(id.slice(ID_PREFIX.timeout.length));
+function idToTimeout(id) {
+    return Number(id.slice(ID_PREFIX.timeout.length));
+}
 
 /**
  * @param {number} id
  */
-const intervalToId = (id) => ID_PREFIX.interval + String(id);
+function intervalToId(id) {
+    return ID_PREFIX.interval + String(id);
+}
 
 /**
  * Converts a given value to a **natural number** (or 0 if failing to do so).
  *
  * @param {unknown} value
  */
-const parseNat = (value) => $max($floor(Number(value)), 0) || 0;
+function parseNat(value) {
+    return $max($floor(Number(value)), 0) || 0;
+}
 
-const now = () => (frozen ? 0 : $performanceNow()) + timeOffset;
+function now() {
+    return (frozen ? 0 : $performanceNow()) + timeOffset;
+}
 
 /**
  * @param {number} id
  */
-const timeoutToId = (id) => ID_PREFIX.timeout + String(id);
+function timeoutToId(id) {
+    return ID_PREFIX.timeout + String(id);
+}
+
+class HootTimingError extends Error {
+    name = "HootTimingError";
+}
 
 const ID_PREFIX = {
     animation: "a_",
@@ -169,7 +187,7 @@ export async function advanceTime(ms, options) {
  * @returns {Promise<void>}
  */
 export function animationFrame() {
-    return new Promise((resolve) => requestAnimationFrame(() => delay().then(resolve)));
+    return new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)));
 }
 
 /**
@@ -263,10 +281,10 @@ export function mockedRequestAnimationFrame(callback) {
         return 0;
     }
 
-    const handler = () => {
+    function handler() {
         mockedCancelAnimationFrame(handle);
         return callback(now());
-    };
+    }
 
     const animationValues = [handler, now(), frameDelay];
     const handle = frozen ? nextDummyId++ : requestAnimationFrame(handler);
@@ -284,14 +302,14 @@ export function mockedSetInterval(callback, ms, ...args) {
 
     ms = parseNat(ms);
 
-    const handler = () => {
+    function handler() {
         if (allowTimers) {
             intervalValues[1] = $max(now(), intervalValues[1] + ms);
         } else {
             mockedClearInterval(intervalId);
         }
         return callback(...args);
-    };
+    }
 
     const intervalValues = [handler, now(), ms];
     const intervalId = frozen ? nextDummyId++ : setInterval(handler, ms);
@@ -309,10 +327,10 @@ export function mockedSetTimeout(callback, ms, ...args) {
 
     ms = parseNat(ms);
 
-    const handler = () => {
+    function handler() {
         mockedClearTimeout(timeoutId);
         return callback(...args);
-    };
+    }
 
     const timeoutValues = [handler, now(), ms];
     const timeoutId = frozen ? nextDummyId++ : setTimeout(handler, ms);
@@ -351,7 +369,7 @@ export function runAllTimers(options) {
 export function setFrameRate(frameRate) {
     frameRate = parseNat(frameRate);
     if (frameRate < 1 || frameRate > 1000) {
-        throw new Error("frame rate must be an number between 1 and 1000");
+        throw new HootTimingError("frame rate must be an number between 1 and 1000");
     }
     frameDelay = 1000 / frameRate;
 }
@@ -379,7 +397,7 @@ export function tick() {
  * The promise automatically rejects after a given `timeout` (defaults to 5 seconds).
  *
  * @template T
- * @param {() => T} predicate
+ * @param {(last: boolean) => T} predicate
  * @param {WaitOptions} [options]
  * @returns {Promise<T>}
  * @example
@@ -388,24 +406,26 @@ export function tick() {
  *  const button = await waitUntil(() => queryOne("button:visible"));
  *  button.click();
  */
-export function waitUntil(predicate, options) {
+export async function waitUntil(predicate, options) {
+    await Promise.resolve();
+
     // Early check before running the loop
-    const result = predicate();
+    const result = predicate(false);
     if (result) {
-        return Promise.resolve().then(() => result);
+        return result;
     }
 
     const timeout = $floor(options?.timeout ?? 200);
+    const maxFrameCount = $ceil(timeout / frameDelay);
+    let frameCount = 0;
     let handle;
-    let timeoutId;
-    let running = true;
-
     return new Promise((resolve, reject) => {
-        const runCheck = () => {
-            const result = predicate();
+        function runCheck() {
+            const isLast = ++frameCount >= maxFrameCount;
+            const result = predicate(isLast);
             if (result) {
                 resolve(result);
-            } else if (running) {
+            } else if (!isLast) {
                 handle = requestAnimationFrame(runCheck);
             } else {
                 let message =
@@ -413,15 +433,17 @@ export function waitUntil(predicate, options) {
                 if (typeof message === "function") {
                     message = message();
                 }
-                reject(new HootDomError(message.replace("%timeout%", String(timeout))));
+                if (message instanceof Error) {
+                    reject(message);
+                } else {
+                    reject(new HootTimingError(message.replace("%timeout%", String(timeout))));
+                }
             }
-        };
+        }
 
         handle = requestAnimationFrame(runCheck);
-        timeoutId = setTimeout(() => (running = false), timeout);
     }).finally(() => {
         cancelAnimationFrame(handle);
-        clearTimeout(timeoutId);
     });
 }
 

@@ -6067,6 +6067,13 @@ registry.ReplaceMedia = SnippetOptionWidget.extend({
      * @see this.selectClass for parameters
      */
     async replaceMedia() {
+        const sel = this.ownerDocument.getSelection();
+        // Ensure the element is selected before opening the media dialog.
+        if (!sel.rangeCount) {
+            const range = this.ownerDocument.createRange();
+            range.selectNodeContents(this.$target[0]);
+            sel.addRange(range);
+        }
         // open mediaDialog and replace the media.
         await this.options.wysiwyg.openMediaDialog({ node:this.$target[0] });
     },
@@ -9005,10 +9012,17 @@ registry.BackgroundPosition = SnippetOptionWidget.extend({
 
         this.$overlayContent.offset(targetOffset);
 
-        this.$bgDragger.css({
-            width: `${this.$target.innerWidth()}px`,
-            height: `${this.$target.innerHeight()}px`,
-        });
+        this.$bgDragger[0].style.setProperty(
+            "width",
+            `${this.$target.innerWidth()}px`,
+            "important"
+        );
+
+        this.$bgDragger[0].style.setProperty(
+            "height",
+            `${this.$target.innerHeight()}px`,
+            "important"
+        );
 
         const topPos = Math.max(0, $(window).scrollTop() - this.$target.offset().top);
         this.$overlayContent.find('.o_we_overlay_buttons').css('top', `${topPos}px`);
