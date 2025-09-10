@@ -2054,7 +2054,7 @@ class Request:
 
         # a controller endpoint matched -> dispatch it the request
         self._set_request_dispatcher(rule)
-        readonly = rule.endpoint.routing['readonly']
+        readonly = rule.endpoint.routing.get('readonly')
         if callable(readonly):
             readonly = readonly(rule.endpoint.func.__self__)
         return self._transactioning(
