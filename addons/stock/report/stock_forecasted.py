@@ -215,7 +215,7 @@ class StockForecasted(models.AbstractModel):
                 'linked_moves': linked_moves,
             }
 
-        def _get_out_move_taken_from_stock_data(out, currents, reserved_data):
+        def _get_out_move_taken_from_stock_data(out, currents, reserved_data, child_location_ids):
             reserved_out = reserved_data['reserved']
             demand_out = out.product_qty - reserved_out
             linked_moves = reserved_data['linked_moves']
@@ -227,6 +227,9 @@ class StockForecasted(models.AbstractModel):
                 demand = max(move.product_qty - reserved, 0)
                 # to make sure we don't demand more than the out (useful when same pick/pack goes to multiple out)
                 demand = min(demand, demand_out)
+                location_id = move.location_id.id
+                if location_id in child_location_ids:
+                    location_id = wh_stock_location.id
                 if float_is_zero(demand, precision_rounding=move.product_id.uom_id.rounding):
                     continue
                 # check available qty for move if chained, move available is what was move by orig moves
@@ -236,10 +239,10 @@ class StockForecasted(models.AbstractModel):
                     move_out_qty = sum(sibling_moves.filtered(lambda m: m.state == 'done').mapped('quantity'))
                     move_available_qty = move_in_qty - move_out_qty - reserved
                 else:
-                    move_available_qty = currents[(out.product_id.id, move.location_id.id)]
+                    move_available_qty = currents[(out.product_id.id, location_id)]
                 # count taken from stock, but avoid taking more than whats in stock in case of move origs,
                 # this can happen if stock adjustment is done after orig moves are done
-                taken_from_stock = min(demand, move_available_qty, currents[(out.product_id.id, move.location_id.id)])
+                taken_from_stock = min(demand, move_available_qty, currents[(out.product_id.id, location_id)])
                 if taken_from_stock > 0:
                     currents[(out.product_id.id, move.location_id.id)] -= taken_from_stock
                     taken_from_stock_out += taken_from_stock
@@ -342,7 +345,7 @@ class StockForecasted(models.AbstractModel):
                 )
             # another loop to remove qty from current stock after reserved is counted for
             for out in out_moves:
-                data = _get_out_move_taken_from_stock_data(out, currents, moves_data[out])
+                data = _get_out_move_taken_from_stock_data(out, currents, moves_data[out], wh_stock_sub_location_ids)
                 moves_data[out].update(data)
         product_sum = defaultdict(float)
         for product_loc, quantity in currents.items():
