@@ -1306,7 +1306,10 @@ class MailThread(models.AbstractModel):
                 # Report failure/record success of message creation except if alias is not defined (fallback model case)
                 try:
                     thread = ModelCtx.message_new(message_dict, custom_values)
-                except Exception:
+                except Exception as e:
+                    if self.env["ir.config_parameter"].sudo().get_param("debug.email_debug"):
+                        _logger.error('Failed to create message in model %s with: message_dict %s and custom_values %s', ModelCtx, message_dict, custom_values)
+                        _logger.error('Error when creating email: %s' str(e))
                     if alias:
                         with self.pool.cursor() as new_cr:
                             self.with_env(self.env(cr=new_cr)).env['mail.alias'].browse(alias.id
