@@ -15,6 +15,7 @@ import logging
 import os
 import threading
 import time
+import traceback
 import warnings
 
 import psycopg2
@@ -34,6 +35,17 @@ from odoo.tools.lru import LRU
 
 _logger = logging.getLogger(__name__)
 _schema = logging.getLogger('odoo.schema')
+
+
+def _cache_invalidation_log(msg, *args):
+    log_msg = "\n".join(
+        [
+            msg % args,
+            "Stack:",
+            "".join(traceback.format_stack(inspect.currentframe().f_back))
+        ]
+    )
+    logging.getLogger("odoo.cache.invalidation").info(log_msg)
 
 
 _REGISTRY_CACHES = {
@@ -731,6 +743,13 @@ class Registry(Mapping):
                 self.__caches[cache].clear()
             self.cache_invalidated.add(cache_name)
 
+        if not os.environ.get("SKIP_CACHE_INVALIDATION_LOG"):
+            return _cache_invalidation_log(
+                'Invalidating %s model caches from %s',
+                ','.join(cache_names),
+                format_frame(inspect.currentframe().f_back)
+            )
+
         # log information about invalidation_cause
         if _logger.isEnabledFor(logging.DEBUG):
             # could be interresting to log in info but this will need to minimize invalidation first,
@@ -746,6 +765,12 @@ class Registry(Mapping):
             for cache in caches:
                 self.__caches[cache].clear()
             self.cache_invalidated.add(cache_name)
+
+        if not os.environ.get("SKIP_CACHE_INVALIDATION_LOG"):
+            return _cache_invalidation_log(
+                'Invalidating all model caches from %s',
+                format_frame(inspect.currentframe().f_back)
+            )
 
         caller_info = format_frame(inspect.currentframe().f_back)
         log = _logger.info if self.loaded else _logger.debug
