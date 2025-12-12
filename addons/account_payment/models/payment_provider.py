@@ -24,7 +24,7 @@ class Paymentprovider(models.Model):
             return
 
         pay_method_line = self.env['account.payment.method.line'].search(
-            [('code', '=', self.code), ('payment_provider_id', '=', self.id)],
+            [('payment_provider_id', '=', self.id)],
             limit=1,
         )
 
@@ -57,6 +57,7 @@ class Paymentprovider(models.Model):
             pay_method_line_same_code = self.env['account.payment.method.line'].search(
                 [
                     ('company_id', '=', self.company_id.id),
+                    # FIXME: this is likely broken, as the code is not unique and it's a related non stored field
                     ('code', '=', self.code),
                 ],
                 limit=1,
