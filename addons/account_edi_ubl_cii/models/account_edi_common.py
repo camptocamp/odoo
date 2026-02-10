@@ -378,6 +378,8 @@ class AccountEdiCommon(models.AbstractModel):
         # clear the context, because creation of partner when importing should not depend on the context default values
         ResPartnerBank = self.env['res.partner.bank'].with_env(self.env(context=clean_context(self.env.context)))
         bank_details = list(map(sanitize_account_number, bank_details))
+        body = _("The following bank account numbers got retrieved during the import : %s", ", ".join(bank_details))
+        invoice.with_context(no_new_invoice=True).message_post(body=body)
 
         if invoice.move_type in ('out_refund', 'in_invoice'):
             partner = invoice.partner_id
@@ -410,6 +412,7 @@ class AccountEdiCommon(models.AbstractModel):
             invoice.partner_bank_id = ResPartnerBank.create(banks_to_create)[0]
 
     def _import_fill_invoice_allowance_charge(self, tree, invoice, qty_factor):
+
         logs = []
         if '{urn:oasis:names:specification:ubl:schema:xsd' in tree.tag:
             is_ubl = True
