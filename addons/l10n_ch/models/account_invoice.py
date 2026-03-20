@@ -74,7 +74,7 @@ class AccountMove(models.Model):
 
     @api.depends('name', 'partner_bank_id.l10n_ch_postal')
     def _compute_l10n_ch_isr_number(self):
-        """Generates the ISR or QRR reference
+        r"""Generates the ISR or QRR reference
 
         An ISR references are 27 characters long.
         QRR is a recycling of ISR for QR-bills. Thus works the same.
@@ -123,7 +123,7 @@ class AccountMove(models.Model):
                 id_number = record._get_isrb_id_number()
                 if id_number:
                     id_number = id_number.zfill(l10n_ch_ISR_ID_NUM_LENGTH)
-                invoice_ref = re.sub('[^\d]', '', record.name)
+                invoice_ref = re.sub(r'[^\d]', '', record.name)
                 # keep only the last digits if it exceed boundaries
                 full_len = len(id_number) + len(invoice_ref)
                 ref_payload_len = l10n_ch_ISR_NUMBER_LENGTH - 1
@@ -173,7 +173,7 @@ class AccountMove(models.Model):
         'partner_bank_id.l10n_ch_isr_subscription_eur',
         'partner_bank_id.l10n_ch_isr_subscription_chf')
     def _compute_l10n_ch_isr_optical_line(self):
-        """ Compute the optical line to print on the bottom of the ISR.
+        r""" Compute the optical line to print on the bottom of the ISR.
 
         This line is read by an OCR.
         It's format is:
