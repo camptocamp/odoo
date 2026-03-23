@@ -52,6 +52,9 @@ safe_attrs = defs.safe_attrs | frozenset(
      'data-behavior-props', 'data-prop-name',  # knowledge commands
      'data-mimetype-before-conversion',
      ])
+
+defs.link_attrs |= {'xlink:href'}
+
 SANITIZE_TAGS = {
     # allow new semantic HTML5 tags
     'allow_tags': defs.tags | frozenset('article bdi section header footer hgroup nav aside figure main'.split() + [etree.Comment]),
