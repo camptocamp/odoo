@@ -31,11 +31,30 @@ class TestAccountEdiUblCii(AccountTestInvoicingCommon):
         })
 
     def test_import_product(self):
+        products = self.env['product.product'].create([{
+            'name': 'XYZ',
+            'default_code': '1234',
+        }, {
+            'name': 'XYZ',
+            'default_code': '5678',
+        }, {
+            'name': 'XXX',
+            'default_code': '1111',
+            'barcode': '00001',
+        }, {
+            'name': 'YYY',
+            'default_code': '1111',
+            'barcode': '00002',
+        }])
         line_vals = [
            {'product_id': self.place_prdct.id, 'product_uom_id': self.uom_units.id},
            {'product_id': self.displace_prdct.id, 'product_uom_id': self.uom_units.id},
            {'product_id': self.displace_prdct.id, 'product_uom_id': self.uom_units.id},
-           {'product_id': self.displace_prdct.id, 'product_uom_id': self.uom_dozens.id}
+           {'product_id': self.displace_prdct.id, 'product_uom_id': self.uom_dozens.id},
+           {'product_id': products[0].id, 'product_uom_id': self.uom_units.id},
+           {'product_id': products[1].id, 'product_uom_id': self.uom_units.id},
+           {'product_id': products[2].id, 'product_uom_id': self.uom_units.id},
+           {'product_id': products[3].id, 'product_uom_id': self.uom_units.id},
         ]
         # To allow for the creation of Factur-X EDI the company must be either French or German
         company = self.company_data['company']
@@ -161,4 +180,30 @@ class TestAccountEdiUblCii(AccountTestInvoicingCommon):
             'street2': False,
             'city': 'Strassen',
             'zip': '8010',
+        }])
+
+    def test_import_bill_without_tax(self):
+        """ Test that no tax is set (even the default one) when importing a bill without tax."""
+        file_path = "bis3_bill_without_tax.xml"
+        file_path = f"{self.test_module}/tests/test_files/{file_path}"
+        with file_open(file_path, 'rb') as file:
+            xml_attachment = self.env['ir.attachment'].create({
+                'mimetype': 'application/xml',
+                'name': 'test_invoice.xml',
+                'raw': file.read(),
+            })
+        purchase_tax = self.env['account.tax'].create({
+            'type_tax_use': 'purchase',
+            'name': 'purchase_tax_10',
+            'amount': 10,
+        })
+        self.company_data['company'].account_purchase_tax_id = purchase_tax
+        bill = self.env['account.journal']\
+                .with_context(default_journal_id=self.company_data['default_journal_purchase'].id)\
+                ._create_document_from_attachment(xml_attachment.id)
+
+        self.assertRecordValues(bill.invoice_line_ids, [{
+            'amount_currency': 100.00,
+            'quantity': 1.0,
+            'tax_ids': self.env['account.tax'],
         }])

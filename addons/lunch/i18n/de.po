@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-10 08:26+0000\n"
+"POT-Creation-Date: 2025-05-06 20:35+0000\n"
 "PO-Revision-Date: 2022-09-22 05:53+0000\n"
 "Last-Translator: Larissa Manderfeld, 2025\n"
 "Language-Team: German (https://app.transifex.com/odoo/teams/41243/de/)\n"
@@ -357,17 +357,17 @@ msgstr ""
 "        <td align=\"center\" style=\"min-width: 590px;\">\n"
 "            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
 "                <tr><td valign=\"middle\" align=\"left\">\n"
-"                    <t t-out=\"user.company_id.name or ''\">YourCompany</t>\n"
+"                    <t t-out=\"user.company_id.name or ''\">IhrUnternehmen</t>\n"
 "                </td></tr>\n"
 "                <tr><td valign=\"middle\" align=\"left\" style=\"opacity: 0.7;\">\n"
 "                    <t t-out=\"user.company_id.phone or ''\">+1 650-123-4567</t>\n"
 "                    <t t-if=\"user.company_id.phone and (user.company_id.email or user.company_id.website)\">|</t>\n"
 "                    <t t-if=\"user.company_id.email\">\n"
-"                        <a t-attf-href=\"'mailto:%s' % {{ user.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"user.company_id.email or ''\">info@yourcompany.com</a>\n"
+"                        <a t-attf-href=\"'mailto:%s' % {{ user.company_id.email }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"user.company_id.email or ''\">info@ihrunternehmen.com</a>\n"
 "                    </t>\n"
 "                    <t t-if=\"user.company_id.email and user.company_id.website\">|</t>\n"
 "                    <t t-if=\"user.company_id.website\">\n"
-"                        <a t-attf-href=\"'%s' % {{ user.company_id.website }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"user.company_id.website or ''\">http://www.example.com</a>\n"
+"                        <a t-attf-href=\"'%s' % {{ user.company_id.website }}\" style=\"text-decoration:none; color: #454748;\" t-out=\"user.company_id.website or ''\">http://www.beispiel.com</a>\n"
 "                    </t>\n"
 "                </td></tr>\n"
 "            </table>\n"
@@ -1336,32 +1336,32 @@ msgid "Lunch: Supplier Order"
 msgstr "Mittagessen: Lieferantenauftrag"
 
 #. module: lunch
-#: model:ir.actions.server,name:lunch.lunch_alert_cron_sa_235
+#: model:ir.actions.server,name:lunch.lunch_alert_cron_sa_236
 msgid "Lunch: alert chat notification (Alert for Office 3)"
 msgstr "Mittagessen: Chat-Benachrichtigung (Benachrichtigung für Büro 3)"
 
 #. module: lunch
-#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_236
+#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_237
 msgid "Lunch: send automatic email to Coin gourmand"
 msgstr "Mittagessen: automatische E-Mail an Coin gourmand senden"
 
 #. module: lunch
-#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_231
+#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_232
 msgid "Lunch: send automatic email to Lunch Supplier"
 msgstr "Mittagessen: automatische E-Mail an Lieferdienst senden"
 
 #. module: lunch
-#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_237
+#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_238
 msgid "Lunch: send automatic email to Pizza Inn"
 msgstr "Mittagessen: automatische E-Mail an Pizza Inn senden"
 
 #. module: lunch
-#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_239
+#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_240
 msgid "Lunch: send automatic email to Sushi Shop"
 msgstr "Mittagessen: automatische E-Mail an Sushi Shop senden"
 
 #. module: lunch
-#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_238
+#: model:ir.actions.server,name:lunch.lunch_supplier_cron_sa_239
 msgid "Lunch: send automatic email to The Corner"
 msgstr "Mittagessen: automatische E-Mail an The Corner senden"
 

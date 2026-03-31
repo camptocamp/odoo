@@ -7544,8 +7544,8 @@ msgstr ""
 "\n"
 "主な特徴\n"
 "------------\n"
-"*イベントと登録を管理する。\n"
-"*電子メールを使用して、自動的に確認し、イベント登録の確認を送信します。\n"
+"*イベントと登録を管理します。\n"
+"*メールを使用して、自動的に確定し、イベント登録の確認を送信します。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_l10n_latam_check
@@ -10299,12 +10299,12 @@ msgstr ""
 "\n"
 "次の日付を追跡できます：\n"
 "-------------------------------\n"
-"- 人生の終わり\n"
-"- 賞味期限\n"
-"- 除去日\n"
+"- 使用終了日\n"
+"- 品質保持期限\n"
+"- 払出期限\n"
 "- アラート日\n"
 "\n"
-"また、食品産業において、例えば、除去戦略、有効期限ファーストアウト(FEFO)の、広く使用されている実装がされています。\n"
+"食品業界などで広く使用されている払出(廃棄)戦略である、使用期限順先出(FEFO)も実装されています。\n"
 
 #. module: base
 #: model:ir.module.module,description:base.module_transifex
@@ -13888,23 +13888,23 @@ msgstr "添付ファイルのリストとドキュメントのインデックス
 #. module: base
 #: model:ir.module.module,summary:base.module_hr_holidays_attendance
 msgid "Attendance Holidays"
-msgstr "出勤 休暇"
+msgstr "勤怠・休暇連携"
 
 #. module: base
 #: model:ir.module.category,name:base.module_category_human_resources_attendances
 #: model:ir.module.module,shortdesc:base.module_hr_attendance
 msgid "Attendances"
-msgstr "出勤"
+msgstr "勤怠管理"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_attendance_mobile
 msgid "Attendances Barcode in Mobile"
-msgstr "モバイルでの出席バーコード"
+msgstr "モバイル勤怠バーコード管理"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_hr_attendance_mobile
 msgid "Attendances Barcode scan in Mobile"
-msgstr "モバイルでの出席バーコードスキャン"
+msgstr "モバイルでの出退勤バーコードスキャン"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_website_mass_mailing
@@ -16013,12 +16013,12 @@ msgstr "製品を構成する"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_base_module_upgrade
 msgid "Confirm"
-msgstr "確認"
+msgstr "確定"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.identity_check_wizard
 msgid "Confirm Password"
-msgstr "パスワードを確認"
+msgstr "パスワードの確認"
 
 #. module: base
 #: model:res.country,name:base.cg
@@ -16567,12 +16567,12 @@ msgstr "チャネルで/leadコマンドを使用して新しいリードを作�
 #. module: base
 #: model:ir.module.module,summary:base.module_hr_work_entry_contract_attendance
 msgid "Create work entries from the employee's attendances"
-msgstr "従業員の出勤からワークエントリを作成"
+msgstr "従業員の出勤から勤務記録を作成"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_hr_work_entry_contract_planning
 msgid "Create work entries from the employee's planning"
-msgstr "従業員の計画からワークエントリを作成"
+msgstr "従業員の計画から勤務記録を作成"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.module_form
@@ -17008,8 +17008,8 @@ msgstr "D - 電気、ガス、蒸気、空調の供給"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_delivery_dhl
-msgid "DHL Express Shipping"
-msgstr "DHLエクスプレス配送"
+msgid "DHL Express Shipping (Legacy)"
+msgstr "DHL Express配送 (旧版)"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_din5008
@@ -17537,13 +17537,13 @@ msgstr "デスクメーカー"
 #. module: base
 #: model:ir.model.fields,field_description:base.field_base_partner_merge_automatic_wizard__dst_partner_id
 msgid "Destination Contact"
-msgstr "行き先の連絡先"
+msgstr "マージ先連絡先"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_actions_act_window__res_model
 #: model:ir.model.fields,field_description:base.field_ir_actions_client__res_model
 msgid "Destination Model"
-msgstr "宛先モデル"
+msgstr "対象モデル"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_rule_form
@@ -18612,7 +18612,7 @@ msgstr "エンタープライズウェブサイトビルダー"
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_R
 msgid "Entertainment"
-msgstr "娯楽"
+msgstr "エンターテイメント"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_profile__entry_count
@@ -19138,7 +19138,7 @@ msgstr "請求書スキャンからデータを抽出して、自動的に入力
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_U
 msgid "Extraterritorial"
-msgstr "治外法権"
+msgstr "国際機関"
 
 #. module: base
 #: model:res.partner.industry,full_name:base.res_partner_industry_F
@@ -20201,7 +20201,7 @@ msgstr "グルジア"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_l10n_de_intrastat
 msgid "German Intrastat Declaration"
-msgstr "ドイツ国内統計申告書"
+msgstr "ドイツイントラスタット申告"
 
 #. module: base
 #: model:res.country,name:base.de
@@ -22237,7 +22237,7 @@ msgstr "逆レート"
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__res_partner__type__invoice
 msgid "Invoice Address"
-msgstr "請求先"
+msgstr "請求先住所"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_account
@@ -23003,13 +23003,13 @@ msgstr "ラトビア - 会計"
 #: model_terms:ir.ui.view,arch_db:base.config_wizard_step_view_form
 #: model_terms:ir.ui.view,arch_db:base.ir_actions_todo_tree
 msgid "Launch"
-msgstr "起動"
+msgstr "開始"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.config_wizard_step_view_form
 #: model_terms:ir.ui.view,arch_db:base.ir_actions_todo_tree
 msgid "Launch Configuration Wizard"
-msgstr "起動設定ウィザード"
+msgstr "設定ウィザードを開始"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_company__layout_background
@@ -23340,7 +23340,7 @@ msgstr "ログ管理"
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.ir_logging_form_view
 msgid "Logging details"
-msgstr "ロギングの詳細"
+msgstr "ログ詳細"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_users__login
@@ -23866,7 +23866,7 @@ msgstr "応募者に送信する署名の管理"
 #: model:ir.module.module,summary:base.module_hr_work_entry_contract
 #: model:ir.module.module,summary:base.module_hr_work_entry_contract_enterprise
 msgid "Manage work entries"
-msgstr "作業エントリの管理"
+msgstr "勤務記録の管理"
 
 #. module: base
 #: model:ir.module.module,description:base.module_social_facebook
@@ -28136,7 +28136,7 @@ msgstr "取引先"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_partner_autocomplete
 msgid "Partner Autocomplete"
-msgstr "連絡先情報自動提案"
+msgstr "取引先自動入力"
 
 #. module: base
 #: model:ir.model,name:base.model_res_partner_category
@@ -29735,18 +29735,18 @@ msgstr "レート"
 #: model:ir.model.fields,field_description:base.field_ir_model_access__perm_read
 #: model_terms:ir.ui.view,arch_db:base.ir_access_view_search
 msgid "Read Access"
-msgstr "読出権限"
+msgstr "読み取りアクセス"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_rule_search
 msgid "Read Access Right"
-msgstr "読出権限"
+msgstr "読み取りアクセス権"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model_fields__readonly
 #: model_terms:ir.ui.view,arch_db:base.view_model_fields_search
 msgid "Readonly"
-msgstr "読出のみ"
+msgstr "読み取り専用"
 
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_L
@@ -30676,12 +30676,12 @@ msgstr "販売-プロジェクト"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_expense
 msgid "Sales Expense"
-msgstr "販売経費"
+msgstr "販売費用"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sale_expense_margin
 msgid "Sales Expense Margin"
-msgstr "販売経費マージン"
+msgstr "販売費用マージン"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_sales_team
@@ -31184,8 +31184,13 @@ msgstr "shiprocketで小包を送り、オンラインで追跡します"
 
 #. module: base
 #: model:ir.module.module,description:base.module_delivery_dhl
-msgid "Send your shippings through DHL and track them online"
-msgstr "DHLを通して発送し、オンラインで追跡します"
+msgid ""
+"This is the legacy integration with DHL Express that is no longer supported."
+" Please install the new \"DHL Express Shipping\" module and uninstall this "
+"one as soon as possible."
+msgstr ""
+"こちらは旧バージョンの DHL Express 連携モジュールであり、現在はサポートされていません。新しいDHL "
+"Express配送モジュールをインストールし、本モジュールはできるだけ早くアンインストールしてください。"
 
 #. module: base
 #: model:ir.module.module,description:base.module_delivery_fedex_rest
@@ -34180,7 +34185,7 @@ msgstr "給与明細内での休暇 企業版"
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_holidays_gantt
 msgid "Time off Gantt"
-msgstr "ガントの休暇"
+msgstr "休暇ガントビュー"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_timer
@@ -34437,7 +34442,7 @@ msgstr "Transifexの連携機能"
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_groups__trans_implied_ids
 msgid "Transitively inherits"
-msgstr "推移的継承"
+msgstr "間接継承する"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model_fields__translate
@@ -34471,7 +34476,7 @@ msgstr "モデル翻訳されたフィールドの翻訳は、偽の値とstr値
 #. module: base
 #: model:res.partner.industry,name:base.res_partner_industry_H
 msgid "Transportation/Logistics"
-msgstr "運輸/物流"
+msgstr "交通/物流"
 
 #. module: base
 #: model:ir.model.fields.selection,name:base.selection__ir_actions_act_window_view__view_mode__tree
@@ -36166,27 +36171,27 @@ msgstr "ウッドコーナーは、顧客が木、花、菌類を扱うのを助
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_work_entry
 msgid "Work Entries"
-msgstr "作業エントリ"
+msgstr "勤務記録"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_work_entry_contract_attendance
 msgid "Work Entries - Attendance"
-msgstr "ワークエントリ - 勤怠"
+msgstr "勤務記録 - 勤怠"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_work_entry_contract
 msgid "Work Entries - Contract"
-msgstr "作業エントリ-契約"
+msgstr "勤務記録-契約"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_work_entry_contract_enterprise
 msgid "Work Entries - Contract Enterprise"
-msgstr "ワークエントリ - 契約 企業版"
+msgstr "勤務記録 - 契約 企業版"
 
 #. module: base
 #: model:ir.module.module,shortdesc:base.module_hr_work_entry_contract_planning
 msgid "Work Entries - Planning"
-msgstr "ワークエントリ - 計画"
+msgstr "勤務記録 - 計画"
 
 #. module: base
 #: model:ir.module.module,summary:base.module_mrp_workorder
@@ -36212,18 +36217,18 @@ msgstr "介入を計画する際のワークシートテンプレート"
 #: model:ir.model.fields,field_description:base.field_ir_model_access__perm_write
 #: model_terms:ir.ui.view,arch_db:base.ir_access_view_search
 msgid "Write Access"
-msgstr "更新権限"
+msgstr "書き込みアクセス"
 
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_rule_search
 msgid "Write Access Right"
-msgstr "更新権限"
+msgstr "書き込みアクセス件"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_ir_model_constraint__write_date
 #: model:ir.model.fields,field_description:base.field_ir_model_relation__write_date
 msgid "Write Date"
-msgstr "日付を書く"
+msgstr "更新日時"
 
 #. module: base
 #: model:ir.model.fields,help:base.field_ir_actions_server__code

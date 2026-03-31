@@ -903,7 +903,18 @@ class AccountMove(models.Model):
 
     @api.depends('amount_residual', 'move_type', 'state', 'company_id')
     def _compute_payment_state(self):
-        stored_ids = tuple(self.ids)
+        posted_invoices = self.filtered(lambda m: m.state == 'posted' and m.is_invoice(True) and m.payment_state != 'invoicing_legacy')
+        for move in self - posted_invoices:
+            if move.payment_state == 'invoicing_legacy':
+                # invoicing_legacy state is set via SQL when setting setting field
+                # invoicing_switch_threshold (defined in account_accountant).
+                # The only way of going out of this state is through this setting,
+                # so we don't recompute it here.
+                continue
+
+            move.payment_state = 'not_paid'
+
+        stored_ids = tuple(posted_invoices.ids)
         if stored_ids:
             self.env['account.partial.reconcile'].flush_model()
             self.env['account.payment'].flush_model(['is_matched'])
@@ -938,57 +949,45 @@ class AccountMove(models.Model):
         else:
             payment_data = {}
 
-        for invoice in self:
-            if invoice.payment_state == 'invoicing_legacy':
-                # invoicing_legacy state is set via SQL when setting setting field
-                # invoicing_switch_threshold (defined in account_accountant).
-                # The only way of going out of this state is through this setting,
-                # so we don't recompute it here.
-                continue
+        for invoice in posted_invoices:
 
             currencies = invoice._get_lines_onchange_currency().currency_id
             currency = currencies if len(currencies) == 1 else invoice.company_id.currency_id
             reconciliation_vals = payment_data.get(invoice.id, [])
-            payment_state_matters = invoice.is_invoice(True)
 
             # Restrict on 'receivable'/'payable' lines for invoices/expense entries.
-            if payment_state_matters:
-                reconciliation_vals = [x for x in reconciliation_vals if x['source_line_account_type'] in ('asset_receivable', 'liability_payable')]
+
+            reconciliation_vals = [x for x in reconciliation_vals if x['source_line_account_type'] in ('asset_receivable', 'liability_payable')]
 
             new_pmt_state = 'not_paid'
-            if invoice.state == 'posted':
+            if currency.is_zero(invoice.amount_residual):
+                if any(x['has_payment'] or x['has_st_line'] for x in reconciliation_vals):
 
-                # Posted invoice/expense entry.
-                if payment_state_matters:
+                    # Check if the invoice/expense entry is fully paid or 'in_payment'.
+                    if all(x['all_payments_matched'] for x in reconciliation_vals):
+                        new_pmt_state = 'paid'
+                    else:
+                        new_pmt_state = invoice._get_invoice_in_payment_state()
 
-                    if currency.is_zero(invoice.amount_residual):
-                        if any(x['has_payment'] or x['has_st_line'] for x in reconciliation_vals):
+                else:
+                    new_pmt_state = 'paid'
 
-                            # Check if the invoice/expense entry is fully paid or 'in_payment'.
-                            if all(x['all_payments_matched'] for x in reconciliation_vals):
-                                new_pmt_state = 'paid'
-                            else:
-                                new_pmt_state = invoice._get_invoice_in_payment_state()
+                    reverse_move_types = set()
+                    for x in reconciliation_vals:
+                        for move_type in x['counterpart_move_types']:
+                            reverse_move_types.add(move_type)
 
-                        else:
-                            new_pmt_state = 'paid'
+                    in_reverse = (invoice.move_type in ('in_invoice', 'in_receipt')
+                                    and (reverse_move_types == {'in_refund'} or reverse_move_types == {'in_refund', 'entry'}))
+                    out_reverse = (invoice.move_type in ('out_invoice', 'out_receipt')
+                                    and (reverse_move_types == {'out_refund'} or reverse_move_types == {'out_refund', 'entry'}))
+                    misc_reverse = (invoice.move_type in ('entry', 'out_refund', 'in_refund')
+                                    and reverse_move_types == {'entry'})
+                    if in_reverse or out_reverse or misc_reverse:
+                        new_pmt_state = 'reversed'
 
-                            reverse_move_types = set()
-                            for x in reconciliation_vals:
-                                for move_type in x['counterpart_move_types']:
-                                    reverse_move_types.add(move_type)
-
-                            in_reverse = (invoice.move_type in ('in_invoice', 'in_receipt')
-                                          and (reverse_move_types == {'in_refund'} or reverse_move_types == {'in_refund', 'entry'}))
-                            out_reverse = (invoice.move_type in ('out_invoice', 'out_receipt')
-                                           and (reverse_move_types == {'out_refund'} or reverse_move_types == {'out_refund', 'entry'}))
-                            misc_reverse = (invoice.move_type in ('entry', 'out_refund', 'in_refund')
-                                            and reverse_move_types == {'entry'})
-                            if in_reverse or out_reverse or misc_reverse:
-                                new_pmt_state = 'reversed'
-
-                    elif reconciliation_vals:
-                        new_pmt_state = 'partial'
+            elif reconciliation_vals:
+                new_pmt_state = 'partial'
 
             invoice.payment_state = new_pmt_state
 
@@ -1370,21 +1369,17 @@ class AccountMove(models.Model):
     @api.depends('move_type', 'partner_id', 'company_id')
     def _compute_narration(self):
         use_invoice_terms = self.env['ir.config_parameter'].sudo().get_param('account.use_invoice_terms')
-        for move in self:
-            if not move.is_sale_document(include_receipts=True):
-                continue
-            if not use_invoice_terms:
-                move.narration = False
+        invoice_to_update_terms = self.filtered(lambda m: use_invoice_terms and m.is_sale_document(include_receipts=True))
+        for move in invoice_to_update_terms:
+            lang = move.partner_id.lang or self.env.user.lang
+            if move.company_id.terms_type != 'html':
+                narration = move.company_id.with_context(lang=lang).invoice_terms if not is_html_empty(move.company_id.invoice_terms) else ''
             else:
-                lang = move.partner_id.lang or self.env.user.lang
-                if not move.company_id.terms_type == 'html':
-                    narration = move.company_id.with_context(lang=lang).invoice_terms if not is_html_empty(move.company_id.invoice_terms) else ''
-                else:
-                    baseurl = self.env.company.get_base_url() + '/terms'
-                    context = {'lang': lang}
-                    narration = _('Terms & Conditions: %s', baseurl)
-                    del context
-                move.narration = narration or False
+                baseurl = self.env.company.get_base_url() + '/terms'
+                context = {'lang': lang}
+                narration = _('Terms & Conditions: %s', baseurl)
+                del context
+            move.narration = narration or False
 
     @api.depends('company_id', 'partner_id', 'tax_totals', 'currency_id')
     def _compute_partner_credit_warning(self):
@@ -1744,7 +1739,7 @@ class AccountMove(models.Model):
                 AND move2.journal_id = move.journal_id
                 AND move2.move_type = move.move_type
                 AND move2.id != move.id
-            WHERE move.id IN %s AND move2.state = 'posted'
+            WHERE move.id IN %s AND move2.state = 'posted' AND move2.name != '/'
         ''', [tuple(moves.ids)])
         res = self._cr.fetchall()
         if res:
@@ -2257,13 +2252,20 @@ class AccountMove(models.Model):
         copied_am = super().copy(default)
         message_origin = '' if not copied_am.auto_post_origin_id else \
             '<br/>' + _('This recurring entry originated from %s', copied_am.auto_post_origin_id._get_html_link())
-        copied_am._message_log(body=_(
-            'This entry has been duplicated from %s%s',
-            self._get_html_link(),
-            message_origin,
-        ))
+        message_content = self._get_copy_message_content(default)
+        copied_am._message_log(
+            body=message_content + message_origin,
+        )
 
         return copied_am
+
+    def _get_copy_message_content(self, default):
+        """Hook method to customize the message content when copying a move.
+        This method can be overridden by other modules to add custom logic.
+        :param default: The default values dict passed to copy method
+        :return: The message content string
+        """
+        return _('This entry has been duplicated from %s', self._get_html_link())
 
     def _sanitize_vals(self, vals):
         if vals.get('invoice_line_ids') and vals.get('line_ids'):
@@ -2392,7 +2394,7 @@ class AccountMove(models.Model):
                 if 'tax_totals' in vals:
                     super(AccountMove, move).write({'tax_totals': vals['tax_totals']})
 
-        if 'journal_id' in vals:
+        if any(field in vals for field in ['journal_id', 'currency_id']):
             self.line_ids._check_constrains_account_id_journal_id()
 
         return res

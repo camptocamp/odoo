@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-10 08:27+0000\n"
+"POT-Creation-Date: 2025-05-22 18:35+0000\n"
 "PO-Revision-Date: 2022-09-22 05:53+0000\n"
 "Last-Translator: Baskhuu Lodoikhuu <baskhuujacara@gmail.com>, 2025\n"
 "Language-Team: Mongolian (https://app.transifex.com/odoo/teams/41243/mn/)\n"
@@ -651,7 +651,7 @@ msgstr "Купоны тоо"
 #: code:addons/loyalty/models/loyalty_program.py:0
 #, python-format
 msgid "Coupon point(s)"
-msgstr ""
+msgstr "Купон оноо"
 
 #. module: loyalty
 #: model:loyalty.program,portal_point_name:loyalty.10_percent_coupon
@@ -1037,13 +1037,6 @@ msgid "Generate eWallet"
 msgstr ""
 
 #. module: loyalty
-#. odoo-javascript
-#: code:addons/loyalty/static/src/xml/loyalty_templates.xml:0
-#, python-format
-msgid "Generate {{props.context.program_item_name}}"
-msgstr ""
-
-#. module: loyalty
 #: model_terms:ir.ui.view,arch_db:loyalty.loyalty_program_gift_ewallet_view_form
 msgid "Gift &amp; Ewallet"
 msgstr ""
@@ -1259,7 +1252,7 @@ msgstr ""
 #. module: loyalty
 #: model:ir.model,name:loyalty.model_loyalty_mail
 msgid "Loyalty Communication"
-msgstr ""
+msgstr "Лоялти тэмдэглэл"
 
 #. module: loyalty
 #: model:ir.model,name:loyalty.model_loyalty_card
@@ -1777,6 +1770,13 @@ msgid "Trigger"
 msgstr "Гол"
 
 #. module: loyalty
+#. odoo-python
+#: code:addons/loyalty/models/loyalty_reward.py:0
+#, python-format
+msgid "Unsupported search operator"
+msgstr ""
+
+#. module: loyalty
 #: model:ir.model.fields,field_description:loyalty.field_loyalty_card__use_count
 msgid "Use Count"
 msgstr ""
@@ -2034,11 +2034,4 @@ msgstr ""
 #: code:addons/loyalty/models/loyalty_reward.py:0
 #, python-format
 msgid "your order"
-msgstr ""
-
-#. module: loyalty
-#. odoo-javascript
-#: code:addons/loyalty/static/src/xml/loyalty_templates.xml:0
-#, python-format
-msgid "{{loyalty_el_title}}"
 msgstr ""

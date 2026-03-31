@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-06 13:31+0000\n"
+"POT-Creation-Date: 2025-07-04 01:32+0000\n"
 "PO-Revision-Date: 2022-09-22 05:46+0000\n"
 "Last-Translator: Fernanda Alvarez, 2025\n"
 "Language-Team: Spanish (Mexico) (https://app.transifex.com/odoo/teams/41243/es_MX/)\n"
@@ -2212,14 +2212,13 @@ msgstr ""
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave__message_needaction
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_allocation__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr ""
-"Si se encuentra seleccionado, hay nuevos mensajes que requieren su atención."
+msgstr "Si está seleccionado, hay nuevos mensajes que requieren tu atención."
 
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave__message_has_error
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_allocation__message_has_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Si se encuentra seleccionado, algunos mensajes tienen error de envío."
+msgstr "Si está seleccionado, algunos mensajes tienen error de envío."
 
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_accrual_level__is_based_on_worked_time
@@ -3278,7 +3277,7 @@ msgstr "Necesita asignación"
 #. module: hr_holidays
 #: model:ir.actions.act_window,name:hr_holidays.resource_calendar_global_leaves_action_from_calendar
 msgid "Resource Time Off"
-msgstr "Recurso de tiempo personal"
+msgstr "Pausa del recurso"
 
 #. module: hr_holidays
 #: model:ir.model,name:hr_holidays.model_resource_calendar_leaves
@@ -4448,7 +4447,7 @@ msgstr "Horas laborables"
 #. module: hr_holidays
 #: model:ir.model.fields.selection,name:hr_holidays.selection__hr_leave_accrual_level__frequency__yearly
 msgid "Yearly"
-msgstr "Anualmente"
+msgstr "Anual"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_accrual_level__yearly_day
@@ -4614,6 +4613,17 @@ msgid ""
 msgstr ""
 "No puede ser el primero en aprobar un tiempo personal para %s porque no es "
 "su gerente de tiempo personal"
+
+#. module: hr_holidays
+#. odoo-python
+#: code:addons/hr_holidays/models/hr_leave.py:0
+#, python-format
+msgid ""
+"You do not have any allocation for this time off type.\n"
+"Please request an allocation before submitting your time off request."
+msgstr ""
+"No tienes ninguna asignación para este tipo de tiempo personal.\n"
+"Solicita una asignación antes de enviar tu solicitud."
 
 #. module: hr_holidays
 #. odoo-python

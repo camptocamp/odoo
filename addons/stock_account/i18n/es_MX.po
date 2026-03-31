@@ -272,7 +272,7 @@ msgstr ""
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_picking__country_code
 msgid "Country Code"
-msgstr "Código de país"
+msgstr "Código del país"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__create_uid
@@ -408,7 +408,7 @@ msgstr "Ubicaciones de inventario"
 #: model_terms:ir.ui.view,arch_db:stock_account.view_inventory_valuation_search
 #, python-format
 msgid "Inventory Valuation"
-msgstr "Valoración de inventario"
+msgstr "Valuación de inventario"
 
 #. module: stock_account
 #: model:ir.model.fields,field_description:stock_account.field_stock_valuation_layer__account_move_line_id
@@ -566,7 +566,7 @@ msgstr "Plantilla de producto"
 #. module: stock_account
 #: model:ir.model,name:stock_account.model_product_product
 msgid "Product Variant"
-msgstr "Variante de producto"
+msgstr "Variante del producto"
 
 #. module: stock_account
 #. odoo-python
@@ -756,7 +756,7 @@ msgid ""
 "You can use this field for quick search."
 msgstr ""
 "El código ISO del país en dos caracteres.\n"
-"Puede utilizar este campo para una búsqueda rápida."
+"Puedes utilizar este campo para realizar una búsqueda rápida."
 
 #. module: stock_account
 #. odoo-python

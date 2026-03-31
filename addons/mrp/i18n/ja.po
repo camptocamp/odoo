@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-10 08:26+0000\n"
+"POT-Creation-Date: 2025-05-08 20:34+0000\n"
 "PO-Revision-Date: 2022-09-22 05:53+0000\n"
 "Last-Translator: Junko Augias, 2025\n"
 "Language-Team: Japanese (https://app.transifex.com/odoo/teams/41243/ja/)\n"
@@ -1140,7 +1140,7 @@ msgstr "完了状態にある製造オーダは削除することはできませ
 #: model:ir.model.fields,field_description:mrp.field_mrp_workcenter__default_capacity
 #: model:ir.model.fields,field_description:mrp.field_mrp_workcenter_capacity__capacity
 msgid "Capacity"
-msgstr "キャパシティ"
+msgstr "生産能力"
 
 #. module: mrp
 #: model:ir.model.constraint,message:mrp.constraint_mrp_workcenter_capacity_positive_capacity
@@ -1181,7 +1181,7 @@ msgstr "生産数量を変更"
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_production_form_view
 msgid "Check availability"
-msgstr "利用可能確認"
+msgstr "在庫を確認"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_document__checksum
@@ -1191,7 +1191,7 @@ msgstr "チェックサム/SHA1"
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_workcenter__time_stop
 msgid "Cleanup Time"
-msgstr "後処理時間"
+msgstr "清掃時間"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_workcenter_capacity__time_stop
@@ -1410,7 +1410,7 @@ msgstr "原価シェア (%)"
 #: model:ir.model.fields,field_description:mrp.field_mrp_workcenter__costs_hour
 #: model:ir.model.fields,field_description:mrp.field_mrp_workorder__costs_hour
 msgid "Cost per hour"
-msgstr "時間単価"
+msgstr "時間あたりのコスト"
 
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_workcenter_view
@@ -1489,8 +1489,8 @@ msgid ""
 "Create and confirm Manufacturing Orders this many days in advance, to have enough time to replenish components or manufacture semi-finished products.\n"
 "Note that security lead times will also be considered when appropriate."
 msgstr ""
-"構成品の補充や半製品の製造に十分な時間を確保するため、製造オーダーはこの日数の前に製造オーダを作成し、確認します。\n"
-"適宜、安全リードタイムも考慮されることに注意して下さい。"
+"構成品の補充や半製品の製造に十分な時間を確保するため、製造オーダはこの日数分前に作成・確定して下さい。\n"
+"必要に応じて、安全リードタイムも考慮されます。"
 
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.view_mrp_production_backorder_form
@@ -2004,7 +2004,7 @@ msgstr "予想所要時間(分)"
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_stock_assign_serial__expected_qty
 msgid "Expected Quantity"
-msgstr "予測数量"
+msgstr "予想数量"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_document__datas
@@ -2981,7 +2981,7 @@ msgstr "現在確認中の製造オーダ"
 #: model:ir.model.fields,field_description:mrp.field_mrp_bom__ready_to_produce
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_bom_form_view
 msgid "Manufacturing Readiness"
-msgstr "製造準備"
+msgstr "製造準備状況"
 
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_production_form_view
@@ -3304,7 +3304,7 @@ msgstr "待機中の製造オーダ数"
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_stock_picking_type__count_mo_todo
 msgid "Number of Manufacturing Orders to Process"
-msgstr "処理予定の製造オーダ数"
+msgstr "処理待ちの製造オーダ数"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_production__unbuild_count
@@ -3412,7 +3412,7 @@ msgstr "消費操作"
 #: model:ir.model.fields,field_description:mrp.field_mrp_bom__picking_type_id
 #: model:ir.model.fields,field_description:mrp.field_mrp_production__picking_type_id
 msgid "Operation Type"
-msgstr "オペレーションタイプ"
+msgstr "工程タイプ"
 
 #. module: mrp
 #: model_terms:ir.actions.act_window,help:mrp.mrp_routing_action
@@ -3918,7 +3918,7 @@ msgstr "製造"
 #: model:ir.model.fields,field_description:mrp.field_mrp_production__production_capacity
 #: model:ir.model.fields,field_description:mrp.field_mrp_production_split__production_capacity
 msgid "Production Capacity"
-msgstr "生産キャパシティ"
+msgstr "生産能力"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_workorder__production_date
@@ -5200,13 +5200,13 @@ msgstr "終了日"
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_production_backorder_line__to_backorder
 msgid "To Backorder"
-msgstr "バックオーダするには"
+msgstr "バックオーダ待ち"
 
 #. module: mrp
 #: model:ir.model.fields.selection,name:mrp.selection__mrp_production__state__to_close
 #: model_terms:ir.ui.view,arch_db:mrp.view_mrp_production_filter
 msgid "To Close"
-msgstr "クローズ対象"
+msgstr "クローズ待ち"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_consumption_warning_line__product_expected_qty_uom
@@ -5214,7 +5214,7 @@ msgstr "クローズ対象"
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_production_workorder_form_view_inherit
 #: model_terms:ir.ui.view,arch_db:mrp.report_mrp_production_components
 msgid "To Consume"
-msgstr "消費対象"
+msgstr "消費待ち"
 
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.view_mrp_production_filter
@@ -5224,19 +5224,19 @@ msgstr "未処理"
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_workcenter_kanban
 msgid "To Launch"
-msgstr "起動予定"
+msgstr "開始待ち"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_immediate_production_line__to_immediate
 #: model_terms:ir.ui.view,arch_db:mrp.stock_production_type_kanban
 msgid "To Process"
-msgstr "未処理"
+msgstr "処理待ち"
 
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_production_form_view
 #: model_terms:ir.ui.view,arch_db:mrp.view_stock_move_operations_finished
 msgid "To Produce"
-msgstr "生産予定"
+msgstr "生産待ち"
 
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_unbuild_search_view
@@ -5252,7 +5252,7 @@ msgstr "木材パネルの最上層"
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_routing_workcenter_bom_tree_view
 msgid "Total Duration"
-msgstr "所要時間合計"
+msgstr "合計所要時間"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_workcenter__workorder_late_count
@@ -5287,7 +5287,7 @@ msgstr "消費予定合計"
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_production_workorder_form_view_inherit
 msgid "Total duration"
-msgstr "トータル期間"
+msgstr "合計所要時間"
 
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_production_tree_view
@@ -5613,7 +5613,7 @@ msgstr "他の処理待ち"
 #. module: mrp
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_workcenter_kanban
 msgid "Waiting Availability"
-msgstr "入荷待ち"
+msgstr "資材待ち"
 
 #. module: mrp
 #: model:ir.model.fields.selection,name:mrp.selection__mrp_workorder__state__pending
@@ -5973,7 +5973,7 @@ msgstr "作業区はブロックされています。クリックでブロック
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_workcenter__resource_calendar_id
 msgid "Working Hours"
-msgstr "労働時間"
+msgstr "勤務時間"
 
 #. module: mrp
 #: model:ir.model.fields,field_description:mrp.field_mrp_workorder__working_user_ids
@@ -6335,7 +6335,7 @@ msgstr "製造オーダ"
 #: code:addons/mrp/models/mrp_production.py:0
 #, python-format
 msgid "merged"
-msgstr "マージ済"
+msgstr "統合済"
 
 #. module: mrp
 #. odoo-python
@@ -6388,13 +6388,3 @@ msgstr "分割"
 #: model_terms:ir.ui.view,arch_db:mrp.mrp_routing_workcenter_form_view
 msgid "work orders"
 msgstr "作業オーダ"
-
-#. module: mrp
-#. odoo-javascript
-#: code:addons/mrp/static/src/components/bom_overview_line/mrp_bom_overview_line.xml:0
-#: code:addons/mrp/static/src/components/bom_overview_line/mrp_bom_overview_line.xml:0
-#: code:addons/mrp/static/src/components/bom_overview_special_line/mrp_bom_overview_special_line.xml:0
-#: code:addons/mrp/static/src/components/bom_overview_special_line/mrp_bom_overview_special_line.xml:0
-#, python-format
-msgid "{{ props.isFolded ? 'Unfold' : 'Fold' }}"
-msgstr "{{ props.isFolded ? 'Unfold' : 'Fold' }}"
