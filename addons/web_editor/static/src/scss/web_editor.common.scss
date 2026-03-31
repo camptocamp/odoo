@@ -646,6 +646,14 @@ blockquote {
     font-style: italic;
 }
 
+pre {
+    white-space: pre-wrap;
+
+    p {
+        margin-bottom: 0px;
+    }
+}
+
 // Extend bootstrap to create background and text utilities for some colors
 // outside of the $theme-colors too (but not btn-, alert-, etc).
 @for $index from 1 through 5 {
@@ -897,6 +905,9 @@ section, .oe_img_bg, [data-oe-shape-data] {
     }
     &.o_bg_img_center {
         background-position: center;
+    }
+    &.o_bg_img_origin_border_box {
+        background-origin: border-box;
     }
 }
 

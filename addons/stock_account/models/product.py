@@ -301,6 +301,7 @@ class ProductProduct(models.Model):
                     'debit': abs(value),
                     'credit': 0,
                     'product_id': product.id,
+                    'quantity': 0,
                 }), (0, 0, {
                     'name': _(
                         '%(user)s changed cost from %(previous)s to %(new_price)s - %(product)s',
@@ -313,6 +314,7 @@ class ProductProduct(models.Model):
                     'debit': 0,
                     'credit': abs(value),
                     'product_id': product.id,
+                    'quantity': 0,
                 })],
             }
             am_vals_list.append(move_vals)
@@ -332,6 +334,9 @@ class ProductProduct(models.Model):
         candidates_domain = self._get_fifo_candidates_domain(company)
         return self.env["stock.valuation.layer"].sudo().search(candidates_domain)
 
+    def _get_qty_taken_on_candidate(self, qty_to_take_on_candidates, candidate):
+        return min(qty_to_take_on_candidates, candidate.remaining_qty)
+
     def _run_fifo(self, quantity, company):
         self.ensure_one()
 
@@ -341,7 +346,7 @@ class ProductProduct(models.Model):
         new_standard_price = 0
         tmp_value = 0  # to accumulate the value taken on the candidates
         for candidate in candidates:
-            qty_taken_on_candidate = min(qty_to_take_on_candidates, candidate.remaining_qty)
+            qty_taken_on_candidate = self._get_qty_taken_on_candidate(qty_to_take_on_candidates, candidate)
 
             candidate_unit_cost = candidate.remaining_value / candidate.remaining_qty
             new_standard_price = candidate_unit_cost

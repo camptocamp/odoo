@@ -9,7 +9,7 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.addons.account.models.account_tax import TYPE_TAX_USE
 from odoo.addons.account.models.account_account import ACCOUNT_CODE_REGEX
-from odoo.tools import html_escape
+from odoo.tools import float_compare, html_escape
 
 import logging
 import re
@@ -138,11 +138,15 @@ def update_taxes_from_templates(cr, chart_template_xmlid):
             template_rep_lines = template.invoice_repartition_line_ids + template.refund_repartition_line_ids
             return (
                     tax.amount_type == template.amount_type
-                    and tax.amount == template.amount
+                    and float_compare(tax.amount, template.amount, precision_digits=4) == 0
                     and (
                          len(tax_rep_lines) == len(template_rep_lines)
                          and all(
-                             rep_line_tax.factor_percent == rep_line_template.factor_percent
+                             float_compare(
+                                 rep_line_tax.factor_percent,
+                                 rep_line_template.factor_percent,
+                                 precision_digits=4
+                             ) == 0
                              for rep_line_tax, rep_line_template in zip(tax_rep_lines, template_rep_lines)
                          )
                     )
@@ -478,6 +482,11 @@ class AccountChartTemplate(models.Model):
         if not company:
             if request and hasattr(request, 'allowed_company_ids'):
                 company = self.env['res.company'].browse(request.allowed_company_ids[0])
+            elif self.country_id:
+                company = self.env.company
+                company_countries = company.country_id + company.account_fiscal_country_id
+                if company_countries and self.country_id not in company_countries:
+                    return
             else:
                 company = self.env.company
         # If we don't have any chart of account on this company, install this chart of account
@@ -958,7 +967,7 @@ class AccountChartTemplate(models.Model):
         for tax in account_template.tax_ids:
             tax_ids.append(tax_template_ref[tax].id)
         val = {
-                'name': account_template.name,
+                'name': account_template.name.strip(),
                 'currency_id': account_template.currency_id and account_template.currency_id.id or False,
                 'code': code_acc,
                 'account_type': account_template.account_type or False,
@@ -1081,6 +1090,8 @@ class AccountChartTemplate(models.Model):
                 "auto_reconcile": True,
                 "match_nature": 'both',
                 "match_same_currency": True,
+                "match_text_location_note": True,
+                "match_text_location_reference": True,
                 "allow_payment_tolerance": True,
                 "payment_tolerance_type": 'percentage',
                 "payment_tolerance_param": 0,
@@ -1095,6 +1106,8 @@ class AccountChartTemplate(models.Model):
                 "auto_reconcile": False,
                 "match_nature": 'both',
                 "match_same_currency": True,
+                "match_text_location_note": True,
+                "match_text_location_reference": True,
                 "allow_payment_tolerance": False,
                 "match_partner": True,
                 "company_id": company.id,

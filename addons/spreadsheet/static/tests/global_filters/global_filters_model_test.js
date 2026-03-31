@@ -1,6 +1,7 @@
 /** @odoo-module */
 
 import { nextTick, patchDate } from "@web/../tests/helpers/utils";
+import { Domain } from "@web/core/domain";
 import CommandResult from "@spreadsheet/o_spreadsheet/cancelled_reason";
 import spreadsheet from "@spreadsheet/o_spreadsheet/o_spreadsheet_extended";
 import {
@@ -33,6 +34,7 @@ import {
 } from "@spreadsheet/../tests/utils/date_domain";
 import GlobalFiltersUIPlugin from "@spreadsheet/global_filters/plugins/global_filters_ui_plugin";
 import { migrate } from "@spreadsheet/o_spreadsheet/migration";
+import { getBasicServerData } from "@spreadsheet/../tests/utils/data";
 
 const { Model, DispatchResult } = spreadsheet;
 
@@ -1489,6 +1491,8 @@ QUnit.module("spreadsheet > Global filters model", {}, () => {
         "getFiltersMatchingPivot return correctly matching filter according to cell formula",
         async function (assert) {
             patchDate(2022, 6, 14, 0, 0, 0);
+            const serverData = getBasicServerData();
+            serverData.models["partner"].records.push({ ...serverData.models["partner"].records[0], id: 10000, product_id: false });
             const { model } = await createSpreadsheetWithPivot({
                 arch: /*xml*/ `
                 <pivot>
@@ -1496,6 +1500,7 @@ QUnit.module("spreadsheet > Global filters model", {}, () => {
                     <field name="probability" type="measure"/>
                     <field name="date" interval="month" type="col"/>
                 </pivot>`,
+                serverData,
             });
             await addGlobalFilter(
                 model,
@@ -1546,6 +1551,10 @@ QUnit.module("spreadsheet > Global filters model", {}, () => {
                 '=ODOO.PIVOT.HEADER(1,"product_id","41")'
             );
             assert.deepEqual(relationalFilters2, [{ filterId: "42", value: [41] }]);
+            const relationalFiltersWithNoneValue = model.getters.getFiltersMatchingPivot(
+                '=ODOO.PIVOT.HEADER(1,"#product_id",1)'
+            );
+            assert.deepEqual(relationalFiltersWithNoneValue, [{ filterId: "42", value: undefined }]);
             const dateFilters1 = model.getters.getFiltersMatchingPivot(
                 '=ODOO.PIVOT.HEADER(1,"date:month","08/2016")'
             );
@@ -1951,4 +1960,88 @@ QUnit.module("spreadsheet > Global filters model", {}, () => {
         const result = await addGlobalFilter(model, filter);
         assert.ok(result.isSuccessful);
     });
+
+    QUnit.test(
+        "Updating the pivot domain should keep the global filter domain",
+        async function (assert) {
+            patchDate(2022, 4, 16, 0, 0, 0);
+            const { model } = await createSpreadsheetWithPivot();
+            const filter = {
+                id: "43",
+                type: "date",
+                label: "This Year",
+                rangeType: "year",
+                defaultValue: {},
+                defaultsToCurrentPeriod: true,
+            };
+            await addGlobalFilter(
+                model,
+                { filter },
+                { pivot: { 1: { chain: "date", type: "date", offset: 0 } } }
+            );
+            let computedDomain = new Domain(model.getters.getPivotComputedDomain("1"));
+            assert.strictEqual(
+                computedDomain.toString(),
+                `["&", ("date", ">=", "2022-01-01"), ("date", "<=", "2022-12-31")]`
+            );
+            const [pivotId] = model.getters.getPivotIds();
+            model.dispatch("UPDATE_ODOO_PIVOT_DOMAIN", {
+                pivotId,
+                domain: [["foo", "in", [55]]],
+            });
+            computedDomain = new Domain(model.getters.getPivotComputedDomain("1"));
+            assert.strictEqual(
+                computedDomain.toString(),
+                `["&", ("foo", "in", [55]), "&", ("date", ">=", "2022-01-01"), ("date", "<=", "2022-12-31")]`
+            );
+            model.dispatch("REQUEST_UNDO");
+            computedDomain = new Domain(model.getters.getPivotComputedDomain("1"));
+            assert.strictEqual(
+                computedDomain.toString(),
+                `["&", ("date", ">=", "2022-01-01"), ("date", "<=", "2022-12-31")]`
+            );
+        }
+    );
+
+    QUnit.test(
+        "Updating the list domain should keep the global filter domain",
+        async function (assert) {
+            patchDate(2022, 4, 16, 0, 0, 0);
+            const { model } = await createSpreadsheetWithList();
+            const filter = {
+                id: "43",
+                type: "date",
+                label: "This Year",
+                rangeType: "year",
+                defaultValue: {},
+                defaultsToCurrentPeriod: true,
+            };
+            await addGlobalFilter(
+                model,
+                { filter },
+                { list: { 1: { chain: "date", type: "date", offset: 0 } } }
+            );
+            let computedDomain = new Domain(model.getters.getListComputedDomain("1"));
+            assert.strictEqual(
+                computedDomain.toString(),
+                `["&", ("date", ">=", "2022-01-01"), ("date", "<=", "2022-12-31")]`
+            );
+            const [listId] = model.getters.getListIds();
+            model.dispatch("UPDATE_ODOO_LIST_DOMAIN", {
+                listId,
+                domain: [["foo", "in", [55]]],
+            });
+            computedDomain = new Domain(model.getters.getListComputedDomain("1"));
+            assert.strictEqual(
+                computedDomain.toString(),
+                `["&", ("foo", "in", [55]), "&", ("date", ">=", "2022-01-01"), ("date", "<=", "2022-12-31")]`
+            );
+            model.dispatch("REQUEST_UNDO");
+            computedDomain = new Domain(model.getters.getListComputedDomain("1"));
+            assert.strictEqual(
+                computedDomain.toString(),
+                `["&", ("date", ">=", "2022-01-01"), ("date", "<=", "2022-12-31")]`
+            );
+        }
+    );
 });

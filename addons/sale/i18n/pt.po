@@ -16,24 +16,24 @@
 # Luiz Fernando <lfpsgs@outlook.com>, 2022
 # Pedro Castro Silva <pedrocs@exo.pt>, 2022
 # Martin Trigaux, 2022
-# Nuno Silva <nuno.silva@arxi.pt>, 2022
 # Reinaldo Ramos <reinaldo.ramos@arxi.pt>, 2023
 # 00b3b9e1ff4d86aa7ff38bfe2d3464e6_0137803, 2023
 # Manuela Silva <mmsrs@sky.com>, 2023
 # a75f12d3d37ea5bf159c4b3e85eb30e7_0fa6927, 2023
-# Peter Lawrence Romão <peterromao@yahoo.co.uk>, 2024
 # Rita Bastos, 2024
 # Samuel Afonso, 2024
-# Maitê Dietze, 2024
 # Arxi, 2024
+# Peter Lawrence Romão <peterromao@yahoo.co.uk>, 2025
+# Maitê Dietze, 2025
+# Nuno Silva <nuno.silva@arxi.pt>, 2025
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-06 13:32+0000\n"
+"POT-Creation-Date: 2025-02-10 08:27+0000\n"
 "PO-Revision-Date: 2022-09-22 05:54+0000\n"
-"Last-Translator: Arxi, 2024\n"
+"Last-Translator: Nuno Silva <nuno.silva@arxi.pt>, 2025\n"
 "Language-Team: Portuguese (https://app.transifex.com/odoo/teams/41243/pt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,7 +49,7 @@ msgstr "Dados Recebidos"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_crm_team__sale_order_count
 msgid "# Sale Orders"
-msgstr ""
+msgstr "# Ordens de Venda"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__nbr
@@ -729,7 +729,7 @@ msgid ""
 "Ability to select a package type in sales orders and to force a quantity "
 "that is a multiple of the number of units per package."
 msgstr ""
-"Capacidade de selecionar um tipo de embalagem nas ordens de vendas e de "
+"Capacidade de selecionar um tipo de embalagem nas ordens de venda e de "
 "forçar uma quantidade que é múltipla do número de unidades por embalagem."
 
 #. module: sale
@@ -2324,7 +2324,7 @@ msgid ""
 msgstr ""
 "Definir quantidades na ordem manualmente: Fatura com base nas quantidades introduzidas manualmente, sem criar uma conta analítica.\n"
 "Registos de Horas em contrato: Fatura com base nas horas registadas na timesheet correspondente.\n"
-"Crie uma tarefa e monitorize as horas: Crie uma tarefa na validação da ordem de vendas e monitorize as horas de trabalho."
+"Crie uma tarefa e monitorize as horas: Crie uma tarefa na validação da ordem de venda e monitorize as horas de trabalho."
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_res_config_settings__module_sale_margin
@@ -2348,7 +2348,7 @@ msgstr "Marketing"
 #: model:ir.model.fields,field_description:sale.field_sale_order__medium_id
 #: model:ir.model.fields,field_description:sale.field_sale_report__medium_id
 msgid "Medium"
-msgstr "Médio"
+msgstr "Fonte"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_payment_provider_onboarding_wizard__paypal_seller_account
@@ -2416,7 +2416,7 @@ msgstr "As Minhas Cotações"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_sales_order_line_filter
 msgid "My Sales Order Lines"
-msgstr "Minhas linhas da ordem de vendas"
+msgstr "Minhas linhas da ordem de venda"
 
 #. module: sale
 #. odoo-python
@@ -3026,7 +3026,7 @@ msgstr "Qtd Encomendada"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__qty_to_deliver
 msgid "Qty To Deliver"
-msgstr ""
+msgstr "Qtd a Entregar"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__qty_to_invoice
@@ -3302,7 +3302,7 @@ msgstr "Número de Ordens de Venda"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_res_config_settings__group_warning_sale
 msgid "Sale Order Warnings"
-msgstr ""
+msgstr "Avisos de Ordem de  Venda"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.account_invoice_form
@@ -3374,12 +3374,12 @@ msgstr "Vendas Concluídas"
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
 #, python-format
 msgid "Sales Order"
-msgstr "Ordem de Vendas"
+msgstr "Ordem de Venda"
 
 #. module: sale
 #: model:ir.model,name:sale.model_sale_order_cancel
 msgid "Sales Order Cancel"
-msgstr ""
+msgstr "Cancelar Ordem de Venda"
 
 #. module: sale
 #: model:mail.message.subtype,name:sale.mt_order_confirmed
@@ -3391,7 +3391,7 @@ msgstr "Ordem de venda confirmada"
 #: model:ir.model.fields,field_description:sale.field_account_analytic_line__so_line
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_line_view_form_readonly
 msgid "Sales Order Item"
-msgstr "Item da Ordem de Vendas"
+msgstr "Item da Ordem de Venda"
 
 #. module: sale
 #: model:ir.model,name:sale.model_sale_order_line
@@ -3399,14 +3399,14 @@ msgstr "Item da Ordem de Vendas"
 #: model:ir.model.fields,field_description:sale.field_product_product__sale_line_warn
 #: model:ir.model.fields,field_description:sale.field_product_template__sale_line_warn
 msgid "Sales Order Line"
-msgstr "Linhas da Ordem de Vendas"
+msgstr "Linhas da Ordem de Venda"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_account_move_line__sale_line_ids
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
 #: model_terms:ir.ui.view,arch_db:sale.view_order_line_tree
 msgid "Sales Order Lines"
-msgstr "Linhas da Ordem de Vendas"
+msgstr "Linhas da Ordem de Venda"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_sales_order_line_filter
@@ -3416,7 +3416,7 @@ msgstr "Linhas de ordem de venda prontas para serem faturadas"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_sales_order_line_filter
 msgid "Sales Order Lines related to a Sales Order of mine"
-msgstr "Linhas da ordem de vendas relacionadas com uma ordem de vendas minha"
+msgstr "Linhas da ordem de venda relacionadas com uma ordem de venda minha"
 
 #. module: sale
 #. odoo-python
@@ -3424,7 +3424,7 @@ msgstr "Linhas da ordem de vendas relacionadas com uma ordem de vendas minha"
 #: model_terms:ir.ui.view,arch_db:sale.transaction_form_inherit_sale
 #, python-format
 msgid "Sales Order(s)"
-msgstr ""
+msgstr "Ordem(s) de Venda"
 
 #. module: sale
 #: model:ir.actions.act_window,name:sale.action_orders
@@ -3444,7 +3444,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:sale.view_sale_order_graph
 #: model_terms:ir.ui.view,arch_db:sale.view_sale_order_pivot
 msgid "Sales Orders"
-msgstr "Ordens de Vendas"
+msgstr "Ordens de Venda"
 
 #. module: sale
 #: model:ir.model,name:sale.model_crm_team
@@ -3471,7 +3471,7 @@ msgstr "Equipas de Vendas"
 #: model:ir.model.fields,field_description:sale.field_res_partner__sale_warn
 #: model:ir.model.fields,field_description:sale.field_res_users__sale_warn
 msgid "Sales Warnings"
-msgstr ""
+msgstr "Avisos de Vendas"
 
 #. module: sale
 #: model:ir.model.fields,help:sale.field_account_analytic_line__so_line
@@ -3480,6 +3480,9 @@ msgid ""
 "invoiced to your customer. Remove the sales order item for the timesheet "
 "entry to be non-billable."
 msgstr ""
+"Item da ordem de venda ao qual o tempo gasto será adicionado para que para "
+"que possa ser faturado ao cliente. Remova o item da ordem de venda para que "
+"o registo na folha de horas não seja faturável."
 
 #. module: sale
 #: model:ir.model.fields.selection,name:sale.selection__product_template__expense_policy__sales_price
@@ -3712,7 +3715,7 @@ msgstr ""
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_portal_template
 msgid "Sign &amp; Pay"
-msgstr ""
+msgstr "Assinar &amp; Pagar"
 
 #. module: sale
 #: model:ir.model.fields.selection,name:sale.selection__res_company__sale_onboarding_payment_method__digital_signature
@@ -3855,6 +3858,11 @@ msgid "Tags"
 msgstr "Etiquetas"
 
 #. module: sale
+#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
+msgid "Tax 15%"
+msgstr "Imposto de 15%"
+
+#. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order__tax_country_id
 msgid "Tax Country"
 msgstr "País fiscal"
@@ -3995,8 +4003,8 @@ msgstr ""
 #: code:addons/sale/models/product_template.py:0
 #, python-format
 msgid ""
-"The following products cannot be restricted to the company %s because they have already been used in quotations or sales orders in another company:\n"
-"%s\n"
+"The following products cannot be restricted to the company %(company)s because they have already been used in quotations or sales orders in another company:\n"
+"%(used_products)s\n"
 "You can archive these products and recreate them with your company restriction instead, or leave them as shared product."
 msgstr ""
 
@@ -4499,7 +4507,7 @@ msgstr "Aviso para %s"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_partner_view_buttons
 msgid "Warning on the Sales Order"
-msgstr "Aviso na Ordem de Vendas"
+msgstr "Aviso na Ordem de Venda"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.product_form_view_sale_order_button

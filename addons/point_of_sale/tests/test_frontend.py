@@ -2,11 +2,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import logging
-from odoo import Command
 
 from odoo.api import Environment
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
-from odoo.tests import loaded_demo_data, tagged
+from odoo.tests import tagged
 from odoo.addons.account.tests.common import AccountTestInvoicingHttpCommon
 from datetime import date, timedelta
 
@@ -54,6 +53,14 @@ class TestPointOfSaleHttpCommon(AccountTestInvoicingHttpCommon):
             'name': 'Deco Addict',
         })
 
+        env['res.partner'].create([{
+            'name': 'Nicole Ford'
+        }, {
+            'name': 'Brandon Freeman'
+        }, {
+            'name': 'Colleen Diaz'
+        }])
+
         cash_journal = journal_obj.create({
             'name': 'Cash Test',
             'type': 'cash',
@@ -71,12 +78,12 @@ class TestPointOfSaleHttpCommon(AccountTestInvoicingHttpCommon):
         # In DESKS categ: Desk Pad
         pos_categ_desks = env.ref('point_of_sale.pos_category_desks', raise_if_not_found=False)
         if not pos_categ_desks:
-            pos_categ_desks = cls.env['pos.category'].create({'name': 'Desk'})
+            pos_categ_desks = cls.env['pos.category'].create({'name': 'Desks'})
 
         # In DESKS categ: Whiteboard Pen
         pos_categ_misc = env.ref('point_of_sale.pos_category_miscellaneous', raise_if_not_found=False)
         if not pos_categ_misc:
-            pos_categ_misc = cls.env['pos.category'].create({'name': 'Misc'})
+            pos_categ_misc = cls.env['pos.category'].create({'name': 'Miscellaneous'})
 
         # In CHAIR categ: Letter Tray
         pos_categ_chairs = env.ref('point_of_sale.pos_category_chairs', raise_if_not_found=False)
@@ -489,9 +496,6 @@ class TestPointOfSaleHttpCommon(AccountTestInvoicingHttpCommon):
 @tagged('post_install', '-at_install')
 class TestUi(TestPointOfSaleHttpCommon):
     def test_01_pos_basic_order(self):
-        if not loaded_demo_data(self.env):
-            _logger.warning("This test relies on demo data. To be rewritten independently of demo data for accurate and reliable results.")
-            return
 
         self.main_pos_config.write({
             'iface_tipproduct': True,
@@ -521,9 +525,6 @@ class TestUi(TestPointOfSaleHttpCommon):
         self.assertEqual(email_count, 1)
 
     def test_02_pos_with_invoiced(self):
-        if not loaded_demo_data(self.env):
-            _logger.warning("This test relies on demo data. To be rewritten independently of demo data for accurate and reliable results.")
-            return
         self.main_pos_config.open_ui()
         self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'ChromeTour', login="accountman")
         n_invoiced = self.env['pos.order'].search_count([('state', '=', 'invoiced')])
@@ -544,9 +545,6 @@ class TestUi(TestPointOfSaleHttpCommon):
         self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config, 'InactiveAttributeValueTour', login="accountman")
 
     def test_05_ticket_screen(self):
-        if not loaded_demo_data(self.env):
-            _logger.warning("This test relies on demo data. To be rewritten independently of demo data for accurate and reliable results.")
-            return
         self.main_pos_config.open_ui()
         self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'TicketScreenTour', login="accountman")
 
@@ -902,18 +900,6 @@ class TestUi(TestPointOfSaleHttpCommon):
 
         self.main_pos_config.open_ui()
         self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'ShowTaxExcludedTour', login="accountman")
-
-    def test_chrome_without_cash_move_permission(self):
-        self.env.user.write({'groups_id': [
-            Command.set(
-                [
-                    self.env.ref('base.group_user').id,
-                    self.env.ref('point_of_sale.group_pos_user').id,
-                ]
-            )
-        ]})
-        self.main_pos_config.open_ui()
-        self.start_tour("/pos/ui?config_id=%d" % self.main_pos_config.id, 'chrome_without_cash_move_permission', login="accountman")
 
     def test_GS1_pos_barcodes_scan(self):
         barcodes_gs1_nomenclature = self.env.ref("barcodes_gs1_nomenclature.default_gs1_nomenclature")

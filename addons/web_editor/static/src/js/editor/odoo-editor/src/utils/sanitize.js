@@ -97,6 +97,10 @@ export function areSimilarElements(node, node2) {
  * @returns {String|null}
  */
 function deduceURLfromLabel(link) {
+    // Skip modifying the href for Bootstrap tabs.
+    if (link && link.getAttribute("role") === "tab") {
+        return;
+    }
     const label = link.innerText.trim().replace(ZERO_WIDTH_CHARS_REGEX, '');
     // Check first for e-mail.
     let match = label.match(EMAIL_REGEX);
@@ -224,9 +228,10 @@ class Sanitize {
                 ) &&
                 !isBlock(node.parentElement)
             ) {
+                const { anchorNode, focusNode, anchorOffset, focusOffset } = selection;
                 const restoreCursor = shouldPreserveCursor(node, this.root) && preserveCursor(this.root.ownerDocument);
-                const shouldAdaptAnchor = anchor === node && selection.anchorOffset > node.textContent.indexOf('\u200B');
-                const shouldAdaptFocus = selection.focusNode === node && selection.focusOffset > node.textContent.indexOf('\u200B');
+                const shouldAdaptAnchor = anchorNode === node && anchorOffset > node.textContent.indexOf('\u200B');
+                const shouldAdaptFocus = focusNode === node && focusOffset > node.textContent.indexOf('\u200B');
                 node.textContent = node.textContent.replace('\u200B', '');
                 node.parentElement.removeAttribute("data-oe-zws-empty-inline");
                 if (restoreCursor) {
@@ -234,8 +239,8 @@ class Sanitize {
                 }
                 if (shouldAdaptAnchor || shouldAdaptFocus) {
                     setSelection(
-                        selection.anchorNode, shouldAdaptAnchor ? selection.anchorOffset - 1 : selection.anchorOffset,
-                        selection.focusNode, shouldAdaptFocus ? selection.focusOffset - 1 : selection.focusOffset,
+                        anchorNode, shouldAdaptAnchor ? anchorOffset - 1 : anchorOffset,
+                        focusNode, shouldAdaptFocus ? focusOffset - 1 : focusOffset,
                     );
                 }
             }

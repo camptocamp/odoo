@@ -8,7 +8,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.osv import expression
-from odoo.tools import float_is_zero, float_compare, float_round
+from odoo.tools import float_is_zero, float_compare, float_round, groupby
 
 
 class SaleOrderLine(models.Model):
@@ -346,7 +346,7 @@ class SaleOrderLine(models.Model):
         if not self.product_custom_attribute_value_ids and not self.product_no_variant_attribute_value_ids:
             return ""
 
-        name = "\n"
+        name = ""
 
         custom_ptavs = self.product_custom_attribute_value_ids.custom_product_template_attribute_value_id
         no_variant_ptavs = self.product_no_variant_attribute_value_ids._origin
@@ -420,16 +420,19 @@ class SaleOrderLine(models.Model):
 
     @api.depends('product_id', 'product_uom', 'product_uom_qty')
     def _compute_pricelist_item_id(self):
-        for line in self:
-            if not line.product_id or line.display_type or not line.order_id.pricelist_id:
-                line.pricelist_item_id = False
-            else:
-                line.pricelist_item_id = line.order_id.pricelist_id._get_product_rule(
-                    line.product_id,
-                    line.product_uom_qty or 1.0,
-                    uom=line.product_uom,
-                    date=line.order_id.date_order,
-                )
+        no_item_lines = self.filtered(
+            lambda rec: not rec.product_id or rec.display_type or not rec.order_id.pricelist_id
+        )
+        other_lines = self - no_item_lines
+        no_item_lines.pricelist_item_id = False
+        for (order, uom, qty, date), lines in groupby(
+            other_lines,
+            lambda rec: (rec.order_id, rec.product_uom, rec.product_uom_qty, rec._get_order_date())):
+            pricelist = order.pricelist_id
+            products = self.env['product.product'].browse({line.product_id.id for line in lines})
+            pricerules = pricelist._compute_price_rule(products, qty, uom=uom, date=date)
+            for line in lines:
+                line.pricelist_item_id = pricerules.get(line.product_id.id, (False, False))[1]
 
     @api.depends('product_id', 'product_uom', 'product_uom_qty')
     def _compute_price_unit(self):
@@ -451,6 +454,10 @@ class SaleOrderLine(models.Model):
                     ),
                     fiscal_position=line.order_id.fiscal_position_id,
                 )
+
+    def _get_order_date(self):
+        self.ensure_one()
+        return self.order_id.date_order
 
     def _get_display_price(self):
         """Compute the displayed unit price for a given line.
@@ -487,7 +494,7 @@ class SaleOrderLine(models.Model):
         self.product_id.ensure_one()
 
         pricelist_rule = self.pricelist_item_id
-        order_date = self.order_id.date_order or fields.Date.today()
+        order_date = self._get_order_date() or fields.Date.today()
         product = self.product_id.with_context(**self._get_product_price_context())
         qty = self.product_uom_qty or 1.0
         uom = self.product_uom or self.product_id.uom_id
@@ -531,7 +538,7 @@ class SaleOrderLine(models.Model):
         self.product_id.ensure_one()
 
         pricelist_rule = self.pricelist_item_id
-        order_date = self.order_id.date_order or fields.Date.today()
+        order_date = self._get_order_date() or fields.Date.today()
         product = self.product_id.with_context(**self._get_product_price_context())
         qty = self.product_uom_qty or 1.0
         uom = self.product_uom
@@ -714,6 +721,8 @@ class SaleOrderLine(models.Model):
             return ''
 
         invoice_lines = self._get_invoice_lines()
+        if self.invoice_status == 'invoiced' and not invoice_lines:
+            return ''
         if all(line.parent_state == 'draft' for line in invoice_lines):
             return 'draft'
         if all(line.parent_state == 'cancel' for line in invoice_lines):
@@ -850,7 +859,7 @@ class SaleOrderLine(models.Model):
         for line in self:
             amount_invoiced = 0.0
             for invoice_line in line._get_invoice_lines():
-                if invoice_line.move_id.state == 'posted':
+                if invoice_line.move_id.state == 'posted' or invoice_line.move_id.payment_state == 'invoicing_legacy':
                     invoice_date = invoice_line.move_id.invoice_date or fields.Date.today()
                     if invoice_line.move_id.move_type == 'out_invoice':
                         amount_invoiced += invoice_line.currency_id._convert(invoice_line.price_subtotal, line.currency_id, line.company_id, invoice_date)
@@ -1164,6 +1173,13 @@ class SaleOrderLine(models.Model):
                 'business_domain': 'sale_order',
                 'company_id': line.company_id.id,
             })
+
+    def _get_downpayment_line_price_unit(self, invoices):
+        return sum(
+            l.price_unit if l.move_id.move_type == 'out_invoice' else -l.price_unit
+            for l in self.invoice_lines
+            if l.move_id.state == 'posted' and l.move_id not in invoices  # don't recompute with the final invoice
+        )
 
     #=== CORE METHODS OVERRIDES ===#
 

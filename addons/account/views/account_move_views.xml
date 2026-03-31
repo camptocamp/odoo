@@ -544,7 +544,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <span><field name="amount_total" widget='monetary'/></span>
+                                        <span><field name="amount_total_in_currency_signed" widget='monetary'/></span>
                                         <span><field name="currency_id" invisible="1"/></span>
                                     </div>
                                     <div class="col-6">
@@ -597,7 +597,7 @@
                         <!-- Preview (only customer invoices) -->
                         <button name="preview_invoice" type="object" string="Preview" data-hotkey="o"
                                 title="Preview invoice"
-                                attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund'))]}"/>
+                                attrs="{'invisible': ['|', ('move_type', 'not in', ('out_invoice', 'out_refund')), ('state', '==', 'cancel')]}"/>
                         <!-- Reverse -->
                         <button name="%(action_view_account_move_reversal)d" string="Reverse Entry"
                                 type="action" groups="account.group_account_invoice" data-hotkey="z"
