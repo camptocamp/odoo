@@ -272,7 +272,6 @@ ProductScreen.do.clickCustomer('AAA Partner');
 ProductScreen.do.clickDisplayedProduct('Product Test');
 ProductScreen.check.totalAmountIs('1.00');
 PosLoyalty.check.isRewardButtonHighlighted(true);
-PosLoyalty.do.clickRewardButton();
 PosLoyalty.do.claimReward('Free Product B');
 PosLoyalty.check.hasRewardLine('Free Product B', '-1.00');
 ProductScreen.check.totalAmountIs('1.00');
@@ -420,3 +419,17 @@ ProductScreen.check.selectedOrderlineHas('Test Product A', '1.00', '100.00');
 PosLoyalty.exec.finalizeOrder("Cash");
 
 Tour.register('PosLoyaltyArchivedRewardProductsActive', {test: true, url: '/pos/web'}, getSteps());
+
+startSteps();
+
+ProductScreen.do.confirmOpeningPopup();
+ProductScreen.do.clickPartnerButton();
+ProductScreen.do.clickCustomer("partner_a");
+
+ProductScreen.exec.addOrderline("Test Product A", "5"),
+ProductScreen.do.clickDisplayedProduct('Test Product B');
+PosLoyalty.check.hasRewardLine('10% on your order', '-3.00');
+PosLoyalty.check.hasRewardLine('10% on Test Product B', '-0.45');
+PosLoyalty.exec.finalizeOrder("Cash");
+
+Tour.register('PosLoyalty2DiscountsSpecificGlobal', {test: true, url: '/pos/web'}, getSteps());
