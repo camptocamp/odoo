@@ -982,16 +982,17 @@ class TransactionCase(BaseCase):
 
             valid_paths = SETATTR_SOURCES.get(caller.f_code.co_name)
             if not (valid_paths and filename.endswith(valid_paths)):
-                _logger.runbot(
-                    "%s:%s:%s setting %s.%s to %s",
-                    filename,
-                    caller.f_lineno,
-                    caller.f_code.co_name,
-                    model.__name__,
-                    key,
-                    value,
-                    stack_info=True,
-                )
+                pass
+                # _logger.runbot(
+                #     "%s:%s:%s setting %s.%s to %s",
+                #     filename,
+                #     caller.f_lineno,
+                #     caller.f_code.co_name,
+                #     model.__name__,
+                #     key,
+                #     value,
+                #     stack_info=True,
+                # )
             cls.setattrs.setdefault(model._name, []).append((key, value, "".join(traceback.format_stack())))
             actual_setattr(model, key, value)
         cls.classPatch(odoo.models.MetaModel, '__setattr__', metamodel_setattr)
