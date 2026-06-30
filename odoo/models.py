@@ -6822,12 +6822,18 @@ class BaseModel(metaclass=MetaModel):
         # sort dirty record ids so that records with the same set of modified
         # fields are grouped together; for that purpose, map each dirty id to
         # an integer that represents its subset of dirty fields (bitmask)
+        # The id is used as a secondary sort key so that two concurrent
+        # transactions flushing the same rows lock them in the same (ascending
+        # id) order, which prevents lock-ordering deadlocks in _write_multi.
         dirty_ids = sorted(
             OrderedSet(id_ for ids in dirty_field_ids.values() for id_ in ids),
-            key=lambda id_: sum(
-                2 ** field_index
-                for field_index, ids in enumerate(dirty_field_ids.values())
-                if id_ in ids
+            key=lambda id_: (
+                sum(
+                    2 ** field_index
+                    for field_index, ids in enumerate(dirty_field_ids.values())
+                    if id_ in ids
+                ),
+                id_,
             ),
         )
 
