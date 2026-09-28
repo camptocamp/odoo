@@ -242,16 +242,28 @@ class ProductProduct(models.Model):
 
     def _compute_mrp_product_qty(self):
         date_from = fields.Datetime.to_string(fields.datetime.now() - timedelta(days=365))
+        # Query stock.move and mrp.production separately. Filtering the moves on
+        # 'production_id.state' / 'production_id.date_start' embeds subqueries on
+        # mrp_production; on large databases the planner may run them as a merge
+        # join that walks the whole stock_move table instead of using the
+        # product_id index.
         domain = [
-            ('production_id.state', '=', 'done'),
             ('product_id', 'in', self.ids),
-            ('production_id.date_start', '>', date_from),
+            ('production_id', '!=', False),
             ('state', '!=', 'cancel'),
             ('picked', '=', True),
         ]
-        read_group_res = self.env['stock.move']._read_group(domain, ['product_id', 'product_uom'], ['quantity:sum'])
+        read_group_res = self.env['stock.move']._read_group(domain, ['product_id', 'product_uom', 'production_id'], ['quantity:sum'])
+        production_ids = {production.id for _product, _uom, production, _qty in read_group_res}
+        done_production_ids = set(self.env['mrp.production']._search([
+            ('id', 'in', list(production_ids)),
+            ('state', '=', 'done'),
+            ('date_start', '>', date_from),
+        ]))
         mapped_data = collections.defaultdict(float)
-        for product, uom, qty in read_group_res:
+        for product, uom, production, qty in read_group_res:
+            if production.id not in done_production_ids:
+                continue
             if uom != product.uom_id:
                 qty = uom._compute_quantity(qty, product.uom_id)
             mapped_data[product.id] += qty
