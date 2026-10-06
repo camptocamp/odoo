@@ -36,6 +36,7 @@ import platform
 import socket
 import sys
 import threading
+import time
 import traceback
 
 import werkzeug.serving
@@ -184,15 +185,22 @@ def register_rpc_endpoint(endpoint, handler):
 
 def application_unproxied(environ, start_response):
     """ WSGI entry point."""
+    current_thread = threading.currentThread()
+    current_thread.query_count = 0
+    current_thread.query_time = 0
+    current_thread.perf_t0 = time.time()
+    if hasattr(current_thread, 'request_uuid'):
+        del current_thread.request_uuid
+
     # cleanup db/uid trackers - they're set at HTTP dispatch in
     # web.session.OpenERPSession.send() and at RPC dispatch in
     # openerp.service.web_services.objects_proxy.dispatch().
     # /!\ The cleanup cannot be done at the end of this `application`
     # method because werkzeug still produces relevant logging afterwards 
-    if hasattr(threading.current_thread(), 'uid'):
-        del threading.current_thread().uid
-    if hasattr(threading.current_thread(), 'dbname'):
-        del threading.current_thread().dbname
+    if hasattr(current_thread, 'uid'):
+        del current_thread.uid
+    if hasattr(current_thread, 'dbname'):
+        del current_thread.dbname
 
     with openerp.api.Environment.manage():
         # Try all handlers until one returns some result (i.e. not None).

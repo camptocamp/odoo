@@ -27,6 +27,7 @@ import pprint
 import release
 import sys
 import threading
+import time
 
 import psycopg2
 
@@ -113,10 +114,42 @@ LEVEL_COLOR_MAPPING = {
     logging.CRITICAL: (WHITE, RED),
 }
 
+class PerfFilter(logging.Filter):
+    def format_perf(self, query_count, query_time, remaining_time):
+        return ("%d" % query_count, "%.3f" % query_time, "%.3f" % remaining_time)
+
+    def filter(self, record):
+        current_thread = threading.currentThread()
+        if hasattr(current_thread, 'query_count'):
+            query_count = current_thread.query_count
+            query_time = current_thread.query_time
+            perf_t0 = current_thread.perf_t0
+            remaining_time = time.time() - perf_t0 - query_time
+            record.perf_info = '%s %s %s' % self.format_perf(query_count, query_time, remaining_time)
+            delattr(current_thread, 'query_count')
+        else:
+            record.perf_info = '- - -'
+        return True
+
+class ColoredPerfFilter(PerfFilter):
+    def format_perf(self, query_count, query_time, remaining_time):
+        def colorize_time(value, format_string, low=1, high=5):
+            if value > high:
+                return COLOR_PATTERN % (30 + RED, 40 + DEFAULT, format_string % value)
+            if value > low:
+                return COLOR_PATTERN % (30 + YELLOW, 40 + DEFAULT, format_string % value)
+            return format_string % value
+        return (
+            colorize_time(query_count, "%d", 100, 1000),
+            colorize_time(query_time, "%.3f", 0.1, 3),
+            colorize_time(remaining_time, "%.3f", 1, 5),
+        )
+
 class DBFormatter(logging.Formatter):
     def format(self, record):
         record.pid = os.getpid()
         record.dbname = getattr(threading.currentThread(), 'dbname', '?')
+        record.perf_info = getattr(record, 'perf_info', '')
         return logging.Formatter.format(self, record)
 
 class ColoredFormatter(DBFormatter):
@@ -138,7 +171,7 @@ def init_logger():
     resetlocale()
 
     # create a format for log messages and dates
-    format = '%(asctime)s %(pid)s %(levelname)s %(dbname)s %(name)s: %(message)s'
+    format = '%(asctime)s %(pid)s %(levelname)s %(dbname)s %(name)s: %(message)s %(perf_info)s'
 
     if tools.config['syslog']:
         # SysLog Handler
@@ -181,11 +214,14 @@ def init_logger():
 
     if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(handler.stream):
         formatter = ColoredFormatter(format)
+        perf_filter = ColoredPerfFilter()
     else:
         formatter = DBFormatter(format)
+        perf_filter = PerfFilter()
     handler.setFormatter(formatter)
 
     logging.getLogger().addHandler(handler)
+    logging.getLogger('werkzeug').addFilter(perf_filter)
 
     if tools.config['log_db']:
         db_levels = {

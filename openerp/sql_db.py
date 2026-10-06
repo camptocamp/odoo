@@ -30,6 +30,7 @@ the ORM does, in fact.
 from contextlib import contextmanager
 from functools import wraps
 import logging
+import time
 import urlparse
 import uuid
 import psycopg2.extras
@@ -64,7 +65,6 @@ psycopg2.extensions.register_type(psycopg2.extensions.new_type((700, 701, 1700,)
 
 import tools
 from tools.func import frame_codeinfo
-from datetime import datetime as mdt
 from datetime import timedelta
 import threading
 from inspect import currentframe
@@ -219,15 +219,14 @@ class Cursor(object):
 
     @check
     def execute(self, query, params=None, log_exceptions=None):
+        current_thread = threading.currentThread()
+        start = time.time()
         if '%d' in query or '%f' in query:
             _logger.warning(query)
             _logger.warning("SQL queries cannot contain %d or %f anymore. Use only %s")
         if params and not isinstance(params, (tuple, list, dict)):
             _logger.error("SQL query parameters should be a tuple, list or dict; got %r", params)
             raise ValueError("SQL query parameters should be a tuple, list or dict; got %r" % (params,))
-
-        if self.sql_log:
-            now = mdt.now()
 
         try:
             params = params or None
@@ -241,13 +240,17 @@ class Cursor(object):
                 _logger.exception("bad query: %s", self._obj.query or query)
             raise
 
+        delay = time.time() - start
+        if hasattr(current_thread, 'query_count'):
+            current_thread.query_count += 1
+            current_thread.query_time += delay
+
         # simple query count is always computed
         self.sql_log_count += 1
 
         # advanced stats only if sql_log is enabled
         if self.sql_log:
-            delay = mdt.now() - now
-            delay = delay.seconds * 1E6 + delay.microseconds
+            delay = int(delay * 1E6)
 
             _logger.debug("query: %s", self._obj.query)
             res_from = re_from.match(query.lower())
