@@ -212,7 +212,7 @@ def init_logger():
     def is_a_tty(stream):
         return hasattr(stream, 'fileno') and os.isatty(stream.fileno())
 
-    if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(handler.stream):
+    if False and os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(handler.stream):
         formatter = ColoredFormatter(format)
         perf_filter = ColoredPerfFilter()
     else:
