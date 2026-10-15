@@ -101,7 +101,7 @@ class SaleOrderDiscount(models.TransientModel):
     def _get_discountable_order_lines(self):
         """Return the order lines a discount (per-line or global) may apply to."""
         self.ensure_one()
-        return self.sale_order_id.order_line.filtered(lambda line: not line.display_type)
+        return self.sale_order_id.order_line.filtered(lambda line: line._can_be_discounted())
 
     def _get_discount_product(self):
         """Return product.product used for discount line"""

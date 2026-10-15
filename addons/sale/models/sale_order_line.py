@@ -1702,6 +1702,13 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         return False
 
+    def _can_be_discounted(self):
+        """ Whether the discount wizard may apply a discount to this line, either per line or
+        as part of the base of a global discount.
+        """
+        self.ensure_one()
+        return not self.display_type
+
     def _get_product_catalog_lines_data(self, **kwargs):
         """ Return information about sale order lines in `self`.
 
