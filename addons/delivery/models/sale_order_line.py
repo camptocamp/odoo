@@ -15,6 +15,9 @@ class SaleOrderLine(models.Model):
     def _can_be_invoiced_alone(self):
         return super()._can_be_invoiced_alone() and not self.is_delivery
 
+    def _can_be_discounted(self):
+        return super()._can_be_discounted() and not self.is_delivery
+
     @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
     def _compute_product_qty(self):
         for line in self:
