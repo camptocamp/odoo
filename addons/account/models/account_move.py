@@ -631,7 +631,7 @@ class AccountMove(models.Model):
 
     @api.model
     def _get_tax_grouping_key_from_tax_line(self, tax_line):
-        ''' Create the dictionary based on a tax line that will be used as key to group taxes together.
+        r''' Create the dictionary based on a tax line that will be used as key to group taxes together.
         /!\ Must be consistent with '_get_tax_grouping_key_from_base_line'.
         :param tax_line:    An account.move.line being a tax line (with 'tax_repartition_line_id' set then).
         :return:            A dictionary containing all fields on which the tax will be grouped.
@@ -650,7 +650,7 @@ class AccountMove(models.Model):
 
     @api.model
     def _get_tax_grouping_key_from_base_line(self, base_line, tax_vals):
-        ''' Create the dictionary based on a base line that will be used as key to group taxes together.
+        r''' Create the dictionary based on a base line that will be used as key to group taxes together.
         /!\ Must be consistent with '_get_tax_grouping_key_from_tax_line'.
         :param base_line:   An account.move.line being a base line (that could contains something in 'tax_ids').
         :param tax_vals:    An element of compute_all(...)['taxes'].
@@ -2635,7 +2635,7 @@ class AccountMove(models.Model):
         """
         self.ensure_one()
         partner_ref = self.partner_id.ref
-        partner_ref_nr = re.sub('\D', '', partner_ref or '')[-21:] or str(self.partner_id.id)[-21:]
+        partner_ref_nr = re.sub(r'\D', '', partner_ref or '')[-21:] or str(self.partner_id.id)[-21:]
         partner_ref_nr = partner_ref_nr[-21:]
         check_digits = calc_check_digits('{}RF'.format(partner_ref_nr))
         reference = 'RF{} {}'.format(check_digits, " ".join(["".join(x) for x in zip_longest(*[iter(partner_ref_nr)]*4, fillvalue="")]))
@@ -4338,7 +4338,7 @@ class AccountMoveLine(models.Model):
 
     @api.onchange('account_id')
     def _onchange_account_id(self):
-        ''' Recompute 'tax_ids' based on 'account_id'.
+        r''' Recompute 'tax_ids' based on 'account_id'.
         /!\ Don't remove existing taxes if there is no explicit taxes set on the account.
         '''
         for line in self:
@@ -5035,7 +5035,7 @@ class AccountMoveLine(models.Model):
     # -------------------------------------------------------------------------
 
     def _prepare_reconciliation_partials(self):
-        ''' Prepare the partials on the current journal items to perform the reconciliation.
+        r''' Prepare the partials on the current journal items to perform the reconciliation.
         /!\ The order of records in self is important because the journal items will be reconciled using this order.
 
         :return: A recordset of account.partial.reconcile.
