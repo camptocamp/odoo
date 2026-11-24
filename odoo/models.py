@@ -649,10 +649,15 @@ class BaseModel(metaclass=MetaModel):
     """
 
     # default values for _transient_vacuum()
-    _transient_max_count = lazy_classproperty(lambda _: config.get('osv_memory_count_limit'))
-    "maximum number of transient records, unlimited if ``0``"
-    _transient_max_hours = lazy_classproperty(lambda _: config.get('transient_age_limit'))
-    "maximum idle lifetime (in hours), unlimited if ``0``"
+    @lazy_classproperty
+    def _transient_max_count(cls):
+        """maximum number of transient records, unlimited if ``0``"""
+        return config.get('osv_memory_count_limit')
+
+    @lazy_classproperty
+    def _transient_max_hours(cls):
+        """maximum idle lifetime (in hours), unlimited if ``0``"""
+        return config.get('transient_age_limit')
 
     def _valid_field_parameter(self, field, name):
         """ Return whether the given parameter name is valid for the field. """
@@ -3661,7 +3666,7 @@ class BaseModel(metaclass=MetaModel):
                     rows = self.env.execute_query(SQL('SELECT data_type FROM information_schema.columns WHERE table_name = %s AND column_name = %s', cls._table, name))
                     if rows and rows[0][0] == 'jsonb':
                         # patch the field definition by adding an override
-                        _logger.warning("Patching %s.%s with company_dependent=True", cls._name, name)
+                        _logger.debug("Patching %s.%s with company_dependent=True", cls._name, name)
                         fields_.append(type(fields_[0])(company_dependent=True))
             if len(fields_) == 1 and fields_[0]._direct and fields_[0].model_name == cls._name:
                 cls._fields[name] = fields_[0]

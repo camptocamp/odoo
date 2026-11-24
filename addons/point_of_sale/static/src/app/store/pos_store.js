@@ -629,8 +629,12 @@ export class PosStore extends Reactive {
         const attributeLinesValues = attributeLines.map((attr) => attr.product_template_value_ids);
         if (attributeLinesValues.some((values) => values.length > 1 || values[0].is_custom)) {
             let defaultValues = {};
-            const match = product.barcode && product.barcode.includes(this.searchProductWord);
-            if (this.searchProductWord && match) {
+            const searchMatch =
+                this.searchProductWord &&
+                product.barcode &&
+                product.barcode.includes(this.searchProductWord);
+            const scanMatche = opts.code && product.barcode === opts.code.base_code;
+            if (searchMatch || scanMatche) {
                 defaultValues = Object.fromEntries(
                     product.product_template_variant_value_ids.map((value) => [
                         value.attribute_line_id.id,
@@ -936,7 +940,9 @@ export class PosStore extends Reactive {
                 line,
                 related_lines
             );
-            related_lines.forEach((line) => line.set_unit_price(price));
+            related_lines
+                .filter((line) => line.price_type !== "manual")
+                .forEach((line) => line.set_unit_price(price));
         }
         line.setOptions(options);
         this.selectOrderLine(order, line);

@@ -1117,6 +1117,11 @@ class IrModelFields(models.Model):
             if column_name in vals:
                 del vals[column_name]
 
+        if column_rename and self.state == 'manual':
+            # renaming a studio field, remove inherits fields
+            # we need to set the uninstall flag to allow removing them
+            (self._prepare_update() - self).with_context(**{MODULE_UNINSTALL_FLAG: True}).unlink()
+
         res = super(IrModelFields, self).write(vals)
 
         self.env.flush_all()
@@ -1776,6 +1781,10 @@ class IrModelSelection(models.Model):
                 continue
             field = Model._fields.get(selection.field_id.name)
             if not field or not field.store or not Model._auto:
+                continue
+
+            # Field changed its type, skip it.
+            if field.type not in ('selection', 'reference'):
                 continue
 
             ondelete = (field.ondelete or {}).get(selection.value)
@@ -2510,7 +2519,10 @@ class IrModelData(models.Model):
                         field_.setup(model)
                         has_shared_field = True
         if has_shared_field:
-            lazy_property.reset_all(self.env.registry)
+            registry = self.env.registry
+            lazy_property.reset_all(registry)
+            registry._field_trigger_trees.clear()
+            registry._is_modifying_relations.clear()
 
         # to collect external ids of records that cannot be deleted
         undeletable_ids = []

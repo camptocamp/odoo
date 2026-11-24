@@ -22,9 +22,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-15 18:38+0000\n"
-"PO-Revision-Date: 2026-02-07 10:31+0000\n"
-"Last-Translator: Saara Hakanen <sahak@odoo.com>\n"
+"POT-Creation-Date: 2026-05-15 17:38+0000\n"
+"PO-Revision-Date: 2026-05-09 09:12+0000\n"
+"Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: Finnish <https://translate.odoo.com/projects/odoo-18/"
 "account_peppol/fi/>\n"
 "Language: fi\n"
@@ -32,7 +32,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.17\n"
 
 #. module: account_peppol
 #. odoo-python
@@ -45,6 +45,12 @@ msgstr " (Asiakas ei ole Peppolissa)"
 #: code:addons/account_peppol/wizard/account_move_send_wizard.py:0
 msgid " (Demo)"
 msgstr " (Demo)"
+
+#. module: account_peppol
+#. odoo-python
+#: code:addons/account_peppol/wizard/account_move_send_wizard.py:0
+msgid " (Missing %(eas)s)"
+msgstr ""
 
 #. module: account_peppol
 #. odoo-python
@@ -738,6 +744,12 @@ msgid "Peppol ID should be different from main company."
 msgstr "Peppol-tunnuksen tulisi olla eri kuin pääyrityksen tunnus."
 
 #. module: account_peppol
+#: model:ir.model.fields,field_description:account_peppol.field_account_bank_statement_line__peppol_is_sent
+#: model:ir.model.fields,field_description:account_peppol.field_account_move__peppol_is_sent
+msgid "Peppol Is Sent"
+msgstr "Peppol on lähetetty"
+
+#. module: account_peppol
 #: model:ir.model.fields,field_description:account_peppol.field_res_company__peppol_parent_company_id
 msgid "Peppol Parent Company"
 msgstr "Peppol-emoyhtiö"
@@ -837,12 +849,10 @@ msgstr "Puhelin"
 #: code:addons/account_peppol/models/res_company.py:0
 msgid ""
 "Please enter the mobile number in the correct international format.\n"
-"For example: +32123456789, where +32 is the country code.\n"
-"Currently, only European countries are supported."
+"For example: +32123456789, where +32 is the country code."
 msgstr ""
 "Kirjoita matkapuhelinnumero oikeassa kansainvälisessä muodossa.\n"
-"Esimerkiksi: +32123456789, jossa +32 on maakoodi.\n"
-"Tällä hetkellä vain Euroopan maat ovat tuettuja."
+"Esimerkiksi: +32123456789, jossa +32 on maakoodi."
 
 #. module: account_peppol
 #. odoo-python
@@ -888,7 +898,7 @@ msgstr ""
 #. module: account_peppol
 #: model:ir.model.fields,field_description:account_peppol.field_account_edi_proxy_client_user__proxy_type
 msgid "Proxy Type"
-msgstr "Proxy-tyyppi"
+msgstr "Välityspalvelimen tyyppi"
 
 #. module: account_peppol
 #: model:ir.model.fields.selection,name:account_peppol.selection__account_move__peppol_move_state__to_send
@@ -908,12 +918,12 @@ msgstr "Rekisteröidy vastaanottajaksi"
 #. module: account_peppol
 #: model:ir.model.fields.selection,name:account_peppol.selection__peppol_registration__use_parent_connection_selection__use_self
 msgid "Register using the current company"
-msgstr ""
+msgstr "Rekisteröi käyttämällä nykyistä yritystä"
 
 #. module: account_peppol
 #: model:ir.model.fields.selection,name:account_peppol.selection__peppol_registration__use_parent_connection_selection__use_parent
 msgid "Register using the parent company by setting the same EAS/Endpoint"
-msgstr ""
+msgstr "Rekisteröi käyttämällä pääyritystä määrittämällä sama EAS/päätepiste"
 
 #. module: account_peppol
 #. odoo-python
@@ -951,6 +961,8 @@ msgid ""
 "Route your vendor bills elsewhere while maintaining the ability to send "
 "customer invoices."
 msgstr ""
+"Ohjaa toimittajien laskut muualle säilyttäen samalla mahdollisuuden lähettää "
+"asiakaslaskuja."
 
 #. module: account_peppol
 #: model:ir.model.fields,field_description:account_peppol.field_account_edi_proxy_client_user__peppol_verification_code
@@ -1076,6 +1088,8 @@ msgid ""
 "The partner has indicated it does not accept this document type, so you "
 "cannot send this invoice via Peppol."
 msgstr ""
+"Kumppani on ilmoittanut, ettei hyväksy tätä asiakirjatyyppiä. Et siis voi "
+"lähettää tätä laskua Peppolin kautta."
 
 #. module: account_peppol
 #. odoo-python
@@ -1105,7 +1119,8 @@ msgstr "Tarkistuskoodi ei ole oikea"
 #. module: account_peppol
 #: model_terms:ir.ui.view,arch_db:account_peppol.peppol_registration_form
 msgid "This branch company will use the active Peppol connection found on"
-msgstr "Tämä tytäryhtiö käyttää aktiivista Peppol-yhteyttä, joka löytyy täältä:"
+msgstr ""
+"Tämä tytäryhtiö käyttää aktiivista Peppol-yhteyttä, joka löytyy täältä:"
 
 #. module: account_peppol
 #. odoo-python
@@ -1147,6 +1162,11 @@ msgstr "Määritä tälle kumppanille maa luodaksesi kokonaisia sähköisiä las
 msgid "Too many attempts to request an SMS code. Please try again later."
 msgstr ""
 "Liian monta yritystä pyytää tekstiviestikoodia. Yritä myöhemmin uudelleen."
+
+#. module: account_peppol
+#: model:ir.model,name:account_peppol.model_account_edi_xml_ubl_bis3
+msgid "UBL BIS Billing 3.0.12"
+msgstr "UBL BIS Billing 3.0.12"
 
 #. module: account_peppol
 #: model:ir.model.fields.selection,name:account_peppol.selection__res_partner__peppol_verification_state__not_verified
@@ -1289,6 +1309,20 @@ msgid "You can send this invoice electronically via Peppol."
 msgstr "Voit lähettää tämän laskun sähköisesti Peppolin kautta."
 
 #. module: account_peppol
+#. odoo-python
+#: code:addons/account_peppol/models/account_journal.py:0
+msgid ""
+"You can't change the type of a journal used for Peppol invoice reception toa "
+"type different than 'Purchase'.\n"
+"Please change the journal used for Peppol reception before changing the type "
+"of this journal."
+msgstr ""
+"Et voi muuttaa Peppol-laskun vastaanottoon käytettävän päiväkirjan tyyppiä "
+"muuksi kuin 'Ostot'.\n"
+"Muuta Peppol-vastaanottoon käytettävää päiväkirjaa ennen tämän päiväkirjan "
+"tyypin muuttamista."
+
+#. module: account_peppol
 #: model_terms:ir.ui.view,arch_db:account_peppol.res_config_settings_view_form
 msgid ""
 "You registration has been rejected, the reason has been sent to you via "
@@ -1352,6 +1386,24 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:account_peppol.res_config_settings_view_form
 msgid "Your registration should be activated within a day."
 msgstr "Rekisteröitymisesi pitäisi aktivoitua päivän kuluessa."
+
+#. module: account_peppol
+#. odoo-python
+#: code:addons/account_peppol/models/account_edi_xml_ubl_bis3.py:0
+msgid ""
+"[PEPPOL-EN16931-R010] An electronic address (EAS) must be provided on the "
+"customer '%s'."
+msgstr ""
+"[PEPPOL-EN16931-R010] Asiakkaalla '%s' on oltava sähköinen osoite (EAS)."
+
+#. module: account_peppol
+#. odoo-python
+#: code:addons/account_peppol/models/account_edi_xml_ubl_bis3.py:0
+msgid ""
+"[PEPPOL-EN16931-R020] An electronic address (EAS) must be provided on the "
+"company '%s'."
+msgstr ""
+"[PEPPOL-EN16931-R020] Yrityksellä '%s' on oltava sähköinen osoite (EAS)."
 
 #. module: account_peppol
 #: model_terms:ir.ui.view,arch_db:account_peppol.peppol_registration_form

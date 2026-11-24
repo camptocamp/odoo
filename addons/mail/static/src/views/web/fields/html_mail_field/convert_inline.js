@@ -38,6 +38,7 @@ const RE_PADDING_MATCH = /[ ]*padding[^;]*;/g;
 const RE_PADDING = /([\d.]+)/;
 const RE_WHITESPACE = /[\s\u200b]*/;
 const SELECTORS_IGNORE = /(^\*$|:hover|:before|:after|:active|:link|::|'|\([^(),]+[,(])|@page/;
+const RE_THEME_COLOR_CLASS = /^bg-o-color-\d+$/;
 // CSS properties relating to font, which Outlook seem to have trouble inheriting.
 const FONT_PROPERTIES_TO_INHERIT = [
     "color",
@@ -60,7 +61,8 @@ export const TABLE_ATTRIBUTES = {
 };
 // Cancel tables default styles.
 export const TABLE_STYLES = {
-    "border-collapse": "collapse",
+    "border-collapse": "separate",
+    "border-spacing": "0px",
     "text-align": "inherit",
     "font-size": "unset",
     "line-height": "inherit",
@@ -440,6 +442,7 @@ export function cardToTable(element) {
                 col.append(child);
             }
             const subTable = _createTable();
+            subTable.style.height = "100%";
             const superRow = document.createElement("tr");
             const superCol = document.createElement("td");
             row.append(col);
@@ -536,6 +539,18 @@ export function classToStyle(element, cssRules) {
                 node.setAttribute("style", style);
                 if (node.style.width) {
                     node.setAttribute("width", node.style.width.replace("px", "").trim());
+                }
+            });
+        }
+
+        const themeColorClasses = [...node.classList].filter((c) => RE_THEME_COLOR_CLASS.test(c));
+        if (themeColorClasses.length) {
+            writes.push(() => {
+                for (const cls of themeColorClasses) {
+                    node.classList.remove(cls);
+                }
+                if (!node.classList.length) {
+                    node.removeAttribute("class");
                 }
             });
         }

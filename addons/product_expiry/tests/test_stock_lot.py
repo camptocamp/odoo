@@ -27,6 +27,24 @@ class TestStockLot(TestStockCommon):
             'alert_time': 6,
         })
 
+    def test_stock_lot_date_compute(self):
+        lot = self.env["stock.lot"].create(
+            {
+                "product_id": self.apple_product.id,
+                "name": "apple lot",
+                "expiration_date": "2026-06-01 00:00:00",
+            }
+        )
+        self.assertEqual(str(lot.expiration_date), "2026-06-01 00:00:00")
+        self.assertEqual(str(lot.use_date), "2026-05-27 00:00:00")
+        self.assertEqual(str(lot.removal_date), "2026-05-30 00:00:00")
+        self.assertEqual(str(lot.alert_date), "2026-05-26 00:00:00")
+        lot.expiration_date = "2026-11-01 00:00:00"
+        self.assertEqual(str(lot.expiration_date), "2026-11-01 00:00:00")
+        self.assertEqual(str(lot.use_date), "2026-10-27 00:00:00")
+        self.assertEqual(str(lot.removal_date), "2026-10-30 00:00:00")
+        self.assertEqual(str(lot.alert_date), "2026-10-26 00:00:00")
+
     def test_00_stock_production_lot(self):
         """ Test Scheduled Task on lot with an alert_date in the past creates an activity """
 
@@ -518,6 +536,14 @@ class TestStockLot(TestStockCommon):
         When assigning a lot to a SML, if the lot has an expiration date,
         the latter should be applied on the SML
         """
+        self.apple_product.use_expiration_date = False
+        # Create a lot without expiration date to be sure that the date applied on the SML is the one of the lot and not a default one
+        lot_without_expiration = self.env['stock.lot'].create({
+            'name': 'Lot 2',
+            'product_id': self.apple_product.id,
+        })
+        self.assertFalse(lot_without_expiration.expiration_date)
+        self.apple_product.use_expiration_date = True
         exp_date = fields.Datetime.today() + relativedelta(days=15)
         sml_exp_date = fields.Datetime.today() + relativedelta(days=10)
 
@@ -548,6 +574,8 @@ class TestStockLot(TestStockCommon):
 
         sml.lot_id = lot
         self.assertEqual(sml.expiration_date, exp_date)
+        sml.lot_id = lot_without_expiration
+        self.assertFalse(sml.expiration_date)
 
     def test_apply_same_date_on_expiry_fields(self):
         expiration_time = 10

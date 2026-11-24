@@ -156,13 +156,19 @@ class SaleOrderLine(models.Model):
             :param start_date: the start date of the period
             :param end_date: the end date of the period
         """
-        lines_by_timesheet = self.filtered(lambda sol: sol.product_id and sol.product_id._is_delivered_timesheet())
+        lines_by_timesheet = self.filtered(
+            lambda sol:
+            sol.product_id
+            and sol.product_id._is_delivered_timesheet()
+            and sol.invoice_status == 'to invoice')
         domain = lines_by_timesheet._timesheet_compute_delivered_quantity_domain()
         refund_account_moves = self.order_id.invoice_ids.filtered(lambda am: am.state == 'posted' and am.move_type == 'out_refund').reversed_entry_id
         timesheet_domain = [
             '|',
-            ('timesheet_invoice_id', '=', False),
-            ('timesheet_invoice_id.state', '=', 'cancel')]
+                ('timesheet_invoice_id', '=', False),
+                '&',
+                    ('timesheet_invoice_id.state', '=', 'cancel'),
+                    ('timesheet_invoice_id.payment_state', '!=', 'invoicing_legacy')]
         if refund_account_moves:
             credited_timesheet_domain = [('timesheet_invoice_id.state', '=', 'posted'), ('timesheet_invoice_id', 'in', refund_account_moves.ids)]
             timesheet_domain = expression.OR([timesheet_domain, credited_timesheet_domain])

@@ -1,4 +1,5 @@
 from odoo import models, _
+from odoo.exceptions import UserError
 
 TAX_EXEMPTION_MAPPING = {
     'VATEX-EU-79-C': 'Exempt based on article 79, point c of Council Directive 2006/112/EC',
@@ -20,6 +21,7 @@ TAX_EXEMPTION_MAPPING = {
     'VATEX-EU-132-1O': 'Exempt based on article 132, section 1 (o) of Council Directive 2006/112/EC',
     'VATEX-EU-132-1P': 'Exempt based on article 132, section 1 (p) of Council Directive 2006/112/EC',
     'VATEX-EU-132-1Q': 'Exempt based on article 132, section 1 (q) of Council Directive 2006/112/EC',
+    'VATEX-EU-135-1': 'Exempt based on article 135, section 1 of Council Directive 2006/112/EC',
     'VATEX-EU-143': 'Exempt based on article 143 of Council Directive 2006/112/EC',
     'VATEX-EU-143-1A': 'Exempt based on article 143, section 1 (a) of Council Directive 2006/112/EC',
     'VATEX-EU-143-1B': 'Exempt based on article 143, section 1 (b) of Council Directive 2006/112/EC',
@@ -112,10 +114,21 @@ class AccountEdiCommon(models.AbstractModel):
         if tax.ubl_cii_tax_category_code:
             reason_code = tax.ubl_cii_tax_exemption_reason_code
             reason_code = FIX_WRONG_CODES_MAPPING.get(reason_code, reason_code)
-            tax_exemption_reason = TAX_EXEMPTION_MAPPING.get(reason_code, _("Exempt from tax") if tax._requires_exemption_reason() else None)
+
+            cocontractant_note = self._get_belgian_cocontractant_note(customer, supplier)
+            if cocontractant_note:
+                if not self._is_valid_cocontracant_tax_extension(tax):
+                    raise UserError(_("Invalid Tax Setup for Co-Contractor fiscal position. Please apply the standard co-contractor tax, or ensure your custom tax uses Reason Code 'AE' and Exemption Reason Code 'VATEX-EU-AE' "))
+                tax_exemption_reason = TAX_EXEMPTION_MAPPING.get(reason_code)
+                tax_exemption_reason = f"{tax_exemption_reason} - {cocontractant_note}" if tax_exemption_reason else cocontractant_note
+            else:
+                tax_exemption_reason = TAX_EXEMPTION_MAPPING.get(reason_code, _("Exempt from tax") if tax._requires_exemption_reason() else None)
             return {
                 'tax_category_code': tax.ubl_cii_tax_category_code,
                 'tax_exemption_reason_code': reason_code,
                 'tax_exemption_reason': tax_exemption_reason,
             }
         return super()._get_tax_unece_codes(customer, supplier, tax)
+
+    def _is_valid_cocontracant_tax_extension(self, tax):
+        return not tax.amount and tax.ubl_cii_tax_category_code == "AE" and tax.ubl_cii_tax_exemption_reason_code == "VATEX_EU_AE"

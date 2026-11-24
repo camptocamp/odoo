@@ -192,6 +192,8 @@ export class SelectionPlugin extends Plugin {
         // "collapseIfZWS",
         "isSelectionInEditable",
         "isNodeEditable",
+        "getCachedSelection",
+        "setCachedSelection",
     ];
     resources = {
         user_commands: { id: "selectAll", run: this.selectAll.bind(this) },
@@ -233,6 +235,29 @@ export class SelectionPlugin extends Plugin {
             }
         });
         this.preservedCursors = [];
+        // Calling the native `focus` method of the editable element, even with
+        // `preventScroll: true`, would reset the selection at the start of the
+        // editable. This would, in turn, trigger a selectionchange event and,
+        // down the line, a scroll to the position of the selection, so to the
+        // top of the document. Calling focusEditable instead will restore the
+        // correct editable selection and prevent scrolling when not needed.
+        this.editableOriginalFocus = this.editable.focus;
+        this.editable.focus = () => this.focusEditable();
+    }
+
+    destroy() {
+        if (this.editableOriginalFocus) {
+            this.editable.focus = this.editableOriginalFocus;
+        }
+        super.destroy();
+    }
+
+    getCachedSelection() {
+        return this._cachedSelection;
+    }
+
+    setCachedSelection(value) {
+        this._cachedSelection = value;
     }
 
     selectAll() {
@@ -298,6 +323,12 @@ export class SelectionPlugin extends Plugin {
      * Update the active selection to the current selection in the editor.
      */
     updateActiveSelection() {
+        if (this.getCachedSelection()) {
+            // `before_input_handler` may change the selection, which would
+            // invalidate the cached selection. Keep it in sync as long as
+            // the cache is active.
+            this.setCachedSelection(this.document.getSelection());
+        }
         this.previousActiveSelection = this.activeSelection;
         const selectionData = this.getSelectionData();
         if (selectionData.documentSelectionIsInEditable) {
@@ -389,16 +420,6 @@ export class SelectionPlugin extends Plugin {
             anchorOffset = direction ? range.startOffset : range.endOffset;
             focusOffset = direction ? range.endOffset : range.startOffset;
 
-            [anchorNode, anchorOffset] = normalizeCursorPosition(
-                anchorNode,
-                anchorOffset,
-                direction ? "left" : "right"
-            );
-            [focusNode, focusOffset] = normalizeCursorPosition(
-                focusNode,
-                focusOffset,
-                direction ? "right" : "left"
-            );
             const [startContainer, startOffset, endContainer, endOffset] =
                 direction === DIRECTIONS.RIGHT
                     ? [anchorNode, anchorOffset, focusNode, focusOffset]
@@ -489,7 +510,7 @@ export class SelectionPlugin extends Plugin {
      * @return { SelectionData }
      */
     getSelectionData() {
-        const selection = this.document.getSelection();
+        const selection = this.getCachedSelection() || this.document.getSelection();
         const documentSelectionIsInEditable = selection && this.isSelectionInEditable(selection);
         const documentSelection =
             selection?.anchorNode && selection?.focusNode
@@ -977,7 +998,7 @@ export class SelectionPlugin extends Plugin {
             isProtecting(node) || (isProtected(node) && !isUnprotecting(node));
         if (
             focusTarget !== anchorTarget &&
-            focusTarget.previousSibling === anchorTarget &&
+            focusTarget?.previousSibling === anchorTarget &&
             protectionCheck(anchorTarget)
         ) {
             return;
@@ -1100,14 +1121,23 @@ export class SelectionPlugin extends Plugin {
     }
 
     focusEditable() {
-        const { editableSelection, documentSelectionIsInEditable } = this.getSelectionData();
+        const selection = this.document.getSelection();
+        const documentSelectionIsInEditable = selection && this.isSelectionInEditable(selection);
         if (this.editable.contains(this.document.activeElement) && documentSelectionIsInEditable) {
-            // Editor has focus — nothing to do.
+            // Editor has focus — nothing to do. Unless the current active
+            // element is a textarea, in which case we want to focus the
+            // editable to update the selection to the editable.
+            if (this.document.activeElement.tagName === "TEXTAREA") {
+                this.editableOriginalFocus.call(this.editable);
+            }
             return;
         }
 
+        const { editableSelection } = this.getSelectionData();
+
         // Manualy focusing the editable is necessary to avoid some non-deterministic error in the HOOT unit tests.
-        this.editable.focus({ preventScroll: true });
+        // Use the copy of the original focus but prevent scrolling.
+        this.editableOriginalFocus.call(this.editable, { preventScroll: true });
 
         if (!documentSelectionIsInEditable) {
             // Selection is outside the editor — restore it.

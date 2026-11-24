@@ -2,9 +2,12 @@ import logging
 import re
 from xml.dom.minidom import parseString
 
+from dateutil.relativedelta import relativedelta
+from lxml import etree
 from stdnum.pl.nip import compact
+from decimal import Decimal
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import float_compare, float_is_zero, float_repr, OrderedSet
 
@@ -44,6 +47,10 @@ class AccountMove(models.Model):
         compute=lambda self: self._compute_linked_attachment_id('l10n_pl_edi_upo_id', 'l10n_pl_edi_upo_file'),
         depends=['l10n_pl_edi_upo_file'],
     )
+
+    _sql_constraints = [
+        ('unique_l10n_pl_edi_number', 'UNIQUE(l10n_pl_edi_number)', 'The KSeF number must be unique'),
+    ]
 
     def _l10n_pl_edi_check_mandatory_fields(self):
         errors = {}
@@ -129,6 +136,12 @@ class AccountMove(models.Model):
                 return False
             return vat[:2].upper()
 
+        def get_vat_number(vat):
+            vat_country, vat_number = self.env['res.partner']._split_vat(vat)
+            if vat_country == 'PL':
+                return compact(vat)
+            return vat_number
+
         def get_address(partner):
             return re.sub(r'\n+', r' ', partner._display_address(True))
 
@@ -183,8 +196,8 @@ class AccountMove(models.Model):
             if 'K_17' in tag_names:
                 return "8"
             # "5": Supply of goods/services, domestic, 5% (K_15)
-            if 'K_17' in tag_names:
-                return "8"
+            if 'K_15' in tag_names:
+                return "5"
             # No tax? It's exempt
             return "zw"
 
@@ -205,7 +218,7 @@ class AccountMove(models.Model):
                 'P_7': line.name,
                 'P_8A': line.product_uom_id.name or 'szt.',
                 'P_8B': line.quantity * sign,
-                'P_9A': float_repr(line.price_unit, 2),
+                'P_9A': float_repr(line.price_unit, 8),
                 'P_11': float_repr(line.price_subtotal * sign, 2),
                 'P_12': compute_p_12(tag_names),
             }
@@ -248,7 +261,7 @@ class AccountMove(models.Model):
             'float_repr': float_repr,
             'float_is_zero': float_is_zero,
             'get_vat_country': get_vat_country,
-            'get_vat_number': compact,
+            'get_vat_number': get_vat_number,
             'get_amounts_from_tag': get_amounts_from_tag,
             'get_amounts_from_tag_in_PLN_currency': get_amounts_from_tag_in_PLN_currency,
             'invoice_type': ksef_type,
@@ -436,3 +449,251 @@ class AccountMove(models.Model):
     def _get_fields_to_detach(self):
         # EXTENDS account
         return super()._get_fields_to_detach() + ['l10n_pl_edi_attachment_file', 'l10n_pl_edi_upo_file']
+
+    @api.model
+    def l10n_pl_edi_get_ksef_bill_vals_from_xml(self, xml_content):
+
+        p12_to_tax_xml_id_map = {
+            "23": "vz_kraj_23",
+            "8": "vz_kraj_8",
+            "5": "vz_kraj_5",
+            "0 KR": "vz_kraj_0",
+            "zw": "vz_kraj_zw",
+            "oo": "vz_stal",
+            "0 WDT": "vz_unia",
+            "np II": "vz_nabu",
+            "0 EX": "vz_imp_tow",
+            "np I": "vz_impu",
+        }
+
+        def parse_fa3_bill_xml(xml_content):
+            root = etree.fromstring(xml_content)
+
+            def get_value(node, xpath):
+                res_node = node.find(xpath)
+                return res_node.text if res_node is not None else None
+
+            invoice_node = root.find('{*}Fa')
+            vendor_node = root.find('{*}Podmiot1')
+
+            vendor_nip = get_value(vendor_node, '{*}DaneIdentyfikacyjne/{*}NIP')
+            vendor_name = get_value(vendor_node, '{*}DaneIdentyfikacyjne/{*}Nazwa')
+            vendor_country = get_value(vendor_node, '{*}Adres/{*}KodKraju')
+
+            invoice_date = get_value(invoice_node, '{*}P_1')
+            invoice_date_due = get_value(invoice_node, '{*}Platnosc/{*}TerminPlatnosci/{*}Termin')
+            invoice_number = get_value(invoice_node, '{*}P_2')
+            currency_code = get_value(invoice_node, '{*}KodWaluty')
+            move_line_nodes = invoice_node.findall("{*}FaWiersz")
+
+            lines = []
+            for line_node in move_line_nodes:
+                name = get_value(line_node, '{*}P_7') or '/'
+                tax_name = get_value(line_node, '{*}P_12') or ''
+
+                if P_9A := get_value(line_node, '{*}P_9A'):
+                    price_unit = float(P_9A)
+                elif P_9B := get_value(line_node, '{*}P_9B'):
+                    if xml_id := p12_to_tax_xml_id_map.get(tax_name):
+                        if tax := self.env['account.chart.template'].ref(xml_id, raise_if_not_found=False):
+                            price_unit = float(P_9B) * (1 - tax.amount / (100 + tax.amount))
+                        else:
+                            raise UserError(self.env._("Purchase tax corresponding to '%s' required for the KSeF import was not found in the system.", tax_name))
+                    else:
+                        raise UserError(self.env._("Tax corresponding to '%s' required to derive the net unit price from gross price during KSeF import was not found in the mapping.", tax_name))
+                else:
+                    raise UserError(self.env._("No net or gross unit price found in the FA (3) for the line with product '%s'.", name))
+
+                if P_10 := get_value(line_node, '{*}P_10'):
+                    price_unit = float(Decimal(str(price_unit)) - Decimal(P_10))
+
+                lines.append(
+                    {
+                        'name': name,
+                        'uom_name': get_value(line_node, '{*}P_8A') or '',
+                        'quantity': float(get_value(line_node, '{*}P_8B') or 0.0),
+                        'price_unit': price_unit,
+                        'tax_name': tax_name,
+                    }
+                )
+
+            return {
+                'vendor_nip': vendor_nip,
+                'vendor_name': vendor_name,
+                'vendor_country': vendor_country,
+                'invoice_date': invoice_date,
+                'invoice_date_due': invoice_date_due,
+                'invoice_number': invoice_number,
+                'currency_code': currency_code,
+                'lines': lines,
+            }
+
+        def get_ksef_bill_vals(data):
+            nip = data['vendor_nip']
+            vat = f"PL{nip}"
+            partner_vat_domain_vals = (nip, vat)
+            partner = self.env['res.partner'].search(
+                [
+                    ('vat', 'in', partner_vat_domain_vals),
+                    *self.env['res.partner']._check_company_domain(self.env.company),
+                    '|',
+                    ('country_id.code', '=', data['vendor_country']),
+                    ('country_id', '=', False),
+                ], limit=1,
+            )
+            if not partner:
+                partner = self.env['res.partner'].create(
+                    {
+                        'name': data['vendor_name'],
+                        'vat': vat,
+                        'country_id': self.env['res.country'].search([('code', '=', data['vendor_country'])]).id,
+                    },
+                )
+
+            currency = self.env['res.currency'].search([('name', '=', data['currency_code'])], limit=1)
+
+            move_vals = {
+                'move_type': 'in_invoice',
+                'partner_id': partner.id,
+                'invoice_date': data['invoice_date'],
+                'invoice_date_due': data['invoice_date_due'],
+                'ref': data['invoice_number'],
+                'currency_id': currency.id,
+                'invoice_line_ids': [],
+            }
+
+            for line in data['lines']:
+
+                tax_ids = []
+                if xml_id := p12_to_tax_xml_id_map.get(line['tax_name']):
+                    if tax := self.env['account.chart.template'].ref(xml_id, raise_if_not_found=False):
+                        tax_ids.append(Command.set(tax.ids))
+                    else:
+                        raise UserError(self.env._("Purchase tax corresponding to '%s' required for the KSeF import was not found in the system.", line['tax_name']))
+
+                move_vals['invoice_line_ids'].append(
+                    Command.create(
+                        {
+                            'name': line['name'],
+                            'quantity': line['quantity'],
+                            'price_unit': line['price_unit'],
+                            'tax_ids': tax_ids,
+                        }
+                    )
+                )
+
+            return move_vals
+
+        return get_ksef_bill_vals(parse_fa3_bill_xml(xml_content))
+
+    @api.model
+    def _cron_l10n_pl_edi_download_bills(self):
+        for company in self.env['res.company'].search([('l10n_pl_edi_access_token', '!=', False)]):
+            blocking_error = self.with_company(company)._l10n_pl_edi_download_bills_from_ksef()
+            if blocking_error:
+                break
+
+    @api.model
+    def _l10n_pl_edi_download_bills_from_ksef(self):
+
+        def handle_download_bills_from_ksef_error(error):
+            if not (delay := error.get('retry_after')):
+                raise UserError(error.get('message'))
+
+            cron = self.env.ref('l10n_pl_edi.cron_l10n_pl_edi_ksef_download_bills')
+            cron._trigger(at=fields.Datetime.now() + relativedelta(seconds=delay))
+            return True
+
+        service = KsefApiService(self.env.company)
+
+        last_processed_move = self.search([
+            ('l10n_pl_edi_number', '!=', False),
+            ('move_type', '=', 'in_invoice'),
+            *self._check_company_domain(self.env.company)
+        ], order='invoice_date DESC', limit=1)
+
+        if last_processed_move:
+            date_from = fields.Datetime.to_datetime(last_processed_move.invoice_date)
+        else:
+            date_from = fields.Datetime.now() - relativedelta(months=1)
+
+        query = {
+            'subjectType': 'Subject2',
+            'dateRange': {
+                'from': date_from.isoformat(),
+                'to': fields.Datetime.now().isoformat(),
+                'dateType': 'Invoicing',
+            },
+        }
+
+        # Rate Limiting of get_invoice_by_ksef_number
+        #
+        #     req/s  |  req/m  |  req/h
+        #   -----------------------------
+        #       8    |    16   |    64
+        #
+        # Page size shouldn't be more than 64.
+
+        page_offset = 0
+        page_size = 64
+
+        has_more = True
+
+        invoice_numbers = []
+        blocking_error = False
+
+        while has_more:
+            response = service.query_invoice_metadata(query, page_size, page_offset)
+            if response.get('error'):
+                blocking_error = handle_download_bills_from_ksef_error(response['error'])
+                break
+            invoice_numbers.extend(invoice['ksefNumber'] for invoice in response['invoices'])
+            has_more = response['hasMore']
+            page_offset += 1
+
+        already_processed = set(self.env['account.move'].search([
+            ('l10n_pl_edi_number', 'in', invoice_numbers)
+        ]).mapped('l10n_pl_edi_number'))
+
+        to_process = [invoice_nr for invoice_nr in invoice_numbers if invoice_nr not in already_processed]
+
+        bills_to_create = {}
+
+        for invoice_nr in to_process:
+            response = service.get_invoice_by_ksef_number(invoice_nr)
+            error_msg = False
+            try:
+                if response.get('error'):
+                    blocking_error = handle_download_bills_from_ksef_error(response['error'])
+                    break
+                bill_data = self.l10n_pl_edi_get_ksef_bill_vals_from_xml(response['xml_content'])
+            except UserError as e:
+                bill_data = {'move_type': 'in_invoice'}
+                error_msg = str(e)
+            bill_data['l10n_pl_edi_number'] = invoice_nr
+            bills_to_create[invoice_nr] = {
+                'vals': bill_data,
+                'xml_content': response.get('xml_content'),
+                'error_msg': error_msg,
+            }
+
+        created_moves = self.create([bill['vals'] for bill in bills_to_create.values()])
+
+        for created_move in created_moves:
+            if content := bills_to_create[created_move.l10n_pl_edi_number].get('xml_content'):
+                self.env['ir.attachment'].sudo().create({
+                    'description': self.env._('KSeF Fetched Invoice XML'),
+                    'name': f"KSeF-{created_move.l10n_pl_edi_number.replace('/', '_')}.xml",
+                    'type': 'binary',
+                    'mimetype': 'application/xml',
+                    'raw': content,
+                    'res_id': created_move.id,
+                    'res_model': created_move._name,
+                })
+
+            if error_msg := bills_to_create[created_move.l10n_pl_edi_number].get('error_msg'):
+                created_move.message_post(
+                    body=self.env._("KSeF XML failed. The bill was created empty. Reason: %s", error_msg)
+                )
+
+        return blocking_error

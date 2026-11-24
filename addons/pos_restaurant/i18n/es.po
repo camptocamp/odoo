@@ -7,13 +7,14 @@
 # Wil Odoo, 2024
 # Larissa Manderfeld, 2025
 # "Larissa Manderfeld (lman)" <lman@odoo.com>, 2025.
+# "Noemi Pla Garcia (nopl)" <nopl@odoo.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-29 18:36+0000\n"
-"PO-Revision-Date: 2025-08-25 10:09+0000\n"
-"Last-Translator: \"Larissa Manderfeld (lman)\" <lman@odoo.com>\n"
+"POT-Creation-Date: 2026-04-10 18:37+0000\n"
+"PO-Revision-Date: 2026-05-09 09:07+0000\n"
+"Last-Translator: \"Noemi Pla Garcia (nopl)\" <nopl@odoo.com>\n"
 "Language-Team: Spanish <https://translate.odoo.com/projects/odoo-18/"
 "pos_restaurant/es/>\n"
 "Language: es\n"
@@ -22,7 +23,7 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=3; plural=(n == 1) ? 0 : ((n != 0 && n % 1000000 == "
 "0) ? 1 : 2);\n"
-"X-Generator: Weblate 5.12.2\n"
+"X-Generator: Weblate 5.17\n"
 
 #. module: pos_restaurant
 #. odoo-javascript
@@ -151,7 +152,7 @@ msgstr ""
 #. module: pos_restaurant
 #: model_terms:ir.ui.view,arch_db:pos_restaurant.res_config_settings_view_form
 msgid "Allow Bill Splitting"
-msgstr "Permitir división de facturas"
+msgstr "Permitir dividir la cuenta"
 
 #. module: pos_restaurant
 #: model:ir.model.fields,help:pos_restaurant.field_pos_config__takeaway
@@ -247,7 +248,7 @@ msgstr "Impresión de facturas"
 #: code:addons/pos_restaurant/static/src/app/split_bill_screen/split_bill_screen.xml:0
 #: model:ir.model.fields,field_description:pos_restaurant.field_pos_config__iface_splitbill
 msgid "Bill Splitting"
-msgstr "División de facturas"
+msgstr "Dividir la cuenta"
 
 #. module: pos_restaurant
 #: model:product.attribute.value,name:pos_restaurant.product_attribute_value_black_olives
@@ -389,7 +390,7 @@ msgstr "Diseñe pisos y asigne pedidos a las mesas"
 #. odoo-javascript
 #: code:addons/pos_restaurant/static/src/overrides/models/pos_store.js:0
 msgid "Dine in"
-msgstr "Comer allí"
+msgstr "Comer en el local"
 
 #. module: pos_restaurant
 #: model:ir.model.fields,field_description:pos_restaurant.field_restaurant_floor__display_name
@@ -428,7 +429,7 @@ msgstr "Editar plano"
 #. module: pos_restaurant
 #: model:ir.model.fields,help:pos_restaurant.field_pos_config__iface_splitbill
 msgid "Enables Bill Splitting in the Point of Sale."
-msgstr "Permite la división de la factura en el punto de venta."
+msgstr "Permite dividir la cuenta en el punto de venta."
 
 #. module: pos_restaurant
 #. odoo-javascript
@@ -506,13 +507,13 @@ msgstr "¿Nombre del piso?"
 #. odoo-javascript
 #: code:addons/pos_restaurant/static/src/overrides/components/navbar/navbar.xml:0
 msgid "Floor Plan"
-msgstr "Diseño del piso"
+msgstr "Plano de sala"
 
 #. module: pos_restaurant
 #: model:ir.actions.act_window,name:pos_restaurant.action_restaurant_floor_form
 #: model:ir.ui.menu,name:pos_restaurant.menu_restaurant_floor_all
 msgid "Floor Plans"
-msgstr "Diseño del piso"
+msgstr "Plano de sala"
 
 #. module: pos_restaurant
 #. odoo-javascript
@@ -1467,18 +1468,6 @@ msgstr ""
 
 #. module: pos_restaurant
 #. odoo-javascript
-#: code:addons/pos_restaurant/static/src/app/tip_receipt/tip_receipt.xml:0
-msgid "________________________"
-msgstr "________________________"
-
-#. module: pos_restaurant
-#. odoo-javascript
-#: code:addons/pos_restaurant/static/src/app/tip_receipt/tip_receipt.xml:0
-msgid "______________________________________________"
-msgstr "______________________________________________"
-
-#. module: pos_restaurant
-#. odoo-javascript
 #: code:addons/pos_restaurant/static/src/overrides/components/product_screen/product_screen.xml:0
 msgid "changes"
 msgstr "cambios"
@@ -1494,3 +1483,9 @@ msgstr "artículos"
 #: code:addons/pos_restaurant/static/src/overrides/components/order_widget/order_widget.js:0
 msgid "or book the table for later"
 msgstr "o reservar una mesa para más tarde"
+
+#~ msgid "________________________"
+#~ msgstr "________________________"
+
+#~ msgid "______________________________________________"
+#~ msgstr "______________________________________________"

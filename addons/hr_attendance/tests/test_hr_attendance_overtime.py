@@ -63,6 +63,7 @@ class TestHrAttendanceOvertime(TransactionCase):
             'tz': 'UTC',
             'resource_calendar_id': cls.calendar_flex_40h.id,
         })
+        cls.is_module_hr_contract_installed = hasattr(cls.env['hr.employee'], 'contract_id')
 
     def test_overtime_company_settings(self):
         self.company.write({
@@ -527,6 +528,38 @@ class TestHrAttendanceOvertime(TransactionCase):
             self.assertEqual(morning.worked_hours + afternoon.worked_hours, 9)  # 8 hours from calendar's attendances + 1 hour of tolerance
             self.assertEqual(afternoon.check_out, datetime(2024, 1, 1, 18, 0))
 
+    def test_auto_check_out_employee_time_off(self):
+        Attendance = self.env['hr.attendance']
+        self.company.write({
+            'auto_check_out': True,
+            'auto_check_out_tolerance': 0.1,
+        })
+        calendar = self.company.resource_calendar_id.copy({'tz': 'UTC'})
+        self.employee.resource_calendar_id = calendar
+        self.env['resource.calendar.leaves'].create({
+            'name': 'Time Off',
+            'calendar_id': calendar.id,
+            'resource_id': self.employee.resource_id.id,
+            'date_from': datetime(2024, 1, 1, 15, 0),
+            'date_to': datetime(2024, 1, 1, 17, 0),
+            'company_id': self.company.id,
+        })
+        attendance = Attendance.create({
+            'employee_id': self.employee.id,
+            'check_in': datetime(2024, 1, 1, 8, 0),
+        })
+
+        with freeze_time('2024-01-01 17:06:00'):
+            Attendance._cron_auto_check_out()
+
+        self.assertEqual(attendance.check_out, datetime(2024, 1, 1, 15, 6))
+        self.assertAlmostEqual(attendance.worked_hours, 6.1)
+        overtime = self.env['hr.attendance.overtime'].search([
+            ('employee_id', '=', self.employee.id),
+            ('date', '=', date(2024, 1, 1)),
+        ])
+        self.assertFalse(overtime)
+
     def test_auto_check_out_two_weeks_calendar(self):
         """Test case: two weeks calendar with different attendances depending on the week. No morning attendance on
         wednesday of the first week."""
@@ -614,10 +647,12 @@ class TestHrAttendanceOvertime(TransactionCase):
 
         self.env['hr.attendance']._cron_absence_detection()
 
+        overtime_assertion = -8 if not self.is_module_hr_contract_installed else 0
+
         # Check that absences were correctly attributed
-        self.assertAlmostEqual(self.other_employee.total_overtime, -8, 2)
-        self.assertAlmostEqual(self.jpn_employee.total_overtime, -8, 2)
-        self.assertAlmostEqual(self.honolulu_employee.total_overtime, -8, 2)
+        self.assertAlmostEqual(self.other_employee.total_overtime, overtime_assertion, 2)
+        self.assertAlmostEqual(self.jpn_employee.total_overtime, overtime_assertion, 2)
+        self.assertAlmostEqual(self.honolulu_employee.total_overtime, overtime_assertion, 2)
 
         # Employee Checked in yesterday, no absence found
         self.assertAlmostEqual(self.employee.total_overtime, 0, 2)

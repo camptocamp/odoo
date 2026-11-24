@@ -46,6 +46,14 @@ class PosOrder(models.Model):
                 invoice_vals['partner_id'] = sale_orders[0].partner_invoice_id.id
         return invoice_vals
 
+    def action_pos_order_paid(self):
+        res = super().action_pos_order_paid()
+        if any(p.payment_method_id._is_online_payment() for p in self.payment_ids):
+            sale_orders = self.lines.mapped('sale_order_origin_id')
+            for so in sale_orders.filtered(lambda s: s.state in ('draft', 'sent')):
+                so.action_confirm()
+        return res
+
     @api.model
     def sync_from_ui(self, orders):
         data = super().sync_from_ui(orders)
@@ -185,6 +193,10 @@ class PosOrder(models.Model):
             vals['crm_team_id'] = vals['crm_team_id'] if vals.get('crm_team_id') else self.session_id.crm_team_id.id
         return super().write(vals)
 
+    def _force_create_picking_real_time(self):
+        result = super()._force_create_picking_real_time()
+        return result or any(self.lines.mapped('sale_order_origin_id'))
+
 
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
@@ -235,3 +247,10 @@ class PosOrderLine(models.Model):
         for order in orders:
             self.env['stock.move'].browse(order.lines.sale_order_line_id.move_ids._rollup_move_origs()).filtered(lambda ml: ml.state not in ['cancel', 'done'])._action_cancel()
         return super()._launch_stock_rule_from_pos_order_lines()
+
+    def _prepare_refund_data(self, refund_order, PosOrderLineLot):
+        data = super()._prepare_refund_data(refund_order, PosOrderLineLot)
+        data.update({
+            'sale_order_line_id': False,  # Remove the sale order line id to be coherent with frontend refund
+        })
+        return data

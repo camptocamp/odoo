@@ -173,7 +173,7 @@ class configmanager(object):
         group.add_option("--test-enable", action="callback", callback=self._test_enable_callback,
                          dest='test_enable',
                          help="Enable unit tests.")
-        group.add_option("--test-tags", dest="test_tags",
+        group.add_option("-t", "--test-tags", dest="test_tags",
                          help="Comma-separated list of specs to filter which tests to execute. Enable unit tests if set. "
                          "A filter spec has the format: [-][tag][/module][:class][.method][[params]] "
                          "The '-' specifies if we want to include or exclude tests matching this spec. "
@@ -649,8 +649,6 @@ class configmanager(object):
             res = os.path.abspath(os.path.expanduser(path))
             if not os.path.isdir(res):
                 raise optparse.OptionValueError("option %s: no such directory: %r" % (opt, res))
-            if not self._is_addons_path(res):
-                raise optparse.OptionValueError("option %s: the path %r is not a valid addons directory" % (opt, path))
             ad_paths.append(res)
 
         setattr(parser.values, option.dest, ",".join(ad_paths))

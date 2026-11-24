@@ -4,7 +4,7 @@ from odoo.addons.stock.tests.common import TestStockCommon
 from odoo.exceptions import ValidationError
 from odoo.tests import Form, tagged
 from odoo.tools import mute_logger, float_round
-from odoo import fields
+from odoo import Command, fields
 
 
 class TestStockFlow(TestStockCommon):
@@ -2599,6 +2599,58 @@ class TestStockFlow(TestStockCommon):
         bo = self.env['stock.picking'].search([('backorder_id', '=', picking.id)])
         self.assertEqual(bo.state, 'assigned')
 
+    def test_multiple_moves_with_different_destinations_putaway_strategy(self):
+        '''
+        Ensure that, when assigning a batch of moves with different destinations,
+        putaway strategy correctly defaults to child locations.
+        '''
+        view_a, view_b = self.env['stock.location'].create([{
+            'name': 'View A',
+            'usage': 'view',
+            'location_id': self.stock_location,
+        }, {
+            'name': 'View B',
+            'usage': 'view',
+            'location_id': self.stock_location,
+        }])
+        child_a, child_b = self.env['stock.location'].create([{
+            'name': 'Child A',
+            'usage': 'internal',
+            'location_id': view_a.id,
+        }, {
+            'name': 'Child B',
+            'usage': 'internal',
+            'location_id': view_b.id,
+        }])
+        picking_1, picking_2 = self.env['stock.picking'].create([{
+            'location_id': self.supplier_location,
+            'location_dest_id': view_a.id,
+            'picking_type_id': self.picking_type_in,
+            'move_ids': [Command.create({
+                'name': 'SML should end up in Child A',
+                'location_id': self.supplier_location,
+                'location_dest_id': view_a.id,
+                'product_id': self.productA.id,
+                'product_uom_qty': 1.0,
+            })],
+        }, {
+            'location_id': self.supplier_location,
+            'location_dest_id': view_b.id,
+            'picking_type_id': self.picking_type_in,
+            'state': 'draft',
+            'move_ids': [Command.create({
+                'name': 'SML should end up in Child B',
+                'location_id': self.supplier_location,
+                'location_dest_id': view_b.id,
+                'product_id': self.productB.id,
+                'product_uom_qty': 1.0,
+            })],
+        }])
+        (picking_1 | picking_2).action_confirm()
+        self.assertEqual(picking_1.move_ids.move_line_ids.location_dest_id, child_a)
+        self.assertEqual(picking_2.move_ids.move_line_ids.location_dest_id, child_b)
+
+
 @tagged('-at_install', 'post_install')
 class TestStockFlowPostInstall(TestStockCommon):
 
@@ -2734,3 +2786,62 @@ class TestStockFlowPostInstall(TestStockCommon):
 
         new_location_complete_name = self.env['stock.location'].name_create('NoPrefixLocation')[1]
         self.assertEqual(new_location_complete_name, 'NoPrefixLocation')
+
+    def test_package_level_quantity_split(self):
+        """
+        Deliver an entire package holding two lots of the same product through two
+        separate moves. Marking the package level as done must dispatch each quant
+        over the move lines without exceeding what each move line already reserved.
+        """
+        self.env['stock.picking.type'].browse(self.picking_type_out).show_entire_packs = True
+        stock_location = self.env['stock.location'].browse(self.stock_location)
+
+        self.productA.tracking = 'lot'
+        lot_1, lot_2 = self.env['stock.lot'].create([
+            {'name': 'lot1', 'product_id': self.productA.id},
+            {'name': 'lot2', 'product_id': self.productA.id},
+        ])
+        package = self.env['stock.quant.package'].create({'name': 'PACK01'})
+        self.env['stock.quant']._update_available_quantity(self.productA, stock_location, 2, lot_id=lot_1, package_id=package)
+        self.env['stock.quant']._update_available_quantity(self.productA, stock_location, 3, lot_id=lot_2, package_id=package)
+
+        picking = self.env['stock.picking'].create({
+            'picking_type_id': self.picking_type_out,
+            'location_id': self.stock_location,
+            'location_dest_id': self.customer_location,
+            'move_ids': [
+                Command.create({
+                    'name': 'Line_1',
+                    'product_id': self.productA.id,
+                    'product_uom_qty': 3.0,
+                    'product_uom': self.productA.uom_id.id,
+                    'location_id': self.stock_location,
+                    'location_dest_id': self.customer_location,
+                    'description_picking': 'Line_1',
+                }),
+                Command.create({
+                    'name': 'Line_2',
+                    'product_id': self.productA.id,
+                    'product_uom_qty': 2.0,
+                    'product_uom': self.productA.uom_id.id,
+                    'location_id': self.stock_location,
+                    'location_dest_id': self.customer_location,
+                    'description_picking': 'Line_2',
+                }),
+            ],
+        })
+        picking.action_confirm()
+        picking.action_assign()
+
+        move_1, move_2 = picking.move_ids
+        self.assertEqual(picking.package_level_ids.package_id, package)
+
+        picking.package_level_ids.is_done = True
+
+        self.assertEqual(move_1.quantity, 3.0)
+        self.assertEqual(move_2.quantity, 2.0)
+        self.assertRecordValues(picking.move_line_ids.sorted('id'), [
+            {'move_id': move_1.id, 'lot_id': lot_1.id, 'quantity': 2.0},
+            {'move_id': move_1.id, 'lot_id': lot_2.id, 'quantity': 1.0},
+            {'move_id': move_2.id, 'lot_id': lot_2.id, 'quantity': 2.0},
+        ])

@@ -21,7 +21,7 @@ class TestUBLAU(TestUBLCommon):
             'phone': '+31 180 6 225789',
             'email': 'info@outlook.au',
             'country_id': cls.env.ref('base.au').id,
-            'bank_ids': [(0, 0, {'acc_number': '000099998B57'})],
+            'bank_ids': [(0, 0, {'acc_number': '000099998B57', 'allow_out_payment': True})],
             'ref': 'ref_partner_1',
             'invoice_edi_format': 'ubl_a_nz',
         })
@@ -33,7 +33,7 @@ class TestUBLAU(TestUBLCommon):
             'city': "Canberra",
             'vat': '53 930 548 027',
             'country_id': cls.env.ref('base.au').id,
-            'bank_ids': [(0, 0, {'acc_number': '93999574162167'})],
+            'bank_ids': [(0, 0, {'acc_number': '93999574162167', 'allow_out_payment': True})],
             'ref': 'ref_partner_2',
             'invoice_edi_format': 'ubl_a_nz',
         })
@@ -106,6 +106,7 @@ class TestUBLAU(TestUBLCommon):
             expected_file_path='from_odoo/a_nz_out_invoice.xml',
         )
         self.assertEqual(attachment.name[-8:], "a_nz.xml")
+        self.partner_1.bank_ids.unlink()
         self._assert_imported_invoice_from_etree(invoice, attachment)
 
     def test_export_import_invoice_new(self):

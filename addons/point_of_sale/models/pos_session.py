@@ -199,10 +199,13 @@ class PosSession(models.Model):
             }
         if self.state != 'opening_control' or len(self.order_ids) > 0:
             raise UserError(_("You can only cancel a session that is in opening control state and has no orders."))
-        self.sudo().unlink()
+        self._delete_session()
         return {
             'status': 'success',
         }
+
+    def _delete_session(self):
+        self.sudo().unlink()
 
     def get_pos_ui_product_pricelist_item_by_product(self, product_tmpl_ids, product_ids, config_id):
         pricelist_item_fields = self.env['product.pricelist.item']._load_pos_data_fields(config_id)
@@ -755,7 +758,7 @@ class PosSession(models.Model):
             session_destination_id = picking_type.default_location_dest_id.id
 
         for order in self._get_closed_orders():
-            if order.company_id.anglo_saxon_accounting and order.is_invoiced or order.shipping_date:
+            if order._force_create_picking_real_time() or order.shipping_date:
                 continue
             destination_id = order.partner_id.property_stock_customer.id or session_destination_id
             if destination_id in lines_grouped_by_dest_location:
@@ -972,6 +975,7 @@ class PosSession(models.Model):
                         .filtered(lambda m: not bool(m.origin_returned_move_id and sum(m.stock_valuation_layer_ids.mapped('quantity')) >= 0))\
                         .mapped('stock_valuation_layer_ids')
                     for move in stock_moves_batch.with_context(candidates_prefetch_ids=candidates._prefetch_ids):
+                        move = move.with_company(move.company_id)
                         exp_key = move.product_id._get_product_accounts()['expense']
                         out_key = move.product_id.categ_id.property_stock_account_output_categ_id
                         signed_product_qty = move.product_qty
@@ -1080,9 +1084,17 @@ class PosSession(models.Model):
         data['pay_later_move_lines'] = MoveLine.create(vals)
         return data
 
+    def _ensure_payment_outstanding_account(self, payment, payment_amount):
+        # In community the outstanding account is computed on the creation of account.payment records
+        if not payment.outstanding_account_id and self.env['account.move']._get_invoice_in_payment_state() == 'in_payment':
+            payment.force_outstanding_account_id = payment._get_outstanding_account(payment.payment_type)
+
     def _create_combine_account_payment(self, payment_method, amounts, diff_amount):
         outstanding_account = payment_method.outstanding_account_id
         destination_account = self._get_receivable_account(payment_method)
+        payment_type = "inbound"
+        if self.currency_id.compare_amounts(amounts['amount'], 0) < 0:
+            payment_type = 'outbound'
 
         account_payment = self.env['account.payment'].with_context(pos_payment=True).create({
             'amount': abs(amounts['amount']),
@@ -1093,21 +1105,10 @@ class PosSession(models.Model):
             'pos_payment_method_id': payment_method.id,
             'pos_session_id': self.id,
             'company_id': self.company_id.id,
+            'payment_type': payment_type,
         })
 
-        # In community the outstanding account is computed on the creation of account.payment records
-        accounting_installed = self.env['account.move']._get_invoice_in_payment_state() == 'in_payment'
-        if not account_payment.outstanding_account_id and accounting_installed:
-            account_payment.outstanding_account_id = account_payment._get_outstanding_account(account_payment.payment_type)
-
-        if float_compare(amounts['amount'], 0, precision_rounding=self.currency_id.rounding) < 0:
-            # revert the accounts because account.payment doesn't accept negative amount.
-            account_payment.write({
-                'outstanding_account_id': account_payment.destination_account_id,
-                'destination_account_id': account_payment.outstanding_account_id,
-                'payment_type': 'outbound',
-            })
-
+        self._ensure_payment_outstanding_account(account_payment, amounts['amount'])
         account_payment.action_post()
 
         diff_amount_compare_to_zero = self.currency_id.compare_amounts(diff_amount, 0)
@@ -1146,10 +1147,9 @@ class PosSession(models.Model):
         outstanding_account = payment_method.outstanding_account_id
         accounting_partner = self.env["res.partner"]._find_accounting_partner(payment.partner_id)
         destination_account = accounting_partner.property_account_receivable_id
-
-        if float_compare(amounts['amount'], 0, precision_rounding=self.currency_id.rounding) < 0:
-            # revert the accounts because account.payment doesn't accept negative amount.
-            outstanding_account, destination_account = destination_account, outstanding_account
+        payment_type = "inbound"
+        if self.currency_id.compare_amounts(amounts['amount'], 0) < 0:
+            payment_type = 'outbound'
 
         account_payment = self.env['account.payment'].create({
             'amount': abs(amounts['amount']),
@@ -1160,7 +1160,10 @@ class PosSession(models.Model):
             'memo': _('%(payment_method)s POS payment of %(partner)s in %(session)s', payment_method=payment_method.name, partner=payment.partner_id.display_name, session=self.name),
             'pos_payment_method_id': payment_method.id,
             'pos_session_id': self.id,
+            'payment_type': payment_type,
         })
+
+        self._ensure_payment_outstanding_account(account_payment, amounts['amount'])
         account_payment.action_post()
         return account_payment.move_id.line_ids.filtered(lambda line: line.account_id == accounting_partner.property_account_receivable_id)
 
@@ -1681,8 +1684,9 @@ class PosSession(models.Model):
         self.start_at = fields.Datetime.now()
 
         cash_payment_method_ids = self.config_id.payment_method_ids.filtered(lambda pm: pm.is_cash_count)
-        if cash_payment_method_ids:
+        if notes:
             self.opening_notes = notes
+        if cash_payment_method_ids:
             difference = cashbox_value - self.cash_register_balance_start
             self._post_cash_details_message('Opening cash', self.cash_register_balance_start, difference, notes)
             self.cash_register_balance_start = cashbox_value
@@ -1707,9 +1711,18 @@ class PosSession(models.Model):
             self.name = self.env['ir.sequence'].with_context(company_id=self.config_id.company_id.id).next_by_code('pos.session')
 
     def _post_cash_details_message(self, state, expected, difference, notes):
-        message = (state + " difference: " + self.currency_id.format(difference) + '\n' +
-           state + " expected: " + self.currency_id.format(expected) + '\n' +
-           state + " counted: " + self.currency_id.format(expected + difference) + '\n')
+        expected_formatted = self.currency_id.format(expected)
+        difference_formatted = self.currency_id.format(difference)
+        counted_formatted = self.currency_id.format(expected + difference)
+
+        if state == 'Opening cash':
+            message = _("Opening cash difference: %s \n", difference_formatted)
+            message += _("Opening cash expected: %s \n", expected_formatted)
+            message += _("Opening cash counted: %s \n", counted_formatted)
+        else:
+            message = _("Closing difference: %s \n", difference_formatted)
+            message += _("Closing expected: %s \n", expected_formatted)
+            message += _("Closing counted: %s \n", counted_formatted)
 
         if notes:
             message += _('Opening control message: ')
@@ -1906,9 +1919,9 @@ class PosSession(models.Model):
 
     def log_partner_message(self, partner_id, action, message_type):
         if message_type == 'ACTION_CANCELLED':
-            body = 'Action cancelled ({ACTION})'.format(ACTION=action)
+            body = _('Action cancelled (%(ACTION)s)', ACTION=action)
         elif message_type == 'CASH_DRAWER_ACTION':
-            body = 'Cash drawer opened ({ACTION})'.format(ACTION=action)
+            body = _('Cash drawer opened (%(ACTION)s)', ACTION=action)
 
         self.message_post(body=body, author_id=partner_id)
 
@@ -1931,10 +1944,13 @@ class PosSession(models.Model):
     @api.autovacuum
     def _gc_session_sequences(self):
         for prefix in self._get_gc_sequence_prefix():
-            sequences = self.env['ir.sequence'].search([('code', 'ilike', prefix)])
+            sequences = self.env['ir.sequence'].search([('code', '=like', f'{prefix}%')])
+            # =like uses SQL LIKE where '_' is a wildcard; filter to literal prefix matches only
+            sequences = sequences.filtered(lambda s: s.code.startswith(prefix))
             session_ids = [int(seq.code.split(prefix)[-1]) for seq in sequences if seq.code.split(prefix)[-1].isdigit()]
-            session_ids = self.env['pos.session'].search([('id', 'in', session_ids), ('state', '=', 'closed')]).ids
-            sequence_to_unlink_ids = sequences.filtered(lambda seq: seq.code in [f'{prefix}{session}' for session in session_ids])
+            session_ids = self.env['pos.session'].search([('id', 'in', session_ids), ('state', '!=', 'closed')]).ids
+            keep_codes = {f'{prefix}{session}' for session in session_ids}
+            sequence_to_unlink_ids = sequences.filtered(lambda seq: seq.code not in keep_codes)
             if sequence_to_unlink_ids:
                 sequence_to_unlink_ids.sudo().unlink()
 

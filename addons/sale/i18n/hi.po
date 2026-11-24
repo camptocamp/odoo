@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-29 18:37+0000\n"
-"PO-Revision-Date: 2026-01-31 18:01+0000\n"
+"POT-Creation-Date: 2026-04-10 18:38+0000\n"
+"PO-Revision-Date: 2026-05-17 05:50+0000\n"
 "Last-Translator: Weblate <noreply-mt-weblate@weblate.org>\n"
 "Language-Team: Hindi <https://translate.odoo.com/projects/odoo-18/sale/hi/>\n"
 "Language: hi\n"
@@ -23,12 +23,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 5.17\n"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_payment_provider_onboarding_wizard___data_fetched
 msgid " Data Fetched"
-msgstr ""
+msgstr " डेटा मिल गया"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_crm_team__sale_order_count
@@ -73,21 +73,6 @@ msgid ""
 "(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or "
 "'Order - %s' % (object.name)"
 msgstr ""
-
-#. module: sale
-#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
-msgid "2023-12-31"
-msgstr ""
-
-#. module: sale
-#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
-msgid "27.00"
-msgstr "27.00"
-
-#. module: sale
-#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
-msgid "31.05"
-msgstr "31.05"
 
 #. module: sale
 #. odoo-javascript
@@ -673,13 +658,6 @@ msgid ""
 msgstr ""
 
 #. module: sale
-#: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
-msgid ""
-"<span class=\"fa fa-lg fa-building-o p-2\" title=\"Values set here are "
-"company-specific.\" groups=\"base.group_multi_company\"/>"
-msgstr ""
-
-#. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.crm_team_salesteams_view_form
 msgid "<span class=\"flex-grow-1\">/ Month</span>"
 msgstr "<span class=\"flex-grow-1\">/ महीना </span> "
@@ -916,6 +894,12 @@ msgid ""
 "this sale line\n"
 "  - Stock Moves: the quantity comes from confirmed pickings\n"
 msgstr ""
+"प्रॉडक्ट कॉन्फ़िगरेशन के अनुसार, डिलीवर की गई मात्रा को ऑटोमैटिक तरीके से कैलकुलेट करें:\n"
+"  - मैन्युअल: मात्रा को लाइन पर मैन्युअल रूप से सेट करें\n"
+"  - एनालिटिक फ्रॉम एक्सपेंसेस: जितने खर्चे दर्ज किए गए हैं, उनकी कुल संख्या ही डिलीवरी "
+"मात्रा होगी\n"
+"  - टाइमशीट: मात्रा इस सेल लाइन से जुड़े टास्क पर दर्ज किए गए घंटों का योग है\n"
+"  - स्टॉक मूव्स: मात्रा पुष्टि की गई पिकिंग से आती है\n"
 
 #. module: sale
 #: model:ir.model,name:sale.model_account_chart_template
@@ -1056,6 +1040,15 @@ msgid ""
 "Inside quote: The document will be included in the pdf of the quotation and "
 "sale order between the header pages and the quote table. "
 msgstr ""
+"यह आपको सेल्स के भीतर अपने ग्राहकों के साथ दस्तावेज़ शेयर करने की अनुमति देता है.\n"
+"अगर आप इस दस्तावेज़ को सेल्स ग्राहक के साथ शेयर नहीं करना चाहते हैं, तो इसे खाली छोड़ दें.\n"
+"कोटेशन पर: दस्तावेज़ ग्राहकों को किसी भी समय भेजा जाएगा और वो इसे ऐक्सेस कर सकते हैं.\n"
+"जैसे, यह विकल्प प्रॉडक्ट की जानकारी वाली फ़ाइलें शेयर करने के लिए उपयोगी हो सकता है.\n"
+"ऑर्डर की पुष्टि पर: दस्तावेज़ ग्राहकों को भेजा जाएगा और वो इसे ऐक्सेस कर सकते हैं.\n"
+"जैसे, यह विकल्प उपयोगकर्ता मैन्युअल या ई-कॉमर्स पर खरीदी गई डिजिटल सामग्री शेयर करने के "
+"लिए उपयोगी हो सकता है.\n"
+"कोटेशन के अंदर: दस्तावेज़ को हेडर पेजों और कोटेशन टेबल के बीच कोटेशन और सेल्स ऑर्डर की "
+"पीडीएफ़ में शामिल किया जाएगा. "
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_payment_link_wizard__amount_paid
@@ -1184,13 +1177,13 @@ msgstr "अटैचमेंट काउंट"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__product_template_attribute_value_ids
 msgid "Attribute Values"
-msgstr ""
+msgstr "एट्रिब्यूट वैल्यू"
 
 #. module: sale
 #: model:ir.ui.menu,name:sale.menu_product_attribute_action
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
 msgid "Attributes"
-msgstr ""
+msgstr "एट्रिब्यूट"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_cancel__author_id
@@ -1265,6 +1258,9 @@ msgid ""
 "purchase amount, period). Rewards can be discounts (% or amount) or free "
 "products."
 msgstr ""
+"कई प्रकार के प्रोग्रामों के साथ अपनी बिक्री बढ़ाएं: कूपन, प्रचार, गिफ्ट कार्ड, लॉयल्टी. कुछ "
+"खास शर्तें तय की जा सकती हैं (प्रॉडक्ट, ग्राहक, न्यूनतम खरीद राशि, अवधि). पुरस्कार छूट (% "
+"o राशि) या मुफ्त प्रॉडक्ट हो सकते हैं।"
 
 #. module: sale
 #. odoo-javascript
@@ -1425,12 +1421,12 @@ msgstr "बंद"
 #. module: sale
 #: model:ir.ui.menu,name:sale.menu_product_combos
 msgid "Combo Choices"
-msgstr ""
+msgstr "कॉम्बो में से अपनी पसंद की चीज़ें चुनना"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__combo_item_id
 msgid "Combo Item"
-msgstr ""
+msgstr "कॉम्बो आइटम"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_res_config_settings__module_sale_commission
@@ -1567,7 +1563,7 @@ msgstr ""
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_advance_payment_inv__consolidated_billing
 msgid "Consolidated Billing"
-msgstr ""
+msgstr "अलग-अलग बिलों को मिलाकर एक साझा बिल बनाने की सुविधा"
 
 #. module: sale
 #: model:ir.model,name:sale.model_res_partner
@@ -1615,7 +1611,7 @@ msgstr "इनवॉइस बनाएं"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_tree
 msgid "Create Invoices"
-msgstr ""
+msgstr "इनवॉइस बनाएं"
 
 #. module: sale
 #: model_terms:ir.actions.act_window,help:sale.mail_activity_plan_action_sale_order
@@ -1630,7 +1626,7 @@ msgstr "ग्राहक का इनवॉइस बनाएं"
 #. module: sale
 #: model_terms:ir.actions.act_window,help:sale.product_template_action
 msgid "Create a new product"
-msgstr ""
+msgstr "नया प्रॉडक्ट बनाएं"
 
 #. module: sale
 #: model_terms:ir.actions.act_window,help:sale.act_res_partner_2_sale_order
@@ -1655,7 +1651,7 @@ msgstr "इनवॉइस बनाएं, पेमेंट रजिस्�
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__service_tracking
 msgid "Create on Order"
-msgstr ""
+msgstr "ऑर्डर पर बनाएं"
 
 #. module: sale
 #: model:ir.model.fields,help:sale.field_sale_advance_payment_inv__consolidated_billing
@@ -1663,6 +1659,7 @@ msgid ""
 "Create one invoice for all orders related to same customer and same "
 "invoicing address"
 msgstr ""
+"समान ग्राहक और समान इनवॉइसिंग पते वाले सभी ऑर्डरों के लिए एक ही इनवॉइस बनाएं"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_advance_payment_inv__create_uid
@@ -1726,12 +1723,12 @@ msgstr "कस्टम"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__product_custom_attribute_value_ids
 msgid "Custom Values"
-msgstr ""
+msgstr "कस्टम वैल्यू"
 
 #. module: sale
 #: model:ir.model.fields.selection,name:sale.selection__sale_payment_provider_onboarding_wizard__payment_method__manual
 msgid "Custom payment instructions"
-msgstr ""
+msgstr "कस्टम पेमेंट से जुड़ा निर्देश"
 
 #. module: sale
 #. odoo-python
@@ -2011,7 +2008,7 @@ msgstr ""
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
 msgid "Discount:"
-msgstr ""
+msgstr "डिस्काउंट:"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_res_config_settings__group_discount_per_so_line
@@ -2101,7 +2098,7 @@ msgstr ""
 #: code:addons/sale/models/sale_order.py:0
 #: code:addons/sale/models/sale_order_line.py:0
 msgid "Down Payments"
-msgstr ""
+msgstr "डाउन पेमेंट"
 
 #. module: sale
 #: model:ir.model.fields.selection,name:sale.selection__sale_advance_payment_inv__advance_payment_method__fixed
@@ -2362,6 +2359,8 @@ msgid ""
 "Goods are tangible materials and merchandise you provide.\n"
 "A service is a non-material product you provide."
 msgstr ""
+"माल वह चीजें हैं जिन्हें छुआ जा सकता है और बेचा जाता है.\n"
+"सेवा वह काम या सुविधा है जिसे छुआ नहीं जा सकता, पर दिया जाता है।"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
@@ -2493,7 +2492,7 @@ msgstr "Amazon ऑर्डर इंपोर्ट करें और डि�
 #. odoo-python
 #: code:addons/sale/models/product_template.py:0
 msgid "Import Template for Products"
-msgstr ""
+msgstr "प्रॉडक्ट के लिए टेम्प्लेट इंपोर्ट करें"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.product_view_search_catalog
@@ -2799,7 +2798,7 @@ msgstr "लेट एक्टिविटी"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__customer_lead
 msgid "Lead Time"
-msgstr ""
+msgstr "लीड का समय"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
@@ -2896,11 +2895,16 @@ msgid ""
 "Create a task and track hours: Create a task on the sales order validation "
 "and track the work hours."
 msgstr ""
+"ऑर्डर पर मात्रा मैनुअल रूप से सेट करें: बिना एनालिटिक अकाउंट बनाए, दर्ज की गई मात्रा के "
+"आधार पर इनवॉइस बनाएं.\n"
+"कॉन्ट्रैक्ट पर टाइमशीट: संबंधित टाइमशीट पर ट्रैक किए गए घंटों के आधार पर इनवॉइस बनाएं.\n"
+"टास्क बनाएं और घंटे ट्रैक करें: सेल्स ऑर्डर की पुष्टि होने पर टास्क बनाएं और काम के घंटों को "
+"ट्रैक करें।"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_res_config_settings__module_sale_margin
 msgid "Margins"
-msgstr ""
+msgstr "मार्जिन"
 
 #. module: sale
 #: model:ir.actions.server,name:sale.model_sale_order_action_quotation_sent
@@ -3223,7 +3227,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale.field_product_product__optional_product_ids
 #: model:ir.model.fields,field_description:sale.field_product_template__optional_product_ids
 msgid "Optional Products"
-msgstr ""
+msgstr "वैकल्पिक प्रॉडक्ट"
 
 #. module: sale
 #: model:ir.model.fields,help:sale.field_product_product__optional_product_ids
@@ -3263,7 +3267,7 @@ msgstr ""
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_advance_payment_inv__count
 msgid "Order Count"
-msgstr ""
+msgstr "ऑर्डर की संख्या"
 
 #. module: sale
 #. odoo-python
@@ -3298,14 +3302,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale.field_sale_order__order_line
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
 msgid "Order Lines"
-msgstr ""
+msgstr "ऑर्डर लाइन"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order__name
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__order_id
 #: model:ir.model.fields,field_description:sale.field_sale_report__name
 msgid "Order Reference"
-msgstr ""
+msgstr "ऑर्डर रेफ़रेंस"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__state
@@ -3431,7 +3435,7 @@ msgstr "पेमेंट"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_payment_provider_onboarding_wizard__manual_post_msg
 msgid "Payment Instructions"
-msgstr ""
+msgstr "पेमेंट से जुड़ा निर्देश"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_payment_provider_onboarding_wizard__payment_method
@@ -3588,7 +3592,7 @@ msgstr "उत्पाद"
 #. module: sale
 #: model:ir.model,name:sale.model_product_attribute_custom_value
 msgid "Product Attribute Custom Value"
-msgstr ""
+msgstr "प्रॉडक्ट एट्रिब्यूट कस्टम वैल्यू"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
@@ -3615,7 +3619,7 @@ msgstr "उत्पाद श्रेणी"
 #. module: sale
 #: model:ir.model,name:sale.model_product_document
 msgid "Product Document"
-msgstr ""
+msgstr "प्रॉडक्ट डॉक्यूमेंट"
 
 #. module: sale
 #. odoo-javascript
@@ -3642,7 +3646,7 @@ msgstr "उत्पाद  प्रारूप"
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__product_type
 msgid "Product Type"
-msgstr ""
+msgstr "प्रॉडक्ट टाइप"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__product_uom_readonly
@@ -3698,7 +3702,7 @@ msgstr ""
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_line_tree
 msgid "Qty"
-msgstr ""
+msgstr "मात्रा"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__qty_delivered
@@ -3708,7 +3712,7 @@ msgstr ""
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__qty_invoiced
 msgid "Qty Invoiced"
-msgstr ""
+msgstr "इनवॉइस की गई मात्रा"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__product_uom_qty
@@ -4299,7 +4303,7 @@ msgstr "सेक्शन"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
 msgid "Section Name (eg. Products, Services)"
-msgstr ""
+msgstr "सेक्शन का नाम (जैसे, प्रॉडक्ट, सर्विस)"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order__access_token
@@ -4310,7 +4314,7 @@ msgstr "सिक्योरिटी टोकन"
 #. odoo-javascript
 #: code:addons/sale/static/src/js/tours/sale.js:0
 msgid "Select a product, or create a new one on the fly."
-msgstr ""
+msgstr "एक प्रॉडक्ट चुनें या तुरंत एक नया बनाएं।"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__selected_combo_items
@@ -4406,7 +4410,7 @@ msgstr "अनुक्रम"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
 msgid "Set multiple prices per product, automated discounts, etc."
-msgstr ""
+msgstr "प्रति प्रॉडक्ट कई कीमतें, ऑटोमेटेड डिस्काउंट वगैरह सेट करें।"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
@@ -4585,7 +4589,7 @@ msgstr ""
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.sale_report_view_tree
 msgid "Sum of Untaxed Total"
-msgstr ""
+msgstr "बिना टैक्स वाली सभी कीमतों का कुल योग"
 
 #. module: sale
 #: model:ir.model.fields,help:sale.field_sale_order__amount_paid
@@ -4624,7 +4628,7 @@ msgstr "टैक्स कंट्री"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
 msgid "Tax Excl."
-msgstr ""
+msgstr "टैक्स शामिल नहीं"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
@@ -4634,7 +4638,7 @@ msgstr "टैक्स आईडी"
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
 msgid "Tax Incl."
-msgstr ""
+msgstr "टैक्स शामिल है"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_tree
@@ -4644,7 +4648,7 @@ msgstr ""
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order__tax_totals
 msgid "Tax Totals"
-msgstr ""
+msgstr "टैक्स का कुल योग"
 
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__tax_calculation_rounding_method
@@ -4968,7 +4972,7 @@ msgstr "यह लिंक का सोर्स है, जैसे- सर�
 #. odoo-javascript
 #: code:addons/sale/static/src/js/product/product.xml:0
 msgid "This option or combination of options is not available"
-msgstr ""
+msgstr "यह विकल्प या विकल्पों का कॉम्बिनेशन उपलब्ध नहीं है"
 
 #. module: sale
 #. odoo-python
@@ -5025,6 +5029,9 @@ msgid ""
 "invoiced yet. If you want to analyse your turnover, you should use the "
 "Invoice Analysis report in the Accounting application."
 msgstr ""
+"यह रिपोर्ट आपके सेल्स ऑर्डर्स का विश्लेषण करती है. यह सेल्स रेवेन्यू की जांच कर उसे सेल्समैन, "
+"पार्टनर या प्रॉडक्ट के अनुसार क्रमबद्ध करती है. बिना इनवॉइस वाली सेल्स के लिए इसका "
+"उपयोग करें. टर्नओवर देखने के लिए अकाउंटिंग में 'इनवॉइस एनालिसिस' रिपोर्ट देखें।"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
@@ -5231,7 +5238,7 @@ msgstr ""
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_report__price_subtotal
 msgid "Untaxed Total"
-msgstr ""
+msgstr "बिना टैक्स के कुल"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
@@ -5294,6 +5301,11 @@ msgstr ""
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
+msgid "Values set here are company-specific."
+msgstr ""
+
+#. module: sale
+#: model_terms:ir.ui.view,arch_db:sale.res_config_settings_view_form
 msgid "Variant Grid Entry"
 msgstr "वेरिएंट ग्रिड एंट्री"
 
@@ -5311,7 +5323,7 @@ msgstr ""
 #. module: sale
 #: model:ir.model.fields,field_description:sale.field_sale_order_line__virtual_id
 msgid "Virtual"
-msgstr ""
+msgstr "वर्चुअल"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.view_order_form
@@ -5341,7 +5353,7 @@ msgstr "चेतावनी"
 #: code:addons/sale/models/sale_order.py:0
 #: code:addons/sale/models/sale_order_line.py:0
 msgid "Warning for %s"
-msgstr ""
+msgstr "%s के लिए चेतावनी"
 
 #. module: sale
 #. odoo-python
@@ -5446,6 +5458,9 @@ msgid ""
 "You must define a product for everything you sell or purchase,\n"
 "                whether it's a storable product, a consumable or a service."
 msgstr ""
+"बेचने या खरीदने वाली हर चीज़ के लिए एक प्रॉडक्ट बनाना ज़रूरी है,\n"
+"                चाहे वह स्टॉक में रखने वाला सामान हो, इस्तेमाल होने वाली सामग्री या "
+"कोई सेवा।"
 
 #. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.portal_my_home_sale
@@ -5498,6 +5513,10 @@ msgid ""
 " Please change the company of your quotation or remove the products from "
 "other companies (%(bad_products)s)."
 msgstr ""
+"आपके कोटेशन में कंपनी %(product_company)s के प्रॉडक्ट शामिल हैं, जबकि आपका कोटेशन कंपनी %"
+"(quote_company)s का है. \n"
+" कृपया अपने कोटेशन की कंपनी बदलें या अन्य कंपनियों के प्रॉडक्ट (%(bad_products)s) को हटा "
+"दें।"
 
 #. module: sale
 #. odoo-javascript
@@ -5566,6 +5585,12 @@ msgid "units"
 msgstr "यूनिट"
 
 #. module: sale
+#. odoo-javascript
+#: code:addons/sale/static/src/xml/sale_product_field.xml:0
+msgid "x"
+msgstr ""
+
+#. module: sale
 #: model_terms:ir.ui.view,arch_db:sale.sale_order_portal_template
 msgid "you confirm acceptance on the behalf of"
 msgstr ""
@@ -5586,6 +5611,9 @@ msgid ""
 "(ctx.get('proforma') and 'Proforma' or 'Quotation') or 'Order' }} (Ref "
 "{{ object.name or 'n/a' }})"
 msgstr ""
+"{{ object.company_id.name }} {{ object.state in ('draft', 'sent') and "
+"(ctx.get('proforma') and 'Proforma' or 'Quotation') or 'Order' }} (रेफ़रेंस "
+"{{ object.name or 'n/a' }})"
 
 #. module: sale
 #: model:mail.template,subject:sale.mail_template_sale_cancellation
@@ -5593,3 +5621,9 @@ msgid ""
 "{{ object.company_id.name }} {{ object.type_name }} Cancelled (Ref "
 "{{ object.name or 'n/a' }})"
 msgstr ""
+
+#~ msgid "27.00"
+#~ msgstr "27.00"
+
+#~ msgid "31.05"
+#~ msgstr "31.05"

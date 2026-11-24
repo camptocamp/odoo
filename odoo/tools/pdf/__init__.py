@@ -173,13 +173,13 @@ def fill_form_fields_pdf(writer, form_fields):
     :return: a filled PDF datastring
     '''
 
+    pypdf_version = parse_version(pypdf.__version__)
+
     # This solves a known problem with PyPDF2, where with some pdf software, forms fields aren't
     # correctly filled until the user click on it, see: https://github.com/py-pdf/pypdf/issues/355
     if hasattr(writer, 'set_need_appearances_writer'):
         writer.set_need_appearances_writer()
-        is_upper_version_pypdf2 = True
     else:  # This method was renamed in PyPDF2 2.0
-        is_upper_version_pypdf2 = False
         catalog = writer._root_object
         # get the AcroForm tree
         if "/AcroForm" not in catalog:
@@ -188,12 +188,23 @@ def fill_form_fields_pdf(writer, form_fields):
             })
         writer._root_object["/AcroForm"][NameObject("/NeedAppearances")] = BooleanObject(True)
 
-    nbr_pages = len(writer.pages) if is_upper_version_pypdf2 else writer.getNumPages()
+    if pypdf_version >= parse_version('3.13.0'):
+        catalog = writer._root_object
+        if "/Fields" not in catalog.get('/AcroForm'):
+            catalog.update({
+                NameObject("/AcroForm"): writer._add_object(
+                    DictionaryObject({
+                        NameObject("/Fields"): ArrayObject()
+                    })
+                )
+            })
+
+    nbr_pages = len(writer.pages) if pypdf_version >= parse_version('1.28.0') else writer.getNumPages()
 
     for page_id in range(0, nbr_pages):
         page = writer.getPage(page_id)
 
-        if is_upper_version_pypdf2:
+        if pypdf_version >= parse_version('2.11.0'):
             writer.update_page_form_field_values(page, form_fields)
         else:
             # Known bug on previous versions of PyPDF2, fixed in 2.11
@@ -292,6 +303,7 @@ def add_banner(pdf_stream, text=None, logo=False, thickness=2 * cm):
             del new_page['/Annots']
         new_page.mergePage(watermark_pdf.getPage(p))
         new_pdf.addPage(new_page)
+        new_pdf.getPage(-1).compressContentStreams()
 
     # Write the new pdf into a new output stream
     output = io.BytesIO()
@@ -343,14 +355,25 @@ class OdooPdfFileReader(PdfFileReader):
             # If the PDF is owner-encrypted, try to unwrap it by giving it an empty user password.
             self.decrypt('')
 
-        try:
-            file_path = self.trailer["/Root"].get("/Names", {}).get("/EmbeddedFiles", {}).get("/Names")
-
-            if not file_path:
-                return []
+        def _traverse_nodes(obj):
+            file_path = obj.get("/Names", [])
             for p in file_path[1::2]:
                 attachment = p.getObject()
-                yield (attachment["/F"], attachment["/EF"]["/F"].getObject().getData())
+                try:
+                    yield (attachment["/F"], attachment["/EF"]["/F"].getObject().getData())
+                except (KeyError, AttributeError):
+                    continue
+            for kid in obj.get("/Kids", []):
+                if id(kid) not in visited_nodes:
+                    visited_nodes.add(id(kid))
+                    yield from _traverse_nodes(kid.getObject())
+
+        try:
+            file_path = self.trailer["/Root"].get("/Names", {}).get("/EmbeddedFiles", {})
+            if not file_path:
+                return []
+            visited_nodes = set()
+            yield from _traverse_nodes(file_path)
         except Exception:  # noqa: BLE001
             # malformed pdf (i.e. invalid xref page)
             return []
@@ -621,7 +644,7 @@ class OdooPdfFileWriter(PdfFileWriter):
                 DictionaryObject({
                     NameObject('/CheckSum'): createStringObject(md5(attachment['content']).hexdigest()),
                     NameObject('/ModDate'): createStringObject(datetime.now().strftime(DEFAULT_PDF_DATETIME_FORMAT)),
-                    NameObject('/Size'): NameObject(f"/{len(attachment['content'])}"),
+                    NameObject('/Size'): NumberObject(len(attachment['content'])),
                 }),
         })
         if attachment.get('subtype'):
